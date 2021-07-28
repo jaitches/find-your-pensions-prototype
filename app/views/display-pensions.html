@@ -1,0 +1,55 @@
+
+{% extends "layout_unbranded.html" %}
+
+{% block pageTitle %}
+  Pensions dashboard - sign in
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      <h1 class="govuk-heading-xl">
+        Your pensions
+      </h1>
+
+      <table class="govuk-table">
+        <caption class="govuk-table__caption govuk-table__caption--m">Your pension summary</caption>
+        <thead class="govuk-table__head govuk-body-s">
+          <tr class="govuk-table__row">
+            <th colspan="2" scope="col" class="govuk-table__header"></th>
+            <th colspan="4" scope="col" class="govuk-table__header pdp-shaded-header">Estimated retirement income</th>
+            <th colspan="2" scope="col" class="govuk-table__header"></th>
+          </tr>
+
+          <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header">Pension name</th>
+            <th scope="col" class="govuk-table__header">Pension provider</th>
+            <th scope="col" class="govuk-table__header">Pension value</th>
+            <th scope="col" class="govuk-table__header">Estimated income a year</th>
+            <th scope="col" class="govuk-table__header">Date estimated amount calculated</th>
+            <th scope="col" class="govuk-table__header">Date payable</th>
+            <th scope="col" class="govuk-table__header">Contact</th>
+            <th scope="col" class="govuk-table__header"></th>
+          </tr>
+        </thead>
+      {% for details in pensionDetails %}
+        <tbody class="govuk-table__body govuk-body-s">
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell">{{details.PensionName}}</td>
+            <td class="govuk-table__cell">{{details.AdministratorName}}</td>
+            <td class="govuk-table__cell">{{details.ERIPot}}</td>
+            <td class="govuk-table__cell">{{details.ERIAnnualAmount}}</td>
+            <td class="govuk-table__cell">{{details.ERICalculationDate}}</td>
+            <td class="govuk-table__cell">{{details.ERIPayableDate}}</td>
+            <td class="govuk-table__cell"><a href="pension{{details.PensionNo}}">Pension details</a></td>
+          </tr>
+
+        </tbody>
+      {% endfor %}
+      </table>
+
+    </div>
+  </div>
+
+{% endblock %}

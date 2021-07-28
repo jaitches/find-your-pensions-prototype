@@ -1,0 +1,148 @@
+
+{% extends "layout_unbranded.html" %}
+
+{% block pageTitle %}
+  View my pensions - manage pensions
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      <form action="/add-pension" method="post" class="form">
+
+        {% call govukFieldset({
+          legend: {
+            text: "Add pension details",
+            classes: "govuk-fieldset__legend--l",
+            isPageHeading: true
+          }
+        }) %}
+
+          {{ govukInput({
+            label: {
+              html: 'Pension name'
+            },
+            classes: "govuk-!-width-two-thirds",
+            id: "pension-name",
+            name: "pension-name"
+          }) }}
+
+          {{ govukInput({
+            label: {
+              text: "Pension provider"
+            },
+            classes: "govuk-!-width-two-thirds",
+            id: "pension-provider",
+            name: "pension-provider"
+          }) }}
+
+          {{ govukInput({
+            id: "pension-value",
+            name: "pension-value",
+            label: {
+              text: "Pension value"
+            },
+            prefix: {
+              text: "£"
+            },
+            classes: "govuk-input--width-5"
+          }) }}
+          
+          {{ govukInput({
+            id: "annual-eri",
+            name: "annual-eri",
+            label: {
+              text: "Annual estimated income"
+            },
+            prefix: {
+              text: "£"
+            },
+            classes: "govuk-input--width-5"
+          }) }}
+
+          {{ govukDateInput({
+            id: "date-calculated",
+            namePrefix: "date-calculated",
+            fieldset: {
+              legend: {
+                text: "Date estimated amount calculated"
+              }
+            },
+            hint: {
+              text: "For example, 12 11 2007"
+            }
+          }) }}
+
+          {{ govukDateInput({
+            id: "date-payable",
+            namePrefix: "date-payable",
+            fieldset: {
+              legend: {
+                text: "Date payable"
+              }
+            },
+            hint: {
+              text: "For example, 12 11 2007"
+            }
+          }) }}     
+
+
+        {% endcall %}
+      <button class="govuk-button" data-module="govuk-button">Save pension details</button>
+    </form>
+<!--
+    <form action="/update-pension" method="post" class="form">
+-->      <table class="govuk-table">
+        <caption class="govuk-table__caption govuk-table__caption--m">Your pension summary</caption>
+        <thead class="govuk-table__head govuk-body-s">
+          <tr class="govuk-table__row">
+            <th colspan="2" scope="col" class="govuk-table__header"></th>
+            <th colspan="4" scope="col" class="govuk-table__header pdp-shaded-header">Estimated retirement income</th>
+            <th colspan="2" scope="col" class="govuk-table__header"></th>
+          </tr>
+
+          <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header">Pension name</th>
+            <th scope="col" class="govuk-table__header">Pension provider</th>
+            <th scope="col" class="govuk-table__header">Pension value</th>
+            <th scope="col" class="govuk-table__header">Estimated income a year</th>
+            <th scope="col" class="govuk-table__header">Date estimated amount calculated</th>
+            <th scope="col" class="govuk-table__header">Date payable</th>
+            <th scope="col" class="govuk-table__header">Delete</th>
+            <th scope="col" class="govuk-table__header"></th>
+          </tr>
+        </thead>
+        {% for details in pensionDetails %}
+          <tbody class="govuk-table__body govuk-body-s">
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">{{details.pensionName}}</td>
+              <td class="govuk-table__cell">{{details.administratorName}}</td>
+              <td class="govuk-table__cell">{{details.ERIPot}}</td>
+              <td class="govuk-table__cell">{{details.ERIAnnualAmount}}</td>
+              <td class="govuk-table__cell">{{details.ERICalculationDate}}</td>
+              <td class="govuk-table__cell">{{details.ERIPayableDate}}</td>
+              <td class="govuk-table__cell" onclick="deleteRow(this)"> <button class="govuk-button govuk-button--warning" data-module="govuk-button">Delete</button></td>
+            </tr>
+
+          </tbody>
+        {% endfor %}
+        </table>
+<!--           <button data-prevent-double-click="true" class="govuk-button" data-module="govuk-button">
+          Save all changes
+        </button>
+   </form> 
+      <form action="/delete-pension" method="post" class="form">
+
+        <button class="govuk-button govuk-button--warning" data-module="govuk-button">
+          Delete all records
+        </button>
+
+      </form>
+      -->
+    </div>
+  </div>
+
+{% endblock %}
+
+document.getElementById("myP").contentEditable = "true"; 

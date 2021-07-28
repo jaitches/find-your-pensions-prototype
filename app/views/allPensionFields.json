@@ -1,0 +1,100 @@
+{
+	"pensions":[
+		{
+      	"PensionReference" : "128765",
+      	"PensionName" : "Home Retail Co. - 0128765",
+		"pensionType" : "DC",
+      	"PensionOrigin" : "workplace",
+		"pensionStatus" : "deferred",
+		"PensionStartDate" : "19 Mar 2012",
+		"pensionRetirementDate" : "22 Dec 2038",
+
+		"AdministratorName" : "Aviva",
+		"AdministratorContactPreference" : "email",
+		"AdministratorURL" : "https://www.aviva.com/",
+		"AdministratorEmail" : "help@aviva.com",
+		"AdministratorPhoneNumber" : "0800 1234 567",
+		"AdministratorPhoneNumberType" : "General enquiries",
+		"AdministratorPostalName" : "Aviva plc",
+		"AdministratorAddressLine1" : "St Helen's",
+		"AdministratorAddressLine2" : "1 Undershaft",
+		"AdministratorAddressLine3" : "London",
+		"AdministratorAddressLine4" : "United Kingdom",
+		"AdministratorAddressLine5" : "",
+		"AdministratorPostcode" : "EC3P 3DQ",
+		
+		"employerName" : "The bank",
+		"employmentStartDate" : "19 Mar 2012",
+		"employmentEndDate" : "11 Sep 2015",
+		
+		"ERIBasis" : "How ERI calculated",
+		"ERICalculationDate" : "11 Sep 2020",
+		"ERIPayableDate" : "22 Dec 2038",
+		"ERIAnnualAmount" : 235.42,
+		"ERIPot" : 20346.32,
+     	"ERISafeguardedBenefits" : "N/A",
+    	"ERIUnavailableCode" : "",
+
+    	"AccruedType" : "DC",
+		"AccruedAmountType" : "pot",
+		"AccruedCalculationDate" : "11 Sep 2020",
+      	"AccruedPayableDate" : "22 Dec 2038",
+     	"AccruedAmount" : 20346.32,
+      	"AccruedSafeguardedBenefits" : null,
+      	"AccruedUnavailable" : "",
+
+      	"CostsChargesURL" : "https://aviva.com/costs",
+		"SIPURL" : "https://aviva.com/statementOfInvestment",
+		"ImplementationStatementURL" : "https://aviva.com/ImplementationStatement",
+      	"AnnualReportURL" : "https://aviva.com/annualreports"
+		},
+		{
+      	"PensionReference" : "DB-TCG-045203",
+      	"PensionName" : "TC Group pension",
+		"pensionType" : "DB",
+      	"PensionOrigin" : "workplace",
+		"pensionStatus" : "deferred",
+		"PensionStartDate" : "15 Oct 2001",
+		"pensionRetirementDate" : "22 Dec 2033",
+
+		"AdministratorName" : "TC Group",
+		"AdministratorContactPreference" : "email",
+		"AdministratorURL" : "https://www.tcg.com/",
+		"AdministratorEmail" : "help@tcg.com",
+		"AdministratorPhoneNumber" : "0800 9876 543",
+		"AdministratorPhoneNumberType" : "General enquiries",
+		"AdministratorPostalName" : "TC Group",
+		"AdministratorAddressLine1" : "27 High Street",
+		"AdministratorAddressLine2" : "Tonbridge",
+		"AdministratorAddressLine3" : "Kent",
+		"AdministratorAddressLine4" : "United Kingdom",
+		"AdministratorAddressLine5" : "",
+		"AdministratorPostcode" : "TN25 3RG",
+		
+		"employerName" : "TC Group",
+		"employmentStartDate" : "15 Oct 2001",
+		"employmentEndDate" : "16 Mar 2012",
+		
+		"ERIBasis" : "How ERI calculated",
+		"ERICalculationDate" : "12 Sep 2020",
+		"ERIPayableDate" : "22 Dec 2033",
+		"ERIAnnualAmount" : 3022.65,
+		"ERIPot" : null,
+     	"ERISafeguardedBenefits" : null ,
+    	"ERIUnavailableCode" : "",
+
+    	"AccruedType" : "DB",
+		"AccruedAmountType" : "income",
+		"AccruedCalculationDate" : "12 Sep 2020",
+      	"AccruedPayableDate" : "22 Dec 2033",
+     	"AccruedAmount" : null,
+      	"AccruedSafeguardedBenefits" : null,
+      	"AccruedUnavailable" : "",
+
+      	"CostsChargesURL" : "https://tcg.com/costs",
+		"SIPURL" : "https://tcg.com/statementOfInvestment",
+		"ImplementationStatementURL" : "https://tcg.com/ImplementationStatement",
+      	"AnnualReportURL" : "https://tcg.com/annualreports"
+		}
+	]
+}

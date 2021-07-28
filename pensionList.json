@@ -1,0 +1,32 @@
+{
+    "pensions": [
+        {
+            "pensionName": "Home Retail Co. - 0128765",
+            "administratorName": "Aviva",
+            "ERICalculationDate": "11 Sep 2020",
+            "ERIPayableDate": "22 Dec 2038",
+            "ERIAnnualAmount": 235.42,
+            "ERIPot": 20346.32
+        },
+        {
+            "pensionName": "TC Group pension",
+            "administratorName": "TC Group",
+            "ERICalculationDate": "12 Sep 2020",
+            "ERIPayableDate": "22 Dec 2033",
+            "ERIAnnualAmount": 3022.65,
+            "ERIPot": null
+        },
+        {
+            "pensionName": "dg",
+            "administratorName": "gdfg",
+            "ERIAnnualAmount": "2",
+            "ERIPot": "2"
+        },
+        {
+            "pensionName": "fbf",
+            "administratorName": "fdb",
+            "ERIAnnualAmount": 0,
+            "ERIPot": 0
+        }
+    ]
+}
