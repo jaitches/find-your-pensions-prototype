@@ -18,8 +18,14 @@
             isPageHeading: true
           }
         }) %}
-
           {{ govukInput({
+            label: {
+              html: 'Pension owner name'
+            },
+            classes: "govuk-!-width-two-thirds",
+            id: "pension-owner",
+            name: "pension-owner"
+          }) }}          {{ govukInput({
             label: {
               html: 'Pension name'
             },

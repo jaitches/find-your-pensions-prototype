@@ -21,14 +21,7 @@ async function main() {
         await client.connect();
 
         // Make the appropriate DB calls
-        await createPension(client, {          
-            pensionName: "New record",
-            administratorName: "Aviva",
-            ERICalculationDate: "11 Sep 2020",
-            ERIPayableDate: "22 Dec 2038",
-            ERIAnnualAmount: 235.42,
-            ERIPot: 20346.32
-        });
+        await getPensions(client);
     } finally {
         // Close the connection to the MongoDB cluster
         await client.close();
@@ -38,6 +31,32 @@ async function main() {
 main().catch(console.error);
 
 // Add functions that make DB calls here
+async function getPensions(client) {
+// See https://mongodb.github.io/node-mongodb-native/3.6/api/Collection.html#findOne for the findOne() docs
+//        try {
+    const results = await client.db("pensions").collection("lpensionDetails")
+    .find()
+    .toArray()
+/* 
+    if ((await cursor.count()) === 0) {
+        console.log("No documents found")
+    }
+   }
+    catch (error){
+        console.log('error finding ' + error)
+    }
+
+*/
+//            .sort({ last_review: -1 })
+//            .limit(maximumNumberOfResults);
+
+    // Store the results in an array
+    console.log('results ' + JSON.stringify(results))
+//    req.app.locals.pensionDetails = results
+
+
+}
+
 async function createPension(client, newListing){
     const result = await client.db("pensions").collection("pensionDetails").insertOne(newListing);
     console.log(`New listing created with the following id: ${result.insertedId}`);

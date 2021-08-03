@@ -9,23 +9,62 @@
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-      <h1 class="govuk-heading-xl">
-        Find your pensions - Prototype
-      </h1>
-      <p>
-        This is the prototype for the pensions dashboard. It will be used to test user journeys and pension displays. The findings will feed into the dashboard design standards for sahboard providers to use when developing their software.
-      </p>
+      <form action="/index-figures" method="post" class="form">
+        <h1 class="govuk-heading-xl">
+          Find your pensions - Prototype
+        </h1>
+        <p>
+          This is the prototype for the pensions dashboard. It will be used to test user journeys and pension displays. The findings will feed into the dashboard design standards for dashboard providers to use when developing their software.
+        </p>
+        <p>
+          Select the type of figures you want to use for the prootoype
+        </p>
 
-      <h2 class="govuk-heading-m">Page</h2>
+        {{ govukRadios({
+          idPrefix: "display-figures",
+          name: "display-figures",
+          fieldset: {
+            legend: {
+              text: "What type of figures do you want the prototype to display?",
+              isPageHeading: false,
+              classes: "govuk-fieldset__legend--l"
+            }
+          },
+          items: [
+            {
+              value: "db-only",
+              name: "db-only",
+              text: "DB only"
+            },
+            {
+              value: "dc-only",
+              name: "dc-only",
+              text: "DC only"
+            },
+            {
+              value: "db-and-dc",
+              name: "db-and-dc",
+              text: "DB and DC"
+            },
+            {
+              value: "enter-figures",
+              name: "enter-figures",
+              text: "Enter figures"
+            }
+          ]
+        }) }}
+        <button class="govuk-button" data-module="govuk-button">Continue</button>
 
-      <p>
-        <a href="manage-pensions">Manage pensions details to display on the dashboard</a>
-      </p>      
+        <h2 class="govuk-heading-m">Pages in the prototype</h2>
 
-      <p>
-        <a href="display-pensions">Display pensions details - dashboard</a>
-      </p>
+        <p>
+          <a href="manage-pensions">Manage pensions details to display on the dashboard</a>
+        </p>      
 
+        <p>
+          <a href="display-pensions">Display pensions details - dashboard</a>
+        </p>
+      </form>
     </div>
   </div>
 
