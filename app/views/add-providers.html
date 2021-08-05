@@ -1,0 +1,45 @@
+
+{% extends "layout_unbranded.html" %}
+
+{% block pageTitle %}
+  View my pensions - manage pensions
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      <form action="/add-provider-details" method="post" class="form">
+
+        {% call govukFieldset({
+          legend: {
+            text: "Add pension provider",
+            classes: "govuk-fieldset__legend--l",
+            isPageHeading: true
+          }
+        }) %}
+
+          {{ govukInput({
+            label: {
+              html: 'Administrator name'
+            },
+            classes: "govuk-!-width-two-thirds",
+            id: "administrator-name",
+            name: "administrator-name"
+          }) }} 
+
+   
+        {% endcall %}
+        <div class="govuk-button-group">
+          <button class="govuk-button" data-module="govuk-button" data-prevent-double-click="true">
+            Save pension provider
+          </button>
+
+          <a class="govuk-link" href="display-pensions">List pensions</a>
+        </div>
+    </form>
+
+    </div>
+  </div>
+
+{% endblock %}

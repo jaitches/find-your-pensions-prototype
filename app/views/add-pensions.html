@@ -9,7 +9,7 @@
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
-      <form action="/add-pension" method="post" class="form">
+      <form action="/add-pension-details" method="post" class="form">
 
         {% call govukFieldset({
           legend: {
@@ -25,7 +25,8 @@
             classes: "govuk-!-width-two-thirds",
             id: "pension-owner",
             name: "pension-owner"
-          }) }}          {{ govukInput({
+          }) }}          
+          {{ govukInput({
             label: {
               html: 'Pension name'
             },
@@ -34,14 +35,41 @@
             name: "pension-name"
           }) }}
 
-          {{ govukInput({
+          {{ govukSelect({
+            id: "pension-type",
+            name: "pension-type",
             label: {
-              text: "Pension provider"
+              text: "Pension type"
             },
-            classes: "govuk-!-width-two-thirds",
-            id: "pension-provider",
-            name: "pension-provider"
+            items: [
+              {
+                value: "dc-type",
+                text: "DC pension"
+              },              
+              {
+                value: "db-type",
+                text: "DB pension"
+              },
+              {
+                value: "state-type",
+                text: "State pension"
+              }
+            ]
           }) }}
+
+          <div class="govuk-form-group">
+            <label class="govuk-label" for="pension-provider">
+              Pension provider
+            </label>
+            <select class="govuk-select" id="pension-provider" name="pension-provider">
+              {% for name in pensionProviders %}
+
+              <option value={{name.administratorName}}>{{name.administratorName}}</option>
+
+              {% endfor %}
+
+            </select>
+          </div>
 
           {{ govukInput({
             id: "pension-value",
@@ -74,9 +102,6 @@
               legend: {
                 text: "Date estimated amount calculated"
               }
-            },
-            hint: {
-              text: "For example, 12 11 2007"
             }
           }) }}
 
@@ -87,19 +112,22 @@
               legend: {
                 text: "Date payable"
               }
-            },
-            hint: {
-              text: "For example, 12 11 2007"
             }
           }) }}     
-
-
         {% endcall %}
-      <button class="govuk-button" data-module="govuk-button">Save pension details</button>
+        <div class="govuk-button-group">
+          <button class="govuk-button" data-module="govuk-button" data-prevent-double-click="true">
+            Save pension details
+          </button>
+
+          <a class="govuk-link" href="display-pensions">List pensions</a>
+        </div>
     </form>
 <!--
     <form action="/update-pension" method="post" class="form">
--->      <table class="govuk-table">
+-->  
+<!--   
+      <table class="govuk-table">
         <caption class="govuk-table__caption govuk-table__caption--m">Your pension summary</caption>
         <thead class="govuk-table__head govuk-body-s">
           <tr class="govuk-table__row">
@@ -134,6 +162,7 @@
           </tbody>
         {% endfor %}
         </table>
+      -->
 <!--           <button data-prevent-double-click="true" class="govuk-button" data-module="govuk-button">
           Save all changes
         </button>
