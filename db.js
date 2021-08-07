@@ -1,23 +1,20 @@
-    const mongoClient = require('mongodb').MongoClient;
-    const mongoDbUrl = 'mongodb://127.0.0.1:27017';
-    let mongodb;
+const { MongoClient } = require('mongodb');
 
-    function connect(callback){
-        mongoClient.connect(mongoDbUrl, (err, db) => {
-            mongodb = db;
-            callback();
-        });
-    }
-    function get(){
-        return mongodb;
-    }
+async function connect(){
+    const uri = "mongodb+srv://" + process.env.MONGODB_URI + "?retryWrites=true&w=majority"
+}
 
-    function close(){
-        mongodb.close();
-    }
+async function findPensions(){
+    
 
-    module.exports = {
-        connect,
-        get,
-        close
-    };
+}
+
+function close(){
+    mongodb.close();
+}
+
+module.exports = {
+    connect,
+    get,
+    close
+};
