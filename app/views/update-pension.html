@@ -1,0 +1,530 @@
+
+{% extends "layout_unbranded.html" %}
+
+{% block pageTitle %}
+  View my pensions - update pension
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-xl">
+        Update pension details
+      </h1>
+      <form action="/update-pension-details" method="post" class="form">
+        {% call govukFieldset({
+          legend: {
+            text: "Pension owner",
+            classes: "govuk-fieldset__legend--l",
+            isPageHeading: true
+          }
+        }) %}
+
+          {{ govukInput({
+            label: {
+              html: 'Enter the name of the pension owner'
+            },
+            classes: "govuk-!-width-two-thirds",
+            id: "pensionOwner",
+            name: "pensionOwner",
+            value: {{pension.pensionOwner}}
+          }) }} 
+        {% endcall %}
+
+        {% call govukFieldset({
+          legend: {
+            text: "Select pension provider",
+            classes: "govuk-fieldset__legend--l",
+            isPageHeading: true
+          }
+        }) %}
+
+          <div class="govuk-form-group">
+            <label class="govuk-label" for="administratorName">
+              Pension provider name
+            </label>
+              <div id="event-name-hint" class="govuk-hint">
+                If the pension provider is not displayed you can <a href="add-providers">add a new provider</a>
+              </div>
+              <select class="govuk-select" id="administratorName" name="administratorName">
+              {% for name in pensionProviders %}
+              {% set administratorDetails =  name._id + ":" + name.administratorName %}
+
+              <option value="{{administratorDetails}}">{{name.administratorName}}</option>
+
+              {% endfor %}
+
+            </select>
+          </div>
+        {% endcall %}
+        {% call govukFieldset({
+          legend: {
+            text: "Add pension arrangement details",
+            classes: "govuk-fieldset__legend--l",
+            isPageHeading: true
+          }
+        }) %}
+
+          {{ govukInput({
+            label: {
+              html: 'Pension reference'
+            },
+            classes: "govuk-!-width-two-thirds",
+            id: "pensionReference",
+            name: "pensionReferencee"
+          }) }}
+
+          {{ govukInput({
+            label: {
+              html: 'Pension name'
+            },
+            classes: "govuk-!-width-two-thirds",
+            id: "pensionName",
+            name: "pensionName"
+          }) }}
+
+          {{ govukSelect({
+            id: "pensionType",
+            name: "PensionType",
+            label: {
+              text: "pensionType"
+            },
+            items: [
+              {
+                value: "dc-type",
+                text: "DC pension"
+              },              
+              {
+                value: "db-type",
+                text: "DB pension"
+              },
+              {
+                value: "state-type",
+                text: "State pension"
+              }
+            ]
+          }) }}
+
+          {{ govukSelect({
+            id: "pensionOrigin",
+            name: "pensionOrigin",          
+            label: {
+              html: 'Pension origin'
+            },
+            items: [
+              {
+                value: "workplace",
+                text: "Workplace"
+              },              
+              {
+                value: "private",
+                text: "Private"
+              }
+            ]
+   
+          }) }}
+
+          {{ govukInput({
+            label: {
+              html: 'Pension status'
+            },
+            classes: "govuk-!-width-two-thirds",
+            id: "pensionStatus",
+            name: "pensionStatus"
+          }) }}
+
+          <div class="govuk-form-group">
+            <fieldset class="govuk-fieldset" role="group">
+              <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                <h1 class="govuk-fieldset__heading">
+                  Pension start date
+                </h1>
+              </legend>
+              <div class="govuk-date-input" id="pensionStartDate">
+                <div class="govuk-date-input__item">
+                  <div class="govuk-form-group">
+                    <label class="govuk-label govuk-date-input__label" for="pensionStartDate-day">
+                      Day
+                    </label>
+                    <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="pensionStartDate-day" name="pensionStartDate-day" type="text" pattern="[0-9]*" inputmode="numeric"></div>
+                </div>
+                <div class="govuk-date-input__item">
+                  <div class="govuk-form-group">
+                    <label class="govuk-label govuk-date-input__label" for="pensionStartDate-month">
+                      Month
+                    </label>
+                    <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="pensionStartDate-month" name="pensionStartDate-month" type="text" pattern="[0-9]*" inputmode="numeric"></div>
+                </div>
+                <div class="govuk-date-input__item">
+                  <div class="govuk-form-group">
+                    <label class="govuk-label govuk-date-input__label" for="pensionStartDate-year">
+                      Year
+                    </label>
+                    <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="pensionStartDate-year" name="pensionStartDate-year" type="text" pattern="[0-9]*" inputmode="numeric"></div>
+                </div>
+              </div>
+
+            </fieldset>
+          </div>
+          <!--
+          {{ govukDateInput({
+            id: "pensionStartDate",
+            namePrefix: "pensionStartDate",
+            fieldset: {
+              legend: {
+                text: "Pension start date"
+              }
+            }
+          }) }}
+-->
+          {{ govukDateInput({
+            id: "pensionRetirementDate",
+            namePrefix: "pensionRetirementDate",
+            fieldset: {
+              legend: {
+                text: "Pension retirement date"
+              }
+            }
+          }) }}
+<!--
+          {{ govukInput({
+            label: {
+              html: 'Pension link'
+            },
+            classes: "govuk-!-width-two-thirds",
+            id: "pensionLink",
+            name: "pensionLink"
+          }) }}
+-->
+        {% endcall %}
+
+        {% call govukFieldset({
+          legend: {
+            text: "Add employer details",
+            classes: "govuk-fieldset__legend--l",
+            isPageHeading: true
+          }
+        }) %}
+          
+          {{ govukInput({
+            label: {
+              html: 'Employer name'
+            },
+            classes: "govuk-!-width-two-thirds",
+            id: "employerName",
+            name: "employerName"
+          }) }}
+
+          {{ govukDateInput({
+            id: "employerStartDate",
+            namePrefix: "employerStartDate",
+            fieldset: {
+              legend: {
+                text: "Date started employment"
+              }
+            }
+          }) }}
+
+          {{ govukDateInput({
+            id: "employerEndDate",
+            namePrefix: "employerEndDate",
+            fieldset: {
+              legend: {
+                text: "Date employment ended"
+              }
+            }
+          }) }}
+        {% endcall %}
+
+        {% call govukFieldset({
+          legend: {
+            text: "Add estimated retirement income",
+            classes: "govuk-fieldset__legend--l",
+            isPageHeading: true
+          }
+        }) %}
+
+          {{ govukSelect({
+            id: "ERIType",
+            name: "ERIType",
+            label: {
+              text: "ERI type"
+            },
+            items: [
+              {
+                value: "dc-eri-type",
+                text: "DC pension"
+              },              
+              {
+                value: "db-eri-type",
+                text: "DB pension"
+              }
+            ]
+          }) }}
+
+          {{ govukSelect({
+            id: "ERIBasic",
+            name: "ERIBasis",
+            label: {
+              text: "How ERI calculated"
+            },
+            items: [
+              {
+                value: "eri-basis-1",
+                text: "basis 1"
+              },              
+              {
+                value: "eri-basis-1",
+                text: "basis 2"
+              }
+            ]
+          }) }}
+
+          {{ govukDateInput({
+            id: "ERICalculationDate",
+            namePrefix: "ERICalculationDate",
+            fieldset: {
+              legend: {
+                text: "Date ERI calculated"
+              }
+            }
+          }) }}
+
+          {{ govukDateInput({
+            id: "ERIPayableDate",
+            namePrefix: "ERIPayableDate",
+            fieldset: {
+              legend: {
+                text: "Date ERI payable"
+              }
+            }
+          }) }}
+
+          {{ govukInput({
+            id: "ERIAnnualAmount",
+            name: "ERIAnnualAmount",
+            label: {
+              text: "ERI annual amount"
+            },
+            prefix: {
+              text: "£"
+            },
+            classes: "govuk-input--width-5"
+          }) }}
+          
+          {{ govukInput({
+            id: "ERIPot",
+            name: "ERIPot",
+            label: {
+              text: "ERI pot value"
+            },
+            prefix: {
+              text: "£"
+            },
+            classes: "govuk-input--width-5"
+          }) }}
+
+          {{ govukSelect({
+            id: "ERISafeguardedBenefits",
+            name: "ERISafeguardedBenefits",
+            label: {
+              text: "ERI safeguarded benefits for this pension?"
+            },
+            items: [           
+              {
+                value: "eri-safeguarded-no",
+                text: "No"
+              },
+              {
+                value: "eri-safeguarded-yes",
+                text: "Yes"
+              }
+            ]
+          }) }}
+
+          {{ govukSelect({
+            id: "ERIUnavailable",
+            name: "ERIUnavailable",
+            label: {
+              text: "Reason ERI calculation not available"
+            },
+            items: [
+              {
+                value: "eri-unavailable-reason-na",
+                text: "Not applicable"
+              },  
+              {
+                value: "eri-unavailable-reason-1",
+                text: "Reason 1"
+              },              
+              {
+                value: "eri-unavailable-reason-1",
+                text: "Reason 2"
+              },              
+              {
+                value: "eri-unavailable-reason-1",
+                text: "Reason 3"
+              }
+            ]
+          }) }}
+
+        {% endcall %}
+
+
+        {% call govukFieldset({
+          legend: {
+            text: "Add accrued figures",
+            classes: "govuk-fieldset__legend--l",
+            isPageHeading: true
+          }
+        }) %}
+
+          {{ govukSelect({
+            id: "accruedType",
+            name: "accruedType",
+            label: {
+              text: "Accrued type"
+            },
+            items: [
+              {
+                value: "dc-accrued-type",
+                text: "DC pension"
+              },              
+              {
+                value: "db-accrued-type",
+                text: "DB pension"
+              }
+            ]
+          }) }}
+
+          {{ govukSelect({
+            id: "accruedAmountType",
+            name: "accruedAmountType",
+            label: {
+              text: "Accrued type"
+            },
+            items: [
+              {
+                value: "accrued-amount-pot",
+                text: "Pot"
+              },              
+              {
+                value: "accrued-amount-lump-sum",
+                text: "Lump sum"
+              },              
+              {
+                value: "accrued-amount-income",
+                text: "Income"
+              },              
+              {
+                value: "accrued-amount-other",
+                text: "Other"
+              }
+            ]
+          }) }}
+
+          {{ govukDateInput({
+            id: "accruedCalculationDate",
+            namePrefix: "accruedCalculationDate",
+            fieldset: {
+              legend: {
+                text: "Date accrued amount calculated"
+              }
+            }
+          }) }}
+
+          {{ govukDateInput({
+            id: "accruedPayableDate",
+            namePrefix: "accruedPayableDate",
+            fieldset: {
+              legend: {
+                text: "Date accrued amount payable"
+              }
+            }
+          }) }}
+
+          {{ govukInput({
+            id: "accruedAmount",
+            name: "accruedAmount",
+            label: {
+              text: "Accrued amount"
+            },
+            prefix: {
+              text: "£"
+            },
+            classes: "govuk-input--width-5"
+          }) }}
+          {{ govukSelect({
+            id: "accruedSafeguardedBenefits",
+            name: "accruedSafeguardedBenefits",
+            label: {
+              text: "Accrued safeguarded benefits for this pension?"
+            },
+            items: [
+              {
+                value: "no",
+                text: "No"
+              },
+              {
+                value: "yes",
+                text: "Yes"
+              }            
+
+            ]
+          }) }}
+
+          {{ govukSelect({
+            id: "accruedUnavailable",
+            name: "accruedUnavailable",
+            label: {
+              text: "Reason accrued amount calculation not available"
+            },
+            items: [
+              {
+                value: "",
+                text: "Not applicable"
+              },  
+              {
+                value: "reason-1",
+                text: "Reason 1"
+              },              
+              {
+                value: "reason-1",
+                text: "Reason 2"
+              },              
+              {
+                value: "reason-3",
+                text: "Reason 3"
+              }
+            ]
+          }) }}
+
+          {% endcall %}
+
+        <div class="govuk-button-group">
+          <button class="govuk-button" data-module="govuk-button" data-prevent-double-click="true">
+            Save pension details
+          </button>
+
+          <a class="govuk-link" href="display-pensions">List pensions</a>
+        </div>
+      </form>
+    </div>
+
+    <div class="govuk-grid-column-one-third">
+      <h2 class="govuk-heading-m">
+        Other pages:
+      </h2>
+      <p>
+        <a class="govuk-link" href="display-pensions">Display and manage pensions</a>
+      </p>
+      <p>
+        <a href="add-providers">Add a new provider</a>
+      </p>
+    </div>
+
+    </div>
+  </div>
+
+{% endblock %}

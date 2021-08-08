@@ -8,9 +8,13 @@ if (window.console && window.console.info) {
 $(document).ready(function () {
   window.GOVUKFrontend.initAll()
 })
+// const express = require('express')
+// const { MongoClient } = require('mongodb');
 
-function deleteRow(btn) {
-  var row = btn.parentNode.parentNode;
-  row.parentNode.removeChild(row);
-  console.log('DeleteRow')
+function deleteRow() {
+	if (confirm('Do you want to delete this pension record?')) {
+	} 
+	else {
+	   return false;
+	}
 }
