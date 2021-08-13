@@ -2,7 +2,7 @@
 {% extends "layout_unbranded.html" %}
 
 {% block pageTitle %}
-  View my pensions - manage pensions
+  {{serviceName}} - add pension
 {% endblock %}
 
 {% block content %}
@@ -12,6 +12,7 @@
       <h1 class="govuk-heading-xl">
         Add pension details
       </h1>
+
       <form action="/add-pension-details" method="post" class="form">
         {% call govukFieldset({
           legend: {
@@ -57,6 +58,7 @@
             </select>
           </div>
         {% endcall %}
+
         {% call govukFieldset({
           legend: {
             text: "Add pension arrangement details",
@@ -71,7 +73,7 @@
             },
             classes: "govuk-!-width-two-thirds",
             id: "pensionReference",
-            name: "pensionReferencee"
+            name: "pensionReference"
           }) }}
 
           {{ govukInput({
@@ -90,18 +92,27 @@
               text: "pensionType"
             },
             items: [
+
               {
-                value: "dc-type",
+                value: "DC",
                 text: "DC pension"
               },              
               {
-                value: "db-type",
+                value: "DB",
                 text: "DB pension"
+              },              
+              {
+                value: "ST",
+                text: "State pension"
               },
               {
-                value: "state-type",
-                text: "State pension"
-              }
+                value: "AVC",
+                text: "AVC pension"
+              },
+              {
+                value: "HYB",
+                text: "Hybrid (DC and DB) pension"
+              }             
             ]
           }) }}
 
@@ -113,60 +124,45 @@
             },
             items: [
               {
-                value: "workplace",
+                value: "W",
                 text: "Workplace"
               },              
               {
-                value: "private",
+                value: "P",
                 text: "Private"
+              },              
+              {
+                value: "S",
+                text: "State"
               }
             ]
    
           }) }}
 
-          {{ govukInput({
+           {{ govukSelect({
+            id: "pensionStatus",
+            name: "pensionStatus",          
             label: {
               html: 'Pension status'
             },
-            classes: "govuk-!-width-two-thirds",
-            id: "pensionStatus",
-            name: "pensionStatus"
+            items: [
+              {
+                value: "A",
+                text: "Active"
+              },              
+              {
+                value: "I",
+                text: "Inactive"
+              }
+            ]
+   
           }) }}
 
-          <div class="govuk-form-group">
-            <fieldset class="govuk-fieldset" role="group">
-              <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                <h1 class="govuk-fieldset__heading">
-                  Pension start date
-                </h1>
-              </legend>
-              <div class="govuk-date-input" id="pensionStartDate">
-                <div class="govuk-date-input__item">
-                  <div class="govuk-form-group">
-                    <label class="govuk-label govuk-date-input__label" for="pensionStartDate-day">
-                      Day
-                    </label>
-                    <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="pensionStartDate-day" name="pensionStartDate-day" type="text" pattern="[0-9]*" inputmode="numeric"></div>
-                </div>
-                <div class="govuk-date-input__item">
-                  <div class="govuk-form-group">
-                    <label class="govuk-label govuk-date-input__label" for="pensionStartDate-month">
-                      Month
-                    </label>
-                    <input class="govuk-input govuk-date-input__input govuk-input--width-2" id="pensionStartDate-month" name="pensionStartDate-month" type="text" pattern="[0-9]*" inputmode="numeric"></div>
-                </div>
-                <div class="govuk-date-input__item">
-                  <div class="govuk-form-group">
-                    <label class="govuk-label govuk-date-input__label" for="pensionStartDate-year">
-                      Year
-                    </label>
-                    <input class="govuk-input govuk-date-input__input govuk-input--width-4" id="pensionStartDate-year" name="pensionStartDate-year" type="text" pattern="[0-9]*" inputmode="numeric"></div>
-                </div>
-              </div>
-
-            </fieldset>
-          </div>
-          <!--
+          <label for="pensionStartDate" class="govuk-body">Pension start date</label>
+          <p>
+            <input type="date" id="pensionStartDate" name="pensionStartDate" class="govuk-body">
+          </p>
+<!--
           {{ govukDateInput({
             id: "pensionStartDate",
             namePrefix: "pensionStartDate",
@@ -176,7 +172,22 @@
               }
             }
           }) }}
--->
+          
+          {{ govukDateInput({
+            id: "pensionStartDate",
+            namePrefix: "pensionStartDate",
+            fieldset: {
+              legend: {
+                text: "Pension start date"
+              }
+            }
+          }) }}
+-->          
+          <label for="pensionRetirementDate" class="govuk-body">Pension retirement date</label>
+          <p>
+            <input type="date" id="pensionRetirementDate" name="pensionRetirementDate" class="govuk-body">
+          </p>
+<!--
           {{ govukDateInput({
             id: "pensionRetirementDate",
             namePrefix: "pensionRetirementDate",
@@ -186,7 +197,7 @@
               }
             }
           }) }}
-<!--
+
           {{ govukInput({
             label: {
               html: 'Pension link'
@@ -215,6 +226,12 @@
             name: "employerName"
           }) }}
 
+          <label for="employerStartDate" class="govuk-body">Employment start date</label>
+          <p>
+            <input type="date" id="employerStartDate" name="employerStartDate" class="govuk-body">
+          </p>
+
+<!--
           {{ govukDateInput({
             id: "employerStartDate",
             namePrefix: "employerStartDate",
@@ -224,6 +241,12 @@
               }
             }
           }) }}
+-->
+          <label for="employerEndDate" class="govuk-body">Employment end date</label>
+          <p>
+            <input type="date" id="employerEndDate" name="employerEndDate" class="govuk-body">
+          </p>
+<!--
 
           {{ govukDateInput({
             id: "employerEndDate",
@@ -234,6 +257,7 @@
               }
             }
           }) }}
+-->
         {% endcall %}
 
         {% call govukFieldset({
@@ -243,7 +267,7 @@
             isPageHeading: true
           }
         }) %}
-
+<!--
           {{ govukSelect({
             id: "ERIType",
             name: "ERIType",
@@ -252,12 +276,32 @@
             },
             items: [
               {
-                value: "dc-eri-type",
-                text: "DC pension"
+                value: "DC",
+                text: "Defined contribution"
               },              
               {
-                value: "db-eri-type",
-                text: "DB pension"
+                value: "DB",
+                text: "Defined benefit"
+              },           
+              {
+                value: "DBL",
+                text: "A separately accrued lump sum (not commutation)"
+              },              
+              {
+                value: "AVC",
+                text: "Additional volunatary contribution"
+              },              
+              {
+                value: "CDI",
+                text: "Collective DC (CC) benefits expressed as regular income"
+              },           
+              {
+                value: "CDL",
+                text: "Collective DC (CC) benefits expressed as lump sum"
+              },              
+              {
+                value: "CBS",
+                text: "Cash balance scheme"
               }
             ]
           }) }}
@@ -270,16 +314,29 @@
             },
             items: [
               {
-                value: "eri-basis-1",
-                text: "basis 1"
+                value: "SMPI",
+                text: "SMPI - statutory money purchase illustration"
               },              
               {
-                value: "eri-basis-1",
-                text: "basis 2"
+                value: "COBS",
+                text: "COBS - Income illustration FCA COBS rules"
+              },             
+              {
+                value: "BS",
+                text: "BS - Benefit specific method no allowance of future build-up of benefits"
+              },              
+              {
+                value: "BSF",
+                text: "BSF - Benefit specific method including future build-up of benefits"
               }
             ]
           }) }}
-
+-->
+          <label for="ERICalculationDate" class="govuk-body">Date of ERI calculation</label>
+          <p>
+            <input type="date" id="ERICalculationDate" name="ERICalculationDate" class="govuk-body">
+          </p>
+<!--
           {{ govukDateInput({
             id: "ERICalculationDate",
             namePrefix: "ERICalculationDate",
@@ -299,7 +356,7 @@
               }
             }
           }) }}
-
+-->
           {{ govukInput({
             id: "ERIAnnualAmount",
             name: "ERIAnnualAmount",
@@ -323,7 +380,7 @@
             },
             classes: "govuk-input--width-5"
           }) }}
-
+<!--
           {{ govukSelect({
             id: "ERISafeguardedBenefits",
             name: "ERISafeguardedBenefits",
@@ -341,7 +398,7 @@
               }
             ]
           }) }}
-
+ 
           {{ govukSelect({
             id: "ERIUnavailable",
             name: "ERIUnavailable",
@@ -350,24 +407,24 @@
             },
             items: [
               {
-                value: "eri-unavailable-reason-na",
-                text: "Not applicable"
+                value: "",
+                text: "N/A"
+              },            
+              {
+                value: "ERR",
+                text: "System error code"
               },  
               {
-                value: "eri-unavailable-reason-1",
-                text: "Reason 1"
+                value: "TRN",
+                text: "Transaction oustanding that affects the value"
               },              
               {
-                value: "eri-unavailable-reason-1",
-                text: "Reason 2"
-              },              
-              {
-                value: "eri-unavailable-reason-1",
-                text: "Reason 3"
+                value: "MAN",
+                text: "Estimated income not currently availabel online"
               }
             ]
           }) }}
-
+       -->
         {% endcall %}
 
 
@@ -379,7 +436,7 @@
           }
         }) %}
 
-          {{ govukSelect({
+<!--          {{ govukSelect({
             id: "accruedType",
             name: "accruedType",
             label: {
@@ -387,12 +444,32 @@
             },
             items: [
               {
-                value: "dc-accrued-type",
-                text: "DC pension"
+                value: "DC",
+                text: "Defined contribution"
               },              
               {
-                value: "db-accrued-type",
-                text: "DB pension"
+                value: "DB",
+                text: "Defined benefit"
+              },           
+              {
+                value: "DBL",
+                text: "A separately accrued lump sum (not commutation)"
+              },              
+              {
+                value: "AVC",
+                text: "Additional volunatary contribution"
+              },              
+              {
+                value: "CDI",
+                text: "Collective DC (CC) benefits expressed as regular income"
+              },           
+              {
+                value: "CDL",
+                text: "Collective DC (CC) benefits expressed as lump sum"
+              },              
+              {
+                value: "CBS",
+                text: "Cash balance scheme"
               }
             ]
           }) }}
@@ -401,28 +478,29 @@
             id: "accruedAmountType",
             name: "accruedAmountType",
             label: {
-              text: "Accrued type"
+              text: "Accrued amount type"
             },
             items: [
               {
-                value: "accrued-amount-pot",
-                text: "Pot"
+                value: "POT",
+                text: "Valuation of a DC pension pot"
               },              
               {
-                value: "accrued-amount-lump-sum",
-                text: "Lump sum"
+                value: "INC",
+                text: "Calculation of an accrued recurring income"
               },              
               {
-                value: "accrued-amount-income",
-                text: "Income"
-              },              
-              {
-                value: "accrued-amount-other",
-                text: "Other"
+                value: "LS",
+                text: "Calculation of the accrued value of DBLS/CDCLS type"
               }
             ]
           }) }}
-
+-->
+          <label for="accruedCalculationDate" class="govuk-body">Date accrued amount calculated</label>
+          <p>
+            <input type="date" id="accruedCalculationDate" name="accruedCalculationDate" class="govuk-body">
+          </p>
+<!--
           {{ govukDateInput({
             id: "accruedCalculationDate",
             namePrefix: "accruedCalculationDate",
@@ -442,7 +520,7 @@
               }
             }
           }) }}
-
+-->
           {{ govukInput({
             id: "accruedAmount",
             name: "accruedAmount",
@@ -454,6 +532,7 @@
             },
             classes: "govuk-input--width-5"
           }) }}
+<!--
           {{ govukSelect({
             id: "accruedSafeguardedBenefits",
             name: "accruedSafeguardedBenefits",
@@ -482,23 +561,24 @@
             items: [
               {
                 value: "",
-                text: "Not applicable"
+                text: "N/A"
               },  
               {
-                value: "reason-1",
-                text: "Reason 1"
+                value: "ERR",
+                text: "System error code"
+              },  
+              {
+                value: "TRN",
+                text: "Transaction oustanding that affects the value"
               },              
               {
-                value: "reason-1",
-                text: "Reason 2"
-              },              
-              {
-                value: "reason-3",
-                text: "Reason 3"
+                value: "MAN",
+                text: "Estimated income not currently availabel online"
               }
             ]
           }) }}
 
+-->
           {% endcall %}
 
         <div class="govuk-button-group">
