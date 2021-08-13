@@ -48,7 +48,7 @@
               <div id="event-name-hint" class="govuk-hint">
                 If the pension provider is not displayed you can <a href="add-providers">add a new provider</a>
               </div>
-              <select class="govuk-select" id="administratorName" name="administratorName" >
+              <select class="govuk-select" id="administratorDetails" name="administratorDetails" >
               {% for name in pensionProviders %}
               {% set administratorDetails =  name._id + ":" + name.administratorName %}
 
@@ -61,7 +61,7 @@
         {% endcall %}
         {% call govukFieldset({
           legend: {
-            text: "Add pension arrangement details",
+            text: "Pension arrangement details",
             classes: "govuk-fieldset__legend--l",
             isPageHeading: true
           }
@@ -119,23 +119,26 @@
             {% endfor %}  
             </select>
           </div>
-
-
-          <label for="pensionStartDate" class="govuk-body">Pension start date</label>
-          <p>
-            <input type="date" id="pensionStartDate" name="pensionStartDate" class="govuk-body" value=pensionDetails.pensionStartDate>
-          </p>
           
-          <label for="pensionRetirementDate" class="govuk-body">Pension retirement date</label>
-          <p>
-            <input type="date" id="pensionRetirementDate" name="pensionRetirementDate" class="govuk-body" value=pensionDetails.pensionRetirementDate>
-          </p>
+          <div class="govuk-form-group">
+            <label for="pensionStartDate" class="govuk-body">Pension start date</label>
+            <p>
+              <input type="date" id="pensionStartDate" name="pensionStartDate" class="govuk-body" value={{pensionDetails.pensionStartDate}}>
+            </p>
+          </div>
+
+          <div class="govuk-form-group">
+            <label for="pensionRetirementDate" class="govuk-body">Pension retirement date</label>
+            <p>
+              <input type="date" id="pensionRetirementDate" name="pensionRetirementDate" class="govuk-body" value={{pensionDetails.pensionRetirementDate}}>
+            </p>
+          </div>
 
         {% endcall %}
 
         {% call govukFieldset({
           legend: {
-            text: "Add employer details",
+            text: "Employer details",
             classes: "govuk-fieldset__legend--l",
             isPageHeading: true
           }
@@ -151,31 +154,35 @@
             value: pensionDetails.employerName
           }) }}
 
-          <label for="employerStartDate" class="govuk-body">Employment start date</label>
-          <p>
-            <input type="date" id="employerStartDate" name="employerStartDate" class="govuk-body" value=pensionDetails.employerStartDate>
-          </p>
+          <div class="govuk-form-group">
+            <label for="employmentStartDate" class="govuk-body">Employment start date</label>
+            <p>
+              <input type="date" id="employmentStartDate" name="employmentStartDate" class="govuk-body" value={{pensionDetails.employmentStartDate}}>
+            </p>
+          </div>
 
-
-          <label for="employerEndDate" class="govuk-body">Employment end date</label>
-          <p>
-            <input type="date" id="employerEndDate" name="employerEndDate" class="govuk-body" value=pensionDetails.employerEndDate>
-          </p>
+          <div class="govuk-form-group">
+            <label for="employmentEndDate" class="govuk-body">Employment end date</label>
+            <p>
+              <input type="date" id="employmentEndDate" name="employmentEndDate" class="govuk-body" value={{pensionDetails.employmentEndDate}}>
+            </p>
+          </div>
 
         {% endcall %}
 
         {% call govukFieldset({
           legend: {
-            text: "Add estimated retirement income",
+            text: "Estimated retirement income",
             classes: "govuk-fieldset__legend--l",
             isPageHeading: true
           }
         }) %}
-
-          <label for="ERICalculationDate" class="govuk-body">Date of ERI calculation</label>
-          <p>
-            <input type="date" id="ERICalculationDate" name="ERICalculationDate" class="govuk-body" value=pensionDetails.ERICalculationDate>
-          </p>
+          <div class="govuk-form-group">
+            <label for="ERICalculationDate" class="govuk-body">Date of ERI calculation</label>
+            <p>
+              <input type="date" id="ERICalculationDate" name="ERICalculationDate" class="govuk-body" value=pensionDetails.ERICalculationDate>
+            </p>
+          </div>
 
           {{ govukInput({
             id: "ERIAnnualAmount",
@@ -208,17 +215,17 @@
 
         {% call govukFieldset({
           legend: {
-            text: "Add accrued figures",
+            text: "Accrued figures",
             classes: "govuk-fieldset__legend--l",
             isPageHeading: true
           }
         }) %}
-
-
-          <label for="accruedCalculationDate" class="govuk-body">Date accrued amount calculated</label>
-          <p>
-            <input type="date" id="accruedCalculationDate" name="accruedCalculationDate" class="govuk-body" value=pensionDetails.accruedCalculationDate>
-          </p>
+          <div class="govuk-form-group">
+            <label for="accruedCalculationDate" class="govuk-body">Date accrued amount calculated</label>
+            <p>
+              <input type="date" id="accruedCalculationDate" name="accruedCalculationDate" class="govuk-body" value=pensionDetails.accruedCalculationDate>
+            </p>
+          </div>
 
           {{ govukInput({
             id: "accruedAmount",
@@ -233,11 +240,21 @@
             classes: "govuk-input--width-5"
           }) }}
 
+          <div class="govuk-form-group">
+            <label class="govuk-label" for="pensionAccruedAmtType">
+              Accrued amount type
+            </label>
+           <select class="govuk-select" id="pensionAccruedAmtType" name="pensionAccruedAmtType">
+            {% for penAccAmtType in pensionDetails.pensionAccruedAmtTypeArr %}
+              <option value={{penAccAmtType.type}} {% if penAccAmtType.selected %} selected {% endif %}>{{penAccAmtType.text}}</option>
+            {% endfor %}  
+            </select>
+          </div>
           {% endcall %}
         
         <div class="govuk-button-group">
           <button class="govuk-button" data-module="govuk-button" data-prevent-double-click="true">
-            Save pension details
+            Update pension details
           </button>
 
           <a class="govuk-link" href="display-pensions">List pensions</a>

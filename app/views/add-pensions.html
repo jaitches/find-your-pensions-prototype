@@ -14,6 +14,10 @@
       </h1>
 
       <form action="/add-pension-details" method="post" class="form">
+        <p class="pension-crud-message">
+          {{pensionAddedMessage}}
+        </p>
+
         {% call govukFieldset({
           legend: {
             text: "Pension owner",
@@ -44,10 +48,10 @@
             <label class="govuk-label" for="administratorName">
               Pension provider name
             </label>
-              <div id="event-name-hint" class="govuk-hint">
+              <div id="administrator-name-hint" class="govuk-hint">
                 If the pension provider is not displayed you can <a href="add-providers">add a new provider</a>
               </div>
-              <select class="govuk-select" id="administratorName" name="administratorName">
+              <select class="govuk-select" id="administratorDetails" name="administratorDetails">
               {% for name in pensionProviders %}
               {% set administratorDetails =  name._id + ":" + name.administratorName %}
 
@@ -61,7 +65,7 @@
 
         {% call govukFieldset({
           legend: {
-            text: "Add pension arrangement details",
+            text: "Pension arrangement details",
             classes: "govuk-fieldset__legend--l",
             isPageHeading: true
           }
@@ -87,9 +91,9 @@
 
           {{ govukSelect({
             id: "pensionType",
-            name: "PensionType",
+            name: "pensionType",
             label: {
-              text: "pensionType"
+              text: "Pension type"
             },
             items: [
 
@@ -158,60 +162,24 @@
    
           }) }}
 
-          <label for="pensionStartDate" class="govuk-body">Pension start date</label>
-          <p>
-            <input type="date" id="pensionStartDate" name="pensionStartDate" class="govuk-body">
-          </p>
-<!--
-          {{ govukDateInput({
-            id: "pensionStartDate",
-            namePrefix: "pensionStartDate",
-            fieldset: {
-              legend: {
-                text: "Pension start date"
-              }
-            }
-          }) }}
-          
-          {{ govukDateInput({
-            id: "pensionStartDate",
-            namePrefix: "pensionStartDate",
-            fieldset: {
-              legend: {
-                text: "Pension start date"
-              }
-            }
-          }) }}
--->          
-          <label for="pensionRetirementDate" class="govuk-body">Pension retirement date</label>
-          <p>
-            <input type="date" id="pensionRetirementDate" name="pensionRetirementDate" class="govuk-body">
-          </p>
-<!--
-          {{ govukDateInput({
-            id: "pensionRetirementDate",
-            namePrefix: "pensionRetirementDate",
-            fieldset: {
-              legend: {
-                text: "Pension retirement date"
-              }
-            }
-          }) }}
+          <div class="govuk-form-group">
+            <label for="pensionStartDate" class="govuk-body">Pension start date</label>
+            <p>
+              <input type="date" id="pensionStartDate" name="pensionStartDate" class="govuk-body">
+            </p>
+          </div>          
+          <div class="govuk-form-group">
+            <label for="pensionRetirementDate" class="govuk-body">Pension retirement date</label>
+            <p>
+              <input type="date" id="pensionRetirementDate" name="pensionRetirementDate" class="govuk-body">
+            </p>
+          </div>
 
-          {{ govukInput({
-            label: {
-              html: 'Pension link'
-            },
-            classes: "govuk-!-width-two-thirds",
-            id: "pensionLink",
-            name: "pensionLink"
-          }) }}
--->
         {% endcall %}
 
         {% call govukFieldset({
           legend: {
-            text: "Add employer details",
+            text: "Employer details",
             classes: "govuk-fieldset__legend--l",
             isPageHeading: true
           }
@@ -226,43 +194,24 @@
             name: "employerName"
           }) }}
 
-          <label for="employerStartDate" class="govuk-body">Employment start date</label>
-          <p>
-            <input type="date" id="employerStartDate" name="employerStartDate" class="govuk-body">
-          </p>
+          <div class="govuk-form-group">
+            <label for="employmentStartDate" class="govuk-body">Employment start date</label>
+            <p>
+              <input type="date" id="employmentStartDate" name="employmentStartDate" class="govuk-body">
+            </p>
+          </div>
+          <div class="govuk-form-group">
+            <label for="employmentEndDate" class="govuk-body">Employment end date</label>
+            <p>
+              <input type="date" id="employmentEndDate" name="employmentEndDate" class="govuk-body">
+            </p>
+          </div>
 
-<!--
-          {{ govukDateInput({
-            id: "employerStartDate",
-            namePrefix: "employerStartDate",
-            fieldset: {
-              legend: {
-                text: "Date started employment"
-              }
-            }
-          }) }}
--->
-          <label for="employerEndDate" class="govuk-body">Employment end date</label>
-          <p>
-            <input type="date" id="employerEndDate" name="employerEndDate" class="govuk-body">
-          </p>
-<!--
-
-          {{ govukDateInput({
-            id: "employerEndDate",
-            namePrefix: "employerEndDate",
-            fieldset: {
-              legend: {
-                text: "Date employment ended"
-              }
-            }
-          }) }}
--->
         {% endcall %}
 
         {% call govukFieldset({
           legend: {
-            text: "Add estimated retirement income",
+            text: "Estimated retirement income",
             classes: "govuk-fieldset__legend--l",
             isPageHeading: true
           }
@@ -332,31 +281,14 @@
             ]
           }) }}
 -->
-          <label for="ERICalculationDate" class="govuk-body">Date of ERI calculation</label>
-          <p>
-            <input type="date" id="ERICalculationDate" name="ERICalculationDate" class="govuk-body">
-          </p>
-<!--
-          {{ govukDateInput({
-            id: "ERICalculationDate",
-            namePrefix: "ERICalculationDate",
-            fieldset: {
-              legend: {
-                text: "Date ERI calculated"
-              }
-            }
-          }) }}
+          <div class="govuk-form-group">
 
-          {{ govukDateInput({
-            id: "ERIPayableDate",
-            namePrefix: "ERIPayableDate",
-            fieldset: {
-              legend: {
-                text: "Date ERI payable"
-              }
-            }
-          }) }}
--->
+            <label for="ERICalculationDate" class="govuk-body">Date of ERI calculation</label>
+            <p>
+              <input type="date" id="ERICalculationDate" name="ERICalculationDate" class="govuk-body">
+            </p>
+          </div>
+
           {{ govukInput({
             id: "ERIAnnualAmount",
             name: "ERIAnnualAmount",
@@ -430,7 +362,7 @@
 
         {% call govukFieldset({
           legend: {
-            text: "Add accrued figures",
+            text: "Accrued figures",
             classes: "govuk-fieldset__legend--l",
             isPageHeading: true
           }
@@ -473,7 +405,7 @@
               }
             ]
           }) }}
-
+-->
           {{ govukSelect({
             id: "accruedAmountType",
             name: "accruedAmountType",
@@ -495,12 +427,14 @@
               }
             ]
           }) }}
--->
-          <label for="accruedCalculationDate" class="govuk-body">Date accrued amount calculated</label>
-          <p>
-            <input type="date" id="accruedCalculationDate" name="accruedCalculationDate" class="govuk-body">
-          </p>
-<!--
+
+          <div class="govuk-form-group">
+            <label for="accruedCalculationDate" class="govuk-body">Date accrued amount calculated</label>
+            <p>
+              <input type="date" id="accruedCalculationDate" name="accruedCalculationDate" class="govuk-body">
+            </p>
+          </div>
+  <!--
           {{ govukDateInput({
             id: "accruedCalculationDate",
             namePrefix: "accruedCalculationDate",

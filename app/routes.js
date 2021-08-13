@@ -23,6 +23,11 @@ const penStatus = [
     {type: "A", text: "Active", selected : ""},
     {type: "I", text: "Inactive", selected : ""}
 ]
+const penAccAmtType = [
+    {type: "POT", text: "Valuation of a DC pension pot", selected : ""},
+    {type: "INC", text: "Calculation of an accrued recurring income", selected : ""},
+    {type: "LS", text: "Calculation of the accrued value of DBLS/CDCLS type", selected : ""}
+]
 
 router.post('/index-figures', function (req, res) {
 // store the type of display to use
@@ -37,11 +42,9 @@ router.post('/index-figures', function (req, res) {
 })
 
 router.get('/display-pensions', function (req, res) {
-
 // connect to MongoDB to add the doc (record) to the collection (table)
     async function findPensions() {
-//       const uri = "mongodb+srv://all_dbs_user:U5oZLxA850eM8TFr@cluster0.de9k1.mongodb.net/pensions?retryWrites=true&w=majority";
-        
+
         const client = new MongoClient(uri);
 
         try {
@@ -82,14 +85,16 @@ router.post('/add-provider-details', function (req, res) {
 //get the pension provider list
 
 // format date
+    let todayTimeStamp = new Date().toLocaleString()
+
     var today = new Date();
     var dd = String(today.getDate()).padStart(2, '0');
     var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
     var yyyy = today.getFullYear();
     var hh = String(today.getHours()).padStart(2, '0')
     var min = String(today.getMinutes()).padStart(2, '0')
-
     todayDateTime = dd + '-' + mm + '-' + yyyy + ' ' + hh + ':' + min
+
     let addAdministratorName = req.session.data['administrator-name']
     let addAdministratorURL = "https://" + addAdministratorName.toLowerCase().replace(/" "/g,"") + ".co.uk"
     let addAdministratorEmail = "info@" + addAdministratorName.toLowerCase().replace(/" "/g,"") + ".co.uk"
@@ -128,7 +133,7 @@ router.post('/add-provider-details', function (req, res) {
                 administratorCostChargesURL : addAdministratorCostChargesURL,
                 administratorImplementationURL : addAdministratorImplementationURL,
                 administratorSIPURL : addAdministratorSIPURL,
-                dateAdded: todayDateTime
+                timeStamp: today_timestamp
 
             });
         } finally {
@@ -141,9 +146,9 @@ router.post('/add-provider-details', function (req, res) {
     addProvider().catch(console.error);
 
     // Add functions that make DB calls here
-    async function createPension(client, newListing){
-        const result = await client.db("pensions").collection("pensionProvider").insertOne(newListing);
-        console.log(`New listing created with the following id: ${result.insertedId}`);
+    async function createPension(client, newPension){
+        const result = await client.db("pensions").collection("pensionProvider").insertOne(newPension);
+        console.log(`New Pension created with the following id: ${result.insertedId}`);
     } 
 
 })
@@ -182,9 +187,11 @@ router.get('/add-pensions', function (req, res) {
 })
 
 router.post('/add-pension-details', function (req, res) {
-//get the pension provider list
+    req.app.locals.pensionAddedMessage = ""
 
 // format date
+    let today_timestamp = new Date().toLocaleString()
+
     var today = new Date();
     var dd = String(today.getDate()).padStart(2, '0');
     var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
@@ -192,63 +199,53 @@ router.post('/add-pension-details', function (req, res) {
     var hh = String(today.getHours()).padStart(2, '0')
     var min = String(today.getMinutes()).padStart(2, '0')
 
-    todayDateTime = dd + '-' + mm + '-' + yyyy + ' ' + hh + ':' + min
+    createdDateTime = dd + '-' + mm + '-' + yyyy + ' ' + hh + ':' + min
     // get the inputted pension data 
+
+    let pension_Start_Date = new Date()
+    let pension_Retirement_Date = new Date()
+    let employment_Start_Date = new Date()
+    let employment_End_Date = new Date()
+    let ERI_Calculation_Date = new Date()
+    let ERI_Payable_Date = new Date()
+    let accrued_Payable_Date = new Date()
 
     let pension_Owner = req.session.data['pensionOwner']
     let pension_Reference = req.session.data['pensionReference']
     let pension_Name = req.session.data['pensionName']
     let pension_Type = req.session.data['pensionType']
-//    console.log('pension_Type ' + pension_Type)
-
     let pension_Origin = req.session.data['pensionOrigin']
     let pension_Status = req.session.data['pensionStatus']
-
-//    let pension_Start_Date = req.session.data['pensionStartDate-day'] + '-' + req.session.data['pensionStartDate-month'] + '-' + req.session.data['pensionStartDate-year']
-    let pension_Start_Date = req.session.data['pensionStartDate']
-    let pension_Retirement_Date = req.session.data['pensionRetirementDate-day'] + '-' + req.session.data['pensionRetirementDate-month'] + '-' + req.session.data['pensionRetirementDate-year']
-
-//    let pension_Link = req.session.data['pensionLink']
+    pension_Start_Date = req.session.data['pensionStartDate']
+    pension_Retirement_Date = req.session.data['pensionRetirementDate']
     let pension_Link = ""
-//    let administrator_Reference = req.session.data['administratorReference']
-    let administrator = req.session.data['administratorName']
+
+// the administratorDetails passed from the form includes the administrator _id and the name
+    let administrator = req.session.data['administratorDetails']
     let administratorArray = administrator.split(":")
     let administrator_Reference = administratorArray [0]
     let administrator_Name = administratorArray [1]
 
     let employer_Name = req.session.data['employerName']
-
-    let employer_Start_Date = req.session.data['employerStartDate-day'] + '-' + req.session.data['employerStartDate-month'] + '-' + req.session.data['employerStartDate-year']
-    let employer_End_Date = req.session.data['employerEndDate-day'] + '-' + req.session.data['employerEndDate-month'] + '-' + req.session.data['employerEndDate-year']
-
+    employment_Start_Date = req.session.data['employmentStartDate']
+    employment_End_Date = req.session.data['employmentEndDate']
 //    let ERI_Type = req.session.data['ERIType']
     let ERI_Type = pension_Type
-    let ERI_Basis = req.session.data['ERIBasis']
-    
-    let ERI_Calculation_Date = req.session.data['ERICalculationDate-day'] + '-' + req.session.data['ERICalculationDate-month'] + '-' + req.session.data['ERICalculationDate-year']
-//    let ERI_Payable_Date = req.session.data['ERIPayableDate-day'] + '-' + req.session.data['ERIPayableDate-month'] + '-' + req.session.data['ERIPayableDate-year']
-    let ERI_Payable_Date = pension_Retirement_Date
+    let ERI_Basis = "SMPI"
+    ERI_Calculation_Date = req.session.data['ERICalculationDate'] 
+    ERI_Payable_Date = pension_Retirement_Date
     let ERI_Annual_Amount = req.session.data['ERIAnnualAmount']
     let ERI_Pot = req.session.data['ERIPot']
-//    let ERI_Safeguarded_Benefits = req.session.data['ERISafeguardedBenefits']
-    let ERI_Safeguarded_Benefits = "No"
-    let ERI_Unavailable = req.session.data['ERIUnavailable']
-//    let accrued_Type = req.session.data['accruedType']
+    let ERI_Safeguarded_Benefits = 0
+    let ERI_Unavailable = null
+    
     let accrued_Type = pension_Type
     let accrued_Amount_Type = req.session.data['accruedAmountType']
-
-    let accrued_Calculation_Date = req.session.data['accruedCalculationDate-day'] + ' ' + req.session.data['accruedCalculationDate-month'] + '-' + req.session.data['accruedCalculationDate-year']
-//    let accrued_Payable_Date = req.session.data['accruedPayableDate-day'] + '-' + req.session.data['accruedPayableDate-month'] + '-' + req.session.data['accruedPayableDate-year']
-    let accrued_Payable_Date = pension_Retirement_Date
-
+    accrued_Calculation_Date = req.session.data['accruedCalculationDate'] 
+    accrued_Payable_Date = pension_Retirement_Date
     let accrued_Amount = req.session.data['accruedAmount']
-//    let accrued_Safeguarded_Benefits = req.session.data['accruedSafeguardedBenefits']
-    let accrued_Safeguarded_Benefits = "No"
-    let accrued_Unavailable = req.session.data['accruedUnavailable']
-            
-//    console.log('pension name' + administrator_Name)
-//    console.log('req.session.data' + JSON.stringify(req.session.data))
-//    console.log('req.session.data date' + JSON.stringify(req.session.data['pensionStartDate']))
+    let accrued_Safeguarded_Benefits = 0
+    let accrued_Unavailable = null
 
 // connect to MongoDB to add the doc (record) to the collection (table)
     async function addPension() {
@@ -274,8 +271,8 @@ router.post('/add-pension-details', function (req, res) {
                 administratorReference : administrator_Reference,
                 administratorName : administrator_Name,
                 employerName : employer_Name,
-                employerStartDate : employer_Start_Date,
-                employerEndDate : employer_End_Date,
+                employmentStartDate : employment_Start_Date,
+                employmentEndDate : employment_End_Date,
                 ERIType : ERI_Type,
                 ERIBasis : ERI_Basis,
                 ERICalculationDate : ERI_Calculation_Date,
@@ -291,12 +288,13 @@ router.post('/add-pension-details', function (req, res) {
                 accruedAmount : accrued_Amount,
                 accruedSafeguardedBenefits : accrued_Safeguarded_Benefits,
                 accruedUnavailable : accrued_Unavailable,
-                dateAdded: todayDateTime
+                timeStamp: today_timestamp
 
             })
         } finally {
             // Close the connection to the MongoDB cluster
             await client.close()
+            req.app.locals.pensionAddedMessage = "Pension added successfully"
             res.redirect('add-pensions')
         }
     }
@@ -304,18 +302,21 @@ router.post('/add-pension-details', function (req, res) {
     addPension().catch(console.error);
 
     // Add functions that make DB calls here
-    async function createPension(client, newListing){
-        const result = await client.db("pensions").collection("pensionDetails").insertOne(newListing);
-        console.log(`New listing created with the following id: ${result.insertedId}`)
+    async function createPension(client, newPension){
+        const result = await client.db("pensions").collection("pensionDetails").insertOne(newPension);
+        console.log(`New Pension created with the following id: ${result.insertedId}`)
     } 
 
 })
 router.get('/update-pension', function (req, res) {
     // find the pension providers for the select options
-    req.app.locals.pensionProviders = []
-    req.app.locals.pensionDetail = []
-    let pensionId = req.query.id
-    async function findAndDisplayPension() {        
+    async function findAndDisplayPension() { 
+        let pensionId = req.query.id
+        req.app.locals.pensionProviders = []
+        req.app.locals.pensionDetail = []
+        req.app.locals.id = req.query.id
+        console.log('req.app.locals.id ' + req.app.locals.id)
+
         const client = new MongoClient(uri);
 
         try {
@@ -337,10 +338,10 @@ router.get('/update-pension', function (req, res) {
 
             // Pension origin set the selected option
             req.app.locals.pensionDetails.pensionOriginArr = penOrigin
-            console.log('pensionOriginArr ' + JSON.stringify(req.app.locals.pensionDetails.pensionOriginArr))
+//            console.log('pensionOriginArr ' + JSON.stringify(req.app.locals.pensionDetails.pensionOriginArr))
             for (i=0; i < req.app.locals.pensionDetails.pensionOriginArr.length; i++) {
-                console.log('origin on DB ' + req.app.locals.pensionDetails.pensionOrigin)
-                console.log('origin in array ' + req.app.locals.pensionDetails.pensionOriginArr[i].type)
+//                console.log('origin on DB ' + req.app.locals.pensionDetails.pensionOrigin)
+//                console.log('origin in array ' + req.app.locals.pensionDetails.pensionOriginArr[i].type)
 
                 if (req.app.locals.pensionDetails.pensionOrigin == req.app.locals.pensionDetails.pensionOriginArr[i].type) {
                  req.app.locals.pensionDetails.pensionOriginArr[i].selected = 'selected'   
@@ -350,39 +351,27 @@ router.get('/update-pension', function (req, res) {
             // Pension origin set the selected option
             req.app.locals.pensionDetails.pensionStatusArr = penStatus
             for (i=0; i < req.app.locals.pensionDetails.pensionStatusArr.length; i++) {
-                console.log('status on DB ' + req.app.locals.pensionDetails.pensionStatus)
-                console.log('status in array ' + req.app.locals.pensionDetails.pensionStatusArr[i].type)
+//                console.log('status on DB ' + req.app.locals.pensionDetails.pensionStatus)
+//                console.log('status in array ' + req.app.locals.pensionDetails.pensionStatusArr[i].type)
 
                 if (req.app.locals.pensionDetails.pensionStatus == req.app.locals.pensionDetails.pensionStatusArr[i].type) {
                  req.app.locals.pensionDetails.pensionStatusArr[i].selected = 'selected'   
                 }
             }
-            console.log('pensionStatusArr ' + JSON.stringify(req.app.locals.pensionDetails.pensionStatusArr))
-          // accrued amount option selected
-//            console.log('req.app.locals.pensionDetails.accruedAmountType ' + req.app.locals.pensionDetails.accruedAmountType)
-            if (req.app.locals.pensionDetails.accruedAmountType == "accrued-amount-pot" ) {
-                req.app.locals.pensionDetails.accruedAmountSelectPot = "true"
+ //           console.log('pensionStatusArr ' + JSON.stringify(req.app.locals.pensionDetails.pensionStatusArr))
+            
+            // Pension accrued amount type set the selected option
+            req.app.locals.pensionDetails.pensionAccruedAmtTypeArr = penAccAmtType
+            for (i=0; i < req.app.locals.pensionDetails.pensionAccruedAmtTypeArr.length; i++) {
+
+                if (req.app.locals.pensionDetails.accruedAmountType == req.app.locals.pensionDetails.pensionAccruedAmtTypeArr[i].type) {
+                 req.app.locals.pensionDetails.pensionAccruedAmtTypeArr[i].selected = 'selected'   
+                }
             }
-            else if (req.app.locals.pensionDetails.accruedAmountType == "accrued-amount-income" ){
-                req.app.locals.pensionDetails.accruedAmountTypeSelectIncome = "true"
-            }
-            else if (req.app.locals.pensionDetails.accruedAmountType == "accrued-amount-lump-sum" ){
-                req.app.locals.pensionDetails.accruedAmountTypeSelectLumpSum = "true"
-            }
-            else {
-                req.app.locals.pensionDetails.accruedAmountTypeSelectOther = "accrued-amount-other"
-            }
-            // pension origin option selected
-            if (req.app.locals.pensionDetails.pensionOrigin == "Workplace" ) {
-                req.app.locals.pensionDetails.pensionOriginSelectWorkplace = "true"
-            }
-            else {
-                req.app.locals.pensionDetails.pensionOriginSelectPrivate = "true"
-            }
-//            console.log('pensionProviders ' + req.app.locals.pensionProviders)
+
         } finally {
             // Close the connection to the MongoDB cluster
-            await client.close();    
+            await client.close() 
             res.render('update-pension')
         }
     }
@@ -430,111 +419,113 @@ router.get('/update-pension', function (req, res) {
 })
 
 router.post('/update-pension-details', function (req, res) {
-//get the pension provider list
 
-// format date
-    var today = new Date();
-    var dd = String(today.getDate()).padStart(2, '0');
-    var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-    var yyyy = today.getFullYear();
-    var hh = String(today.getHours()).padStart(2, '0')
-    var min = String(today.getMinutes()).padStart(2, '0')
-
-    todayDateTime = dd + '-' + mm + '-' + yyyy + ' ' + hh + ':' + min
-    // get the inputted pension data 
-
-    let pension_Owner = req.session.data['pensionOwner']
-    let pension_Reference = req.session.data['pensionReference']
-    let pension_Name = req.session.data['pensionName']
-    let pension_Type = req.session.data['pensionType']
-    console.log('pension_Type ' + pension_Type)
-    let pension_Origin = req.session.data['pensionOrigin']
-    let pension_Status = req.session.data['pensionStatus']
-
-    if (req.session.data['pensionStartDate-day']) {
-        let pension_Start_Date = req.session.data['pensionStartDate-day'] + '-' + req.session.data['pensionStartDate-month'] + '-' + req.session.data['pensionStartDate-year']
-    }
-    else {
-        let pension_Start_Date = null
-    }
-    let pension_Retirement_Date = req.session.data['pensionRetirementDate-day'] + '-' + req.session.data['pensionRetirementDate-month'] + '-' + req.session.data['pensionRetirementDate-year']
-
-    let pension_Link = req.session.data['pensionLink']
-
-    let administrator = req.session.data['administratorName']
-    let administratorArray = administrator.split(":")
-    let administrator_Reference = administratorArray [0]
-    let administrator_Name = administratorArray [1]
-
-    let employer_Name = req.session.data['employerName']
-    let pension_Start_Date = req.session.data['pensionStartDate']
-/*
-    if (req.session.data['employerStartDate-day']) {
-        let employer_Start_Date = req.session.data['employerStartDate-day'] + '-' + req.session.data['employerStartDate-month'] + '-' + req.session.data['employerStartDate-year']
-    }
-    else {
-        let employer_Start_Date = null
-    }
-*/    
-    if (req.session.data['employerEndDate-day']) {
-        let employer_End_Date = req.session.data['employerEndDate-day'] + '-' + req.session.data['employerEndDate-month'] + '-' + req.session.data['employerEndDate-year']
-    }
-    else {
-        let employer_End_Date = null
-    }
-
-    let ERI_Type = req.session.data['ERIType']
-    let ERI_Basis = req.session.data['ERIBasis']
-    
-    if (req.session.data['ERICalculationDate-day']) {
-        let ERI_Calculation_Date = req.session.data['ERICalculationDate-day'] + '-' + req.session.data['ERICalculationDate-month'] + '-' + req.session.data['ERICalculationDate-year']
-    }
-    else {
-        let ERI_Calculation_Date = null
-    }
-    if (req.session.data['ERIPayableDate-day']) {
-        let ERI_Payable_Date = req.session.data['ERIPayableDate-day'] + '-' + req.session.data['ERIPayableDate-month'] + '-' + req.session.data['ERIPayableDate-year']
-    }
-    else {
-        let ERI_Payable_Date = null
-    }
-
-    let ERI_Annual_Amount = req.session.data['ERIAnnualAmount']
-    let ERI_Pot = req.session.data['ERIPot']
-    let ERI_Safeguarded_Benefits = req.session.data['ERISafeguardedBenefits']
-    let ERI_Unavailable = req.session.data['ERIUnavailable']
-    let accrued_Type = req.session.data['accruedType']
-    let accrued_Amount_Type = req.session.data['accruedAmountType']
-
-    if (req.session.data['accruedCalculationDate-day']) {
-        let accrued_Calculation_Date = req.session.data['accruedCalculationDate-day'] + '-' + req.session.data['accruedCalculationDate-month'] + '-' + req.session.data['accruedCalculationDate-year']
-    }
-    else {
-        let accrued_Calculation_Date = null
-    }
-    if (req.session.data['accruedPayableDate-day']) {
-        let accrued_Payable_Date = req.session.data['accruedPayableDate-day'] + '-' + req.session.data['accruedPayableDate-month'] + '-' + req.session.data['accruedPayableDate-year']
-    }
-    else {
-        let accrued_Payable_Date = null
-    }
-    let accrued_Amount = req.session.data['accruedAmount']
-    let accrued_Safeguarded_Benefits = req.session.data['accruedSafeguardedBenefits']
-    let accrued_Unavailable = req.session.data['accruedUnavailable']
-            
-//    console.log('pension name' + administrator_Name)
+     
 
 // connect to MongoDB to add the doc (record) to the collection (table)
     async function updatePension() {
     // create an instance of the client
-        const client = new MongoClient(uri);
+        const client = new MongoClient(uri);        
+
+        req.app.locals.pensionUpdatedMessage = ""
+        let pensionId = req.app.locals.id
+        
+        // format date
+        let today_timestamp = new Date().toLocaleString();
+
+        // make the date variables have a date format
+        let pension_Start_Date = new Date()
+        let pension_Retirement_Date = new Date()
+        let employement_Start_Date = new Date()
+        let employment_End_Date = new Date()
+        let ERI_Calculation_Date = new Date()
+        let ERI_Payable_Date = new Date()
+        let accrued_Payable_Date = new Date()
+
+        // get the inputted pension data 
+
+        let pension_Owner = req.session.data['pensionOwner']
+        console.log('pension_Owner allocated ' + pension_Owner)
+        console.log('req.session.data[pensionOwner] allocated ' + req.session.data['pensionOwner'])
+        let pension_Reference = req.session.data['pensionReference']
+        let pension_Name = req.session.data['pensionName']
+        let pension_Type = req.session.data['pensionType']
+        let pension_Origin = req.session.data['pensionOrigin']
+        let pension_Status = req.session.data['pensionStatus']
+        console.log('pension_Status after allocated ' + pension_Status)
+
+        if (req.session.data['pensionStartDate']) {
+            pension_Start_Date = req.session.data['pensionStartDate']
+        }
+        else {
+            pension_Start_Date = ""
+        }
+        if (req.session.data['pensionRetirementDate']) {
+            pension_Retirement_Date = req.session.data['pensionRetirementDate']
+        }
+        else {
+            pension_Retirement_Date = ""
+        }
+        let pension_Link = req.session.data['pensionLink']
+
+        let administrator = req.session.data['administratorDetails']
+        let administratorArray = administrator.split(":")
+        let administrator_Reference = administratorArray [0]
+        let administrator_Name = administratorArray [1]
+
+        let employer_Name = req.session.data['employerName']   
+        if (req.session.data['employmentStartDate']) {
+            let employment_Start_Date = req.session.data['employmentStartDate']
+        }
+        else {
+            employment_Start_Date = null
+        }
+
+        if (req.session.data['employmentEndDate']) {
+            employment_End_Date = req.session.data['employmentEndDate']
+        }
+        else {
+            employment_End_Date = null
+        }
+
+        let ERI_Type = pension_Type
+        let ERI_Basis = "SMPI"
+        
+        if (req.session.data['ERICalculationDate']) {
+            ERI_Calculation_Date = req.session.data['ERICalculationDate'] 
+        }
+        else {
+            ERI_Calculation_Date = null
+        }
+        ERI_Payable_Date = pension_Retirement_Date
+        let ERI_Annual_Amount = req.session.data['ERIAnnualAmount']
+        let ERI_Pot = req.session.data['ERIPot']
+        let ERI_Safeguarded_Benefits = 0
+        let ERI_Unavailable = null
+
+        let accrued_Type = pension_Type
+        let accrued_Amount_Type = req.session.data['accruedAmountType']
+
+        if (req.session.data['accruedCalculationDate']) {
+            accrued_Calculation_Date = req.session.data['accruedCalculationDate'] 
+        }
+        else {
+            accrued_Calculation_Date = null
+        }
+        accrued_Payable_Date = pension_Retirement_Date
+        let accrued_Amount = req.session.data['accruedAmount']
+        let accrued_Safeguarded_Benefits = 0
+        let accrued_Unavailable = null
 
         try {
             // Connect to the MongoDB cluster
             await client.connect();
 
             // Make the appropriate DB calls
-            await createPension(client, {
+            console.log('pension_Owner' + pension_Owner)
+
+
+            await updatePensionDetails(client, pensionId, {
 
                 pensionOwner : pension_Owner,
                 pensionReference : pension_Reference,
@@ -548,8 +539,8 @@ router.post('/update-pension-details', function (req, res) {
                 administratorReference : administrator_Reference,
                 administratorName : administrator_Name,
                 employerName : employer_Name,
-                employerStartDate : employer_Start_Date,
-                employerEndDate : employer_End_Date,
+                employmentStartDate : employment_Start_Date,
+                employmentEndDate : employment_End_Date,
                 ERIType : ERI_Type,
                 ERIBasis : ERI_Basis,
                 ERICalculationDate : ERI_Calculation_Date,
@@ -565,23 +556,28 @@ router.post('/update-pension-details', function (req, res) {
                 accruedAmount : accrued_Amount,
                 accruedSafeguardedBenefits : accrued_Safeguarded_Benefits,
                 accruedUnavailable : accrued_Unavailable,
-                dateAdded: todayDateTime
+                timeStamp : today_timestamp
 
             })
         } finally {
             // Close the connection to the MongoDB cluster
             await client.close()
-            res.redirect('add-pensions')
+            req.app.locals.pensionUpdatedMessage = "Pension updated successfully"
+
+            res.redirect('display-pensions')
         }
     }
 
     updatePension().catch(console.error);
 
     // Add functions that make DB calls here
-    async function createPension(client, newListing){
-        const result = await client.db("pensions").collection("pensionDetails").insertOne(newListing);
-        console.log(`New listing created with the following id: ${result.insertedId}`)
-    } 
+    async function updatePensionDetails(client, pensionId, updatePension){
+//        console.log('updatePension ' + JSON.stringify(updatePension))
+//        console.log('pensionId ' + pensionId)
+        const result = await client.db("pensions").collection("pensionDetails")
+            .updateOne({ _id : ObjectId(pensionId)}, {$set: updatePension});
+        console.log(`${result.modifiedCount} document was updated.`)
+    }
 
 })
 
@@ -597,11 +593,12 @@ router.post('/delete-pension/:id', function (req, res) {
 
             await client.connect()
 //            console.log('delete pension id ' + req.params.id)    
-            await printIfListingExists(client, req.params.id)
+//            await printIfPensionExists(client, req.params.id)
             await deletePensionWithId(client, req.params.id)
         } finally {
             // Close the connection to the MongoDB cluster
             await client.close()
+            req.app.locals.pensionDeletedMessage = "Pension deleted successfully"
             res.redirect ('/display-pensions')   
         }
     }
