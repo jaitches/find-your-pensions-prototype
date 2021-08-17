@@ -26,6 +26,9 @@ module.exports = {
   useHttps: 'true',
 
   // Enable or disable Browser Sync
-  useBrowserSync: 'true'
+  useBrowserSync: 'true',
+
+  // Version number
+  versionNo :'1.0'
 
 }

@@ -34,8 +34,18 @@
           <button class="govuk-button" data-module="govuk-button" data-prevent-double-click="true">
             Save pension provider
           </button>
+        </div>
+        <div>
 
-          <a class="govuk-link" href="display-providers">List providers</a>
+          <h2 class="govuk-heading-m">
+            Existing pension providers
+          </h2>
+          {% for details in providerDetails %}
+          <p>
+            {{details.administratorName}}
+          </p>
+          {% endfor %}
+
         </div>
     </form>
 

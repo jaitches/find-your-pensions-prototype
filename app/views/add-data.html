@@ -1,0 +1,73 @@
+
+{% extends "layout_unbranded.html" %}
+
+{% block pageTitle %}
+  {{serviceName}}
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <form action="/index-figures" method="post" class="form">
+        <h1 class="govuk-heading-l">
+          Find your pensions
+        </h1>
+        <p govuk-body-l>
+          This is the prototype for the Find your pensions service. It will be used to test user journeys and pension displays. The findings will feed into the design standards for dashboard providers to use when developing their services.
+        </p>
+        <h2 class="govuk-heading-m">
+          Creating pensions to display on the prototype
+        </h2>
+        <ul class="govuk-body">
+          <li>
+            If the provider doesn't exist you will need to <a href="add-provider">add the pension provider</a> before you can add any pensions that they manage
+          </li>
+          <li>
+            Then <a href="add-pension">add pension details</a> for the pension owner
+          </li>          
+          <li>
+            Pensions entries can be edited or deleted from the <a href="display-pensions">list of pensions</a>
+          </li>
+
+        </ul>
+
+        <div class="govuk-form-group">
+          <fieldset class="govuk-fieldset">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+              <h2 class="govuk-fieldset__heading">
+                Select the pension owner to display 
+              </h2>
+            </legend>
+            {% for owner in pensionOwners %}
+            <div class="govuk-radios">
+              <div class="govuk-radios__item">
+              <input class="govuk-radios__input" id={{owner}} name={{owner}} type="radio" value={{owner}}>
+              <label class="govuk-label govuk-radios__label" for={{owner}}>
+                {{owner}}
+              </label>
+            </div>
+            {% endfor %}
+          </fieldset>
+        </div>
+
+
+        <button class="govuk-button" data-module="govuk-button">Continue</button>
+
+        <h2 class="govuk-heading-m">Pages in the prototype</h2>
+
+        <p>
+          <a href="add-pension">Add pension details</a>
+        </p>         
+        <p>
+          <a href="add-pension">Add pension details</a>
+        </p>      
+
+        <p>
+          <a href="display-pensions">Manage pensions details </a>
+        </p>
+      </form>
+    </div>
+  </div>
+
+{% endblock %}

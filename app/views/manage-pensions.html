@@ -2,7 +2,7 @@
 {% extends "layout_unbranded.html" %}
 
 {% block pageTitle %}
-  {{serviceName}}
+  {{serviceName}} - manage pensions
 {% endblock %}
 
 {% block content %}
@@ -10,18 +10,18 @@
     <div class="govuk-grid-column-two-thirds">
 
       <h1 class="govuk-heading-xl">
-        {% if serviceName %} {{ serviceName }} {% endif %} (Prototype)
+        Manage pension information
       </h1>
 
-      <form action="/display-or-manage-data" method="post" novalidate>
+      <form action="/manage-pensions" method="post" novalidate>
 
 
       {{ govukRadios({
-        idPrefix: "what-do-you-want-to-do",
-        name: "what-do-you-want-to-do",
+        idPrefix: "what-do-you-want-to-manage",
+        name: "what-do-you-want-to-manage",
         fieldset: {
           legend: {
-            text: "What do you want to do?",
+            text: "What pension information do you want to manage?",
             isPageHeading: true,
             classes: "govuk-fieldset__legend--l"
           }
@@ -29,15 +29,26 @@
 
         items: [
           {
-            value: "prototype",
-            text: "Display the prototype list"
+            value: "add-pension",
+            text: "Add a new pension entry"
           },
           {
-            value: "manage-data",
-            text: "Enter pension information to display on the prototype",          
+            value: "display-pensions",
+            text: "View a list of all pensions",
             hint : {
-              text : "This includes managing user specific pension information"
-            }
+              text : "To edit or delete existing pension entries "
+            }      
+          },          
+          {
+            value: "add-provider",
+            text: "Add a new pension provider"
+          },
+          {
+            value: "display-providers",
+            text: "View a list of all pension providers",
+            hint : {
+              text : "To edit or delete existing pension providers "
+            }       
           }
         ]
       }) }}
@@ -45,24 +56,13 @@
       {{ govukButton({
         text: "Continue"
       }) }}
+    </form>
 
-
-      <h2 class="govuk-heading-m">Before you start</h2>
-      <p>
-        The prototype can be used with default pension information or you can <a href="manage-pensions">enter your own values</a>.
-      </p>
 
       <p>
-        If the provider doesn't exist in the prototype database you will need to <a href="add-provider">add the pension provider</a> before you can add any pensions that they manage.
+        If the provider doesn't exist in the prototype database you will need to <a href="add-provider">add the pension provider</a> before you can <a href="add-pension">add a pension that they manage</a>.
       </p>
 
-      <p>
-        You can manage the providers from the <a href="display-providers">list of pension providers</a>.
-      </p>
-
-      <p>
-        You can add <a href="add-pension">pension details</a> and manage the pensions from the <a href="display-pensions">list of pensions</a>.
-      </p>
 
     </div>
 
