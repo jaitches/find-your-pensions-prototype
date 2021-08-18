@@ -6,38 +6,43 @@
 {% endblock %}
 
 {% block content %}
+
+  {{ govukBreadcrumbs({
+    items: [
+      {
+        text: "Home",
+        href: "/"
+      }
+    ]
+  }) }}
   <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-
-      <h1 class="govuk-heading-xl">
-        {% if serviceName %} {{ serviceName }} {% endif %} (Prototype)
-      </h1>
-
-      <form action="/display-or-manage-data" method="post" novalidate>
+    <div class="govuk-grid-column-two-thirds">     
+      <form action="/select-prototype" method="post" novalidate>
 
 
       {{ govukRadios({
-        idPrefix: "what-do-you-want-to-do",
-        name: "what-do-you-want-to-do",
+        idPrefix: "select-prototype",
+        name: "select-prototype",
         fieldset: {
           legend: {
-            text: "What do you want to do?",
+            text: "Select the prototype",
             isPageHeading: true,
-            classes: "govuk-fieldset__legend--l"
+            classes: "govuk-fieldset__legend--xl"
           }
         },
 
         items: [
           {
-            value: "prototype",
-            text: "View the prototypes"
+            value: "prototype-find",
+            text: "Find pension information"
           },
           {
-            value: "manage-data",
-            text: "Enter pension information to display on the prototype",          
-            hint : {
-              text : "This includes managing user specific pension information"
-            }
+            value: "prototype-find-accrued",
+            text: "Find pension information and accrued values"
+          },
+          {
+            value: "prototype-find-accrued-estimated",
+            text: "Find pension information, accrued and estimated values"
           }
         ]
       }) }}
@@ -46,28 +51,8 @@
         text: "Continue"
       }) }}
       </form>
-
-
-      <h2 class="govuk-heading-m">Before you start</h2>
-      <p>
-        The prototype can be used with default pension information or you can <a href="manage-pensions">enter your own values</a>.
-      </p>
-
-      <p>
-        If the provider doesn't exist in the prototype database you will need to <a href="add-provider">add the pension provider</a> before you can add any pensions that they manage.
-      </p>
-
-      <p>
-        You can manage the providers from the <a href="display-providers">list of pension providers</a>.
-      </p>
-
-      <p>
-        You can add <a href="add-pension">pension details</a> and manage the pensions from the <a href="display-pensions">list of pensions</a>.
-      </p>
-
     </div>
-
-    <div class="govuk-grid-column-one-third">
+      <div class="govuk-grid-column-one-third">
 
       <aside class="app-related-items" role="complementary">
         <h2 class="govuk-heading-m" id="subsection-title">
@@ -108,5 +93,7 @@
       </aside>
 
     </div>
+    </div>
   </div>
+
 {% endblock %}

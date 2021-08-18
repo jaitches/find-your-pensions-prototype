@@ -2,50 +2,46 @@
 {% extends "layout_unbranded.html" %}
 
 {% block pageTitle %}
-  Pensions dashboard - sign in
+  {{serviceName}} - display providers
 {% endblock %}
 
 {% block content %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
       <h1 class="govuk-heading-xl">
-        Pension List
+        Pension provider list
       </h1>
-        <p class="pension-crud-message">
-          {{pensionUpdatedMessage}}
+        <p class="provider-crud-message">
+          {{providerUpdatedMessage}}
         </p>        
-        <p class="pension-crud-message">
-          {{pensionDeletedMessage}}
+        <p class="provider-crud-message">
+          {{providerDeletedMessage}}
         </p>
 
       <table class="govuk-table">
         <thead class="govuk-table__head govuk-body-s">
 
           <tr class="govuk-table__row">
-            <th scope="col" class="govuk-table__header">Pension owner</th>
-            <th scope="col" class="govuk-table__header">Pension name</th>
-            <th scope="col" class="govuk-table__header">Provider</th>
-            <th scope="col" class="govuk-table__header">Value</th>
-            <th scope="col" class="govuk-table__header">ERI</th>
-            <th scope="col" class="govuk-table__header">Date ERI calculated</th>
-            <th scope="col" class="govuk-table__header">Date payable</th>
+            <th scope="col" class="govuk-table__header">Provider name</th>
+            <th scope="col" class="govuk-table__header">Website</th>
+            <th scope="col" class="govuk-table__header">Email</th>
+            <th scope="col" class="govuk-table__header">Telephone</th>
+            <th scope="col" class="govuk-table__header">Address</th>
             <th scope="col" class="govuk-table__header"></th>
             <th scope="col" class="govuk-table__header"></th>
           </tr>
         </thead>
-      {% for details in pensionDetails %}
+      {% for details in providersDetails %}
         <tbody class="govuk-table__body govuk-body-xs">
           <tr class="govuk-table__row">
-            <td class="govuk-table__cell">{{details.pensionOwner}}</td>
-            <td class="govuk-table__cell">{{details.pensionName}}</td>
             <td class="govuk-table__cell">{{details.administratorName}}</td>
-            <td class="govuk-table__cell">{{details.ERIPot}}</td>
-            <td class="govuk-table__cell">{{details.ERIAnnualAmount}}</td>
-            <td class="govuk-table__cell">{{details.ERICalculationDate}}</td>
-            <td class="govuk-table__cell">{{details.ERIPayableDate}}</td>
-            <td class="govuk-table__cell" ><a href="update-pension?id={{details._id}}" class="govuk-link">Edit</button></a></td>
-            <form action="/delete-pension/{{details._id}}" method="post" class="form">
-              <td class="govuk-table__cell" onclick="deleteRow()"><button class="govuk-button govuk-button--warning" data-module="govuk-button">Delete</button></td>
+            <td class="govuk-table__cell">{{details.administratorURL}}</td>
+            <td class="govuk-table__cell">{{details.administratorEmail}}</td>
+            <td class="govuk-table__cell">{{details.administratorPhoneNumber}}<br>{{details.administratorPhoneNumberType}}</td>
+            <td class="govuk-table__cell">{{details.administratorAddressLine1}}<br>{{details.administratorAddressLine1}}</td>
+            <td class="govuk-table__cell" ><a href="update-provider?providerId={{details._id}}" class="govuk-link">Edit</button></a></td>
+            <form action="/delete-provider/{{details._id}}" method="post" class="form">
+              <td class="govuk-table__cell" onclick="deleteProviderRow()"><button class="govuk-button govuk-button--warning" data-module="govuk-button">Delete</button></td>
             </form>
           </tr>
 
@@ -53,17 +49,44 @@
         </tbody>
       {% endfor %}
       </table>
-    </div>
-    <div class="govuk-grid-column-full">
-      <h2 class="govuk-heading-m">
-        Other pages:
-      </h2>
-      <p>
-        <a class="govuk-link" href="add-pension">Add a pension</a>
-      </p>
-      <p>
-        <a href="add-provider">Add a new provider</a>
-      </p>
+
+      <aside class="app-related-items" role="complementary">
+        <h2 class="govuk-heading-m" id="subsection-title">
+          Prototypes
+        </h2>
+        <nav role="navigation" aria-labelledby="subsection-title">
+          <ul class="govuk-list govuk-!-font-size-16">
+            <li>
+              <a href="01-find-pensions">Find pensions</a>
+            </li>
+            <li>
+              <a href="02-find-accrued-pensions">Find and accrued pensions</a>
+            </li>            
+            <li>
+              <a href="03-find-accrued-estimated-pensions">Find, accrued and estimated pensions</a>
+            </li>
+          </ul>
+        </nav>
+        <h2 class="govuk-heading-m" id="subsection-title">
+          Manage data
+        </h2>
+        <nav role="navigation" aria-labelledby="subsection-title">
+          <ul class="govuk-list govuk-!-font-size-16">
+            <li>
+              <a href="add-provider">Add a pension provider</a>
+            </li>
+            <li>
+              <a href="display-providers">Pension providers list</a>
+            </li>
+            <li>
+              <a href="add-pension">Add pension details</a> 
+            </li>
+            <li>
+              <a href="display-pensions">Pensions list</a>
+            </li>
+          </ul>
+        </nav>
+      </aside>
     </div>
   </div>
 
