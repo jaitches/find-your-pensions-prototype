@@ -1,5 +1,5 @@
 
-{% extends "layout_unbranded.html" %}
+{% extends "layout_unbranded_admin.html" %}
 
 {% block pageTitle %}
   {{serviceName}}
@@ -9,6 +9,7 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
+      <span class="govuk-caption-xl pdp-caption ">Admin page</span>
       <h1 class="govuk-heading-xl">
         {% if serviceName %} {{ serviceName }} {% endif %} (Prototype)
       </h1>
@@ -50,7 +51,7 @@
 
       <h2 class="govuk-heading-m">Before you start</h2>
       <p>
-        The prototype can be used with default pension information or you can <a href="manage-pensions">enter your own values</a>.
+        You must set up pensions for the participant before you can use the prototype. This can be done by <a href="add-pensions">adding new pensions</a> or by copying a pension from the <a href="display-pensions#example-pensions">list of example pensions</a>. This will create a new pension and allow you to update the information.
       </p>
 
       <p>
@@ -59,10 +60,6 @@
 
       <p>
         You can manage the providers from the <a href="display-providers">list of pension providers</a>.
-      </p>
-
-      <p>
-        You can add <a href="add-pension">pension details</a> and manage the pensions from the <a href="display-pensions">list of pensions</a>.
       </p>
 
     </div>

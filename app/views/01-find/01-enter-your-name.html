@@ -2,7 +2,7 @@
 {% extends "layout_unbranded.html" %}
 
 {% block pageTitle %}
-  {serviceName}} - enter your name
+  {{serviceName}} - enter your name
 {% endblock %}
 
 {% block content %}
@@ -13,7 +13,7 @@
 
         {% call govukFieldset({
           legend: {
-            text: "Enter your name",
+            text: "What is your name?",
             classes: "govuk-fieldset__legend--l",
             isPageHeading: true
           }
@@ -21,7 +21,7 @@
 
           {{ govukInput({
             label: {
-              html: 'Name'
+              html: 'Full name'
             },
             classes: "govuk-!-width-two-thirds",
             id: "owner-name",

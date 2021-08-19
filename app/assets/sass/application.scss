@@ -21,3 +21,35 @@ $govuk-assets-path: '/govuk/assets/';
 	color : red;
 	font-weight: bold;
 }
+.pdp-caption {
+	background-color: #d4351c;
+	color: white;
+	width: 25%;
+	padding: 10px 0;
+}
+// header changes
+.govuk-header__container {
+	border-color: black;
+	background: black;
+}
+.pdp-header-content {
+	color: white;
+}
+// heading service name
+.pdp-service-name, 
+.pdp-service-name:hover,
+.pdp-service-name:visited,
+.pdp-service-name:active {
+	position : relative;
+	font-size : 2rem;
+	font-weight : bold;
+	color : white;
+	text-decoration: none;
+	text-align: center;
+	margin-bottom: 0px;
+}
+.pdp-admin {
+	background: #058282;
+	border-color: #058282;
+
+}
