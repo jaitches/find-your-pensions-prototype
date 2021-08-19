@@ -5,12 +5,19 @@
   {{serviceName}} - display pensions
 {% endblock %}
 
+
+
 {% block content %}
+    {{ govukBreadcrumbs({
+    items: [
+      {
+        text: "Home",
+        href: "/"
+      }
+    ]
+  }) }}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
-    <p>
-      <a href="/">Home</a>
-    </p>
       <h1 class="govuk-heading-xl">
         Pension list
       </h1>
@@ -20,7 +27,9 @@
         <p class="pension-crud-message">
           {{pensionDeletedMessage}}
         </p>
-
+      <h2 class="govuk-heading-xl">
+        Manually entered pensions
+      </h2>
       <table class="govuk-table">
         <thead class="govuk-table__head govuk-body-s">
 
@@ -39,7 +48,7 @@
             <th scope="col" class="govuk-table__header"></th>
           </tr>
         </thead>
-      {% for details in pensionDetails %}
+      {% for details in manualPensionDetails %}
         <tbody class="govuk-table__body govuk-body-xs">
           <tr class="govuk-table__row">
             <td class="govuk-table__cell">{{details.pensionOwner}}</td>
@@ -57,12 +66,51 @@
               <td class="govuk-table__cell" onclick="deleteRow()"><button class="govuk-button govuk-button--warning" data-module="govuk-button">Delete</button></td>
             </form>
           </tr>
-
-
         </tbody>
       {% endfor %}
       </table>
+      <h2 class="govuk-heading-l">
+        Example pensions
+      </h2>
+      <table class="govuk-table">
+        <thead class="govuk-table__head govuk-body-s">
 
+          <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header">Pension owner</th>
+            <th scope="col" class="govuk-table__header">Pension type</th>
+            <th scope="col" class="govuk-table__header">Pension name</th>
+            <th scope="col" class="govuk-table__header">Provider</th>
+            <th scope="col" class="govuk-table__header">Accrued Amount</th>
+            <th scope="col" class="govuk-table__header">Date accrued calculated</th>
+            <th scope="col" class="govuk-table__header">ERI Pot</th>
+            <th scope="col" class="govuk-table__header">ERI Income</th>
+            <th scope="col" class="govuk-table__header">Date ERI calculated</th>
+            <th scope="col" class="govuk-table__header">Date payable</th>
+            <th scope="col" class="govuk-table__header"></th>
+          </tr>
+        </thead>
+      {% for details in examplePensionDetails %}
+        <tbody class="govuk-table__body govuk-body-xs">
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell">{{details.pensionOwner}}</td>
+            <td class="govuk-table__cell">{{details.pensionType}}</td>
+            <td class="govuk-table__cell">{{details.pensionName}}</td>
+            <td class="govuk-table__cell">{{details.administratorName}}</td>
+            <td class="govuk-table__cell">{{details.accruedAmount}}</td>
+            <td class="govuk-table__cell">{{details.accruedCalculationDate}}</td>
+            <td class="govuk-table__cell">{{details.ERIPot}}</td>
+            <td class="govuk-table__cell">{{details.ERIAnnualAmount}}</td>
+            <td class="govuk-table__cell">{{details.ERICalculationDate}}</td>
+            <td class="govuk-table__cell">{{details.ERIPayableDate}}</td>
+           
+            <form action="/copy-pension/{{details._id}}" method="post" class="form">
+              <td class="govuk-table__cell" onclick="deleteRow()"><button class="govuk-button govuk-button--warning" data-module="govuk-button">Copy</button></td>
+            </form>
+          </tr>
+        </tbody>
+      {% endfor %}
+      </table>
+    
 
       <aside class="app-related-items" role="complementary">
         <h2 class="govuk-heading-m" id="subsection-title">

@@ -58,7 +58,7 @@ router.post('/select-prototype', function (req, res) {
         res.redirect('03-find-accrued-estimated/03-enter-your-name')
     }
 })
-// The user enters their name to use when selecting the documents from MongoDB
+// The user enters their name this is used to select the documents from MongoDB
 // the researcher will already have created their records
 router.post('/enter-your-name/:prototypeId', function (req, res) {
 
@@ -81,13 +81,64 @@ router.get('/01-find/01-display-pensions', function (req, res) {
 
     async function findPensionsByOwner() {
         let pensionOwnerName = req.query.owner
+        let pensionDetailsAll = []
+        req.app.locals.pensionOwner = pensionOwnerName
+        // set the local variables to false so that the elements are not displayed in the html unless they exist
+        req.app.locals.workplaceFlag = false
+        req.app.locals.privateFlag = false
+        req.app.locals.stateFlag = false
+        req.app.locals.allFlag = false
+
+        req.app.locals.workplacePensionDetails = []
+        req.app.locals.privatePensionDetails = []
+        req.app.locals.statePensionDetails = []
+
+        req.app.locals.prototypeOptionOrigin = "Y"
+
 
         const client = new MongoClient(uri)
 
         try {
             // Connect to the MongoDB cluster
             await client.connect()
-            req.app.locals.pensionDetails = await getPensionsByOwner(client, pensionOwnerName)
+            // if no name enter find all the pension documents
+            if (pensionOwnerName == "") {
+                // get all pensions
+                pensionDetailsAll = await getAllPensions(client)
+            }
+            // if a name is entered select the relevant documents
+            else {
+                 pensionDetailsAll = await getPensionsByOwner(client, pensionOwnerName)
+            }
+            // split into workplace, private and state pensions if prototypeOptionOrigin selected
+            if (req.app.locals.prototypeOptionOrigin == "Y") {
+                for (i=0; i < pensionDetailsAll.length; i++) {
+                    console.log('pensionDetailsAll[i] ' + JSON.stringify(pensionDetailsAll[i]))
+                    if (pensionDetailsAll[i].pensionOrigin == "W") {
+                        req.app.locals.workplaceFlag = true
+                        req.app.locals.workplacePensionDetails.push(pensionDetailsAll[i])
+                    }
+                    else if (pensionDetailsAll[i].pensionOrigin == "P") {
+                        req.app.locals.privateFlag = true
+                        req.app.locals.privatePensionDetails.push(pensionDetailsAll[i])
+                    }
+                    else if (pensionDetailsAll[i].pensionOrigin == "S"){
+                        req.app.locals.stateFlag = true
+                        // there will only be onw record for State pension!
+                        req.app.locals.statePensionDetails = pensionDetailsAll[i]
+                    }
+                }
+            }
+            else {
+                req.app.locals.allFlag = true
+                req.app.locals.pensionDetails = pensionDetailsAll
+
+            }
+/*            console.log('req.app.locals.workplacePensionDetails ' +JSON.stringify(req.app.locals.workplacePensionDetails))
+            console.log('req.app.locals.privatePensionDetails ' +JSON.stringify(req.app.locals.privatePensionDetails))
+            console.log('req.app.locals.statePensionDetails ' +JSON.stringify(req.app.locals.statePensionDetails))
+            console.log('req.app.locals.pensionDetails ' +JSON.stringify(req.app.locals.pensionDetails))
+*/
         } finally {
             // Close the connection to the MongoDB cluster
             await client.close();    
@@ -95,7 +146,7 @@ router.get('/01-find/01-display-pensions', function (req, res) {
         }
     }
 
-    findPensionByOwner().catch(console.error)
+    findPensionsByOwner().catch(console.error)
 
     async function getPensionsByOwner(client, pensionOwnerName) {
         const results = await client.db("pensions").collection("pensionDetails")
@@ -105,6 +156,17 @@ router.get('/01-find/01-display-pensions', function (req, res) {
         .sort({pensionOwner: 1, accruedType: 1})        
         .toArray()
 //        console.log('results ' + JSON.stringify(results))
+        return results
+    }
+
+    async function getAllPensions(client) {
+        const results = await client.db("pensions").collection("pensionDetails")
+        // find all documents
+        .find({})
+        // save them to an array
+        .sort({pensionOwner: 1, pensionName: 1})        
+        .toArray()
+//        console.log('results all pensions' + JSON.stringify(results))
         return results
     }
 })
@@ -129,12 +191,12 @@ router.get('/01-find/01-pension-details', function (req, res) {
             req.app.locals.pensionProvider = await getProviderById(client, providerId)
  //           console.log('req.app.locals.pensionProvider.administratorURL ' + req.app.locals.pensionProvider.administratorURL)
             
-            req.app.locals.pensionProvider.administratorHTTPURL = 'http://' + req.app.locals.pensionProvider.administratorURL
-            req.app.locals.pensionProvider.administratorAnnualReportHTTPURL = 'http://' + req.app.locals.pensionProvider.administratorAnnualReportURL
-            req.app.locals.pensionProvider.administratorCostsChargesHTTPURL = 'http://' + req.app.locals.pensionProvider.administratorCostsChargesURL
-            req.app.locals.pensionProvider.administratorImplementationHTTPURL = 'http://' + req.app.locals.pensionProvider.administratorImplementationURL
-            req.app.locals.pensionProvider.administratorHTTPSIPURL = 'http://' + req.app.locals.pensionProvider.administratorSIPURL
-//            console.log('req.app.locals.pensionProvider.administratorHTTPURL ' +req.app.locals.pensionProvider.administratorHTTPURL)
+            req.app.locals.pensionProvider.administratorShortURL = req.app.locals.pensionProvider.administratorURL,replace(/^https?\:\/\//i, "")
+            req.app.locals.pensionProvider.administratorAnnualReportShortURL = req.app.locals.pensionProvider.administratorAnnualReportURL.replace(/^https?\:\/\//i, "")
+            req.app.locals.pensionProvider.administratorCostsChargesShortPURL = req.app.locals.pensionProvider.administratorCostsChargesURL.replace(/^https?\:\/\//i, "")
+            req.app.locals.pensionProvider.administratorImplementationShortURL = req.app.locals.pensionProvider.administratorImplementationURL.replace(/^https?\:\/\//i, "")
+            req.app.locals.pensionProvider.administratorShortSIPURL = req.app.locals.pensionProvider.administratorSIPURL.replace(/^https?\:\/\//i, "")
+            console.log('req.app.locals.pensionProvider.administratorShortURL ' +req.app.locals.pensionProvider.administratorShortURL).replace(/^https?\:\/\//i, "")
 
         } finally {
             // Close the connection to the MongoDB cluster
@@ -227,7 +289,21 @@ router.get('/display-pensions', function (req, res) {
         try {
             // Connect to the MongoDB cluster
             await client.connect();
-            req.app.locals.pensionDetails = await getAllPensions(client);
+            let allPensionDetails = await getAllPensions(client)
+            let manualPensionDetails = []
+            let examplePensionDetails = []
+            for (i=0; i<allPensionDetails.length; i++){
+                console.log('pensionOwnerType ' + allPensionDetails[i].pensionOwnerType + ' ' + allPensionDetails[i].pensionOwner)
+                if (allPensionDetails[i].pensionOwnerType == "M") {
+                    manualPensionDetails.push(allPensionDetails[i])
+                }
+                else {
+                    examplePensionDetails.push(allPensionDetails[i])
+                    console.log('example pension found ' + allPensionDetails[i].pensionOwnerType)
+                }
+            }
+            req.app.locals.manualPensionDetails = manualPensionDetails
+            req.app.locals.examplePensionDetails = examplePensionDetails
         } finally {
             // Close the connection to the MongoDB cluster
             await client.close();    
@@ -240,7 +316,7 @@ router.get('/display-pensions', function (req, res) {
     async function getAllPensions(client) {
         const results = await client.db("pensions").collection("pensionDetails")
         // find all documents
-        .find({ pensionOwnerType: "M" })
+        .find({})
         // save them to an array
         .sort({pensionOwner: 1, accruedType: 1})        
         .toArray()
@@ -901,7 +977,6 @@ router.post('/update-provider-details', function (req, res) {
 })
 
 router.post('/delete-pension/:id', function (req, res) {
-//    let pensionIdToDelete = req.params.id
 
     async function deletePension() {
         
@@ -924,6 +999,40 @@ router.post('/delete-pension/:id', function (req, res) {
     deletePension().catch(console.error)
 
     async function deletePensionWithId(client, pensionId) {
+        console.log('passed id ' + pensionId)
+
+        const result = await client.db("pensions").collection("pensionDetails")
+            .deleteOne({_id: ObjectId(pensionId)});
+        console.log(`${result.deletedCount} document(s) was/were deleted.`)
+    }
+
+})
+
+router.post('/copy-pension/:id', function (req, res) {
+
+    async function copyPension() {
+        
+        const client = new MongoClient(uri)
+        let examplePensionDetail = []
+
+        try {
+            // Connect to the MongoDB cluster
+
+            await client.connect()
+            // get the details of the pension to copy
+            examplePensionDetail = await addPension(client, req.params.id)
+            // create the new record
+
+        } finally {
+            // Close the connection to the MongoDB cluster
+            await client.close()
+//            req.app.locals.pensionDeletedMessage = "Pension deleted successfully"
+            res.redirect ('/undate-pension?pensionId=' + newPensionId)   
+        }
+    }
+    deleteCopy().catch(console.error)
+
+    async function addPension(client, pensionId) {
         console.log('passed id ' + pensionId)
 
         const result = await client.db("pensions").collection("pensionDetails")
