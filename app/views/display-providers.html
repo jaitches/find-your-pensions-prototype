@@ -1,5 +1,5 @@
 
-{% extends "layout_unbranded_admin.html" %}
+{% extends "layout_unbranded.html" %}
 
 {% block pageTitle %}
   {{serviceName}} - display providers
@@ -20,13 +20,6 @@
       <h1 class="govuk-heading-xl">
         Pension provider list
       </h1>
-        <p class="provider-crud-message">
-          {{providerUpdatedMessage}}
-        </p>        
-        <p class="provider-crud-message">
-          {{providerDeletedMessage}}
-        </p>
-
       <table class="govuk-table">
         <thead class="govuk-table__head govuk-body-s">
 
@@ -58,44 +51,52 @@
         </tbody>
       {% endfor %}
       </table>
-
-      <aside class="app-related-items" role="complementary">
-        <h2 class="govuk-heading-m" id="subsection-title">
-          Prototypes
-        </h2>
-        <nav role="navigation" aria-labelledby="subsection-title">
-          <ul class="govuk-list govuk-!-font-size-16">
-            <li>
-              <a href="01-find-pensions">Find pensions</a>
-            </li>
-            <li>
-              <a href="02-find-accrued-pensions">Find and accrued pensions</a>
-            </li>            
-            <li>
-              <a href="03-find-accrued-estimated-pensions">Find, accrued and estimated pensions</a>
-            </li>
-          </ul>
-        </nav>
-        <h2 class="govuk-heading-m" id="subsection-title">
-          Manage data
-        </h2>
-        <nav role="navigation" aria-labelledby="subsection-title">
-          <ul class="govuk-list govuk-!-font-size-16">
-            <li>
-              <a href="add-provider">Add a pension provider</a>
-            </li>
-            <li>
-              <a href="display-providers">Pension providers list</a>
-            </li>
-            <li>
-              <a href="add-pension">Add pension details</a> 
-            </li>
-            <li>
-              <a href="display-pensions">Pensions list</a>
-            </li>
-          </ul>
-        </nav>
-      </aside>
+      <hr>
+      <h2 class="govuk-heading-m" id="subsection-title">
+        Prototypes
+      </h2>
+      <nav role="navigation" aria-labelledby="subsection-title">
+        <ul class="govuk-list govuk-!-font-size-16">
+          <li>
+            <a href="/01-find/01-start">Find pensions</a>
+          </li>
+          <li>
+            <a href="/02-find-accrued/02-start">Find and accrued pensions</a>
+          </li>            
+          <li>
+            <a href="/03-find-accrued-estimated-pensions/03-start">Find, accrued and estimated pensions</a>
+          </li>
+        </ul>
+      </nav>
+      <h2 class="govuk-heading-m" id="subsection-title">
+        Manage data
+      </h2>
+      <h3 class="govuk-heading-s" id="subsection-title">
+        Providers
+      </h3>
+      <nav role="navigation" aria-labelledby="subsection-title">
+        <ul class="govuk-list govuk-!-font-size-16">
+          <li>
+            <a href="add-provider">Add a pension provider</a>
+          </li>
+          <li>
+            <a href="display-providers">Pension providers list</a>
+          </li>
+        </ul>
+      </nav>
+      <h3 class="govuk-heading-s" id="subsection-title">
+        Pensions
+      </h3>
+      <nav>
+        <ul class="govuk-list govuk-!-font-size-16">
+          <li>
+            <a href="add-pension">Add a pension</a> 
+          </li>
+          <li>
+            <a href="display-pensions">Pensions list</a>
+          </li>
+        </ul>
+      </nav>
     </div>
   </div>
 

@@ -29,6 +29,11 @@ const penAccAmtType = [
     {type: "INC", text: "Calculation of an accrued recurring income", selected : ""},
     {type: "LS", text: "Calculation of the accrued value of DBLS/CDCLS type", selected : ""}
 ]
+const prototypeDetails = [
+    {number: 1, text: "Find"},
+    {number: 2, text: "Find and accrued"},
+    {number: 3, text: "Find, accrued and estimated"}
+]
 //
 // ****** routes for main pages and prototypes
 //
@@ -47,15 +52,62 @@ router.post('/display-or-manage-data', function (req, res) {
 // choose which prototype to display
 router.post('/select-prototype', function (req, res) {
     const selectPrototype = req.session.data['select-prototype']
+    req.app.locals.ptype = {}
+//    console.log('selectPrototype ' + selectPrototype)
 
-    if (selectPrototype == "prototype-find") {
-        res.redirect('01-find/01-enter-your-name')
+    switch (selectPrototype) {
+        case "prototype-find":
+        req.app.locals.ptype.number = 1
+        break;       
+        case "prototype-find-accrued":
+        req.app.locals.ptype.number = 2  
+        break;             
+        case "prototype-find-accrued-estimated":
+        req.app.locals.ptype.number = 3
+        break;       
+        default:
+        req.app.locals.ptype.number = 0
     }
-    else if (selectPrototype == "prototype-find-accrued") {
-        res.redirect('02-find-accrued/02-enter-your-name')
-    }    
-    else {
-        res.redirect('03-find-accrued-estimated/03-enter-your-name')
+    req.app.locals.ptype.text = findPtypeText(req.app.locals.ptype.number, prototypeDetails)
+
+    res.redirect('prototype-options')
+// get the prototype description from the list
+    function findPtypeText (ptypeNo, prototypeArray) {
+        for (let i=0; i < prototypeArray.length; i++) {
+            if (prototypeArray[i].number === ptypeNo) {
+                return prototypeArray[i].text;
+            }
+        }
+    }
+
+})
+
+// choose which prototype options to apply
+router.post('/prototype-options', function (req, res) {
+    req.app.locals.splitOrigin = false
+    req.app.locals.splitType = false
+    let ptypeOption = req.session.data['ptype-option']
+
+    for (i=0; i < ptypeOption.length; i++ ) {
+        if (ptypeOption[i] == 'split-origin') {
+            req.app.locals.splitOrigin =true
+        }
+        if (ptypeOption[i] == 'split-type') {
+            req.app.locals.splitType =true
+        }
+    }
+//    console.log('req.app.locals.ptype.number ' + req.app.locals.ptype.number)
+    switch (req.app.locals.ptype.number) {
+        case 1:
+        res.redirect('01-find/01-start')
+        break;     
+        case 2:
+        res.redirect('02-find-accrued/02-start')        
+        break;     
+        default:
+        res.redirect('03-find-accrued-estimated/03-start')
+
+
     }
 })
 // The user enters their name this is used to select the documents from MongoDB
@@ -93,8 +145,6 @@ router.get('/01-find/01-display-pensions', function (req, res) {
         req.app.locals.privatePensionDetails = []
         req.app.locals.statePensionDetails = []
 
-        req.app.locals.prototypeOptionOrigin = "Y"
-
 
         const client = new MongoClient(uri)
 
@@ -111,21 +161,39 @@ router.get('/01-find/01-display-pensions', function (req, res) {
                  pensionDetailsAll = await getPensionsByOwner(client, pensionOwnerName)
             }
             // split into workplace, private and state pensions if prototypeOptionOrigin selected
-            if (req.app.locals.prototypeOptionOrigin == "Y") {
-                for (i=0; i < pensionDetailsAll.length; i++) {
-                    console.log('pensionDetailsAll[i] ' + JSON.stringify(pensionDetailsAll[i]))
-                    if (pensionDetailsAll[i].pensionOrigin == "W") {
-                        req.app.locals.workplaceFlag = true
-                        req.app.locals.workplacePensionDetails.push(pensionDetailsAll[i])
+            if (req.app.locals.splitOrigin) {
+                if (req.app.locals.splitOrigin) {
+                    for (i=0; i < pensionDetailsAll.length; i++) {
+                        if (pensionDetailsAll[i].pensionOrigin == "W") {
+                            req.app.locals.workplaceFlag = true
+                            req.app.locals.workplacePensionDetails.push(pensionDetailsAll[i])
+                        }
+                        else if (pensionDetailsAll[i].pensionOrigin == "P") {
+                            req.app.locals.privateFlag = true
+                            req.app.locals.privatePensionDetails.push(pensionDetailsAll[i])
+                        }
+                        else if (pensionDetailsAll[i].pensionOrigin == "S"){
+                            req.app.locals.stateFlag = true
+                            // there will only be one record for State pension!
+                            req.app.locals.statePensionDetails = pensionDetailsAll[i]
+                        }
                     }
-                    else if (pensionDetailsAll[i].pensionOrigin == "P") {
-                        req.app.locals.privateFlag = true
-                        req.app.locals.privatePensionDetails.push(pensionDetailsAll[i])
-                    }
-                    else if (pensionDetailsAll[i].pensionOrigin == "S"){
-                        req.app.locals.stateFlag = true
-                        // there will only be onw record for State pension!
-                        req.app.locals.statePensionDetails = pensionDetailsAll[i]
+                }
+                else {
+                    for (i=0; i < pensionDetailsAll.length; i++) {
+                        if (pensionDetailsAll[i].pensionOrigin == "W") {
+                            req.app.locals.workplaceFlag = true
+                            req.app.locals.workplacePensionDetails.push(pensionDetailsAll[i])
+                        }
+                        else if (pensionDetailsAll[i].pensionOrigin == "P") {
+                            req.app.locals.privateFlag = true
+                            req.app.locals.privatePensionDetails.push(pensionDetailsAll[i])
+                        }
+                        else if (pensionDetailsAll[i].pensionOrigin == "S"){
+                            req.app.locals.stateFlag = true
+                            // there will only be one record for State pension!
+                            req.app.locals.statePensionDetails = pensionDetailsAll[i]
+                        }
                     }
                 }
             }
@@ -153,7 +221,7 @@ router.get('/01-find/01-display-pensions', function (req, res) {
         // find all documents
         .find({pensionOwner : pensionOwnerName})
         // save them to an array
-        .sort({pensionOwner: 1, accruedType: 1})        
+        .sort({pensionOwner: 1, pensionType: 1})        
         .toArray()
 //        console.log('results ' + JSON.stringify(results))
         return results
@@ -293,13 +361,11 @@ router.get('/display-pensions', function (req, res) {
             let manualPensionDetails = []
             let examplePensionDetails = []
             for (i=0; i<allPensionDetails.length; i++){
-                console.log('pensionOwnerType ' + allPensionDetails[i].pensionOwnerType + ' ' + allPensionDetails[i].pensionOwner)
                 if (allPensionDetails[i].pensionOwnerType == "M") {
                     manualPensionDetails.push(allPensionDetails[i])
                 }
                 else {
                     examplePensionDetails.push(allPensionDetails[i])
-                    console.log('example pension found ' + allPensionDetails[i].pensionOwnerType)
                 }
             }
             req.app.locals.manualPensionDetails = manualPensionDetails
@@ -359,7 +425,6 @@ router.get('/add-pension', function (req, res) {
 })
 
 router.post('/add-pension-details', function (req, res) {
-    req.app.locals.pensionAddedMessage = ""
 
 // format date
     let today_timestamp = new Date().toLocaleString()
@@ -459,7 +524,6 @@ router.post('/add-pension-details', function (req, res) {
         } finally {
             // Close the connection to the MongoDB cluster
             await client.close()
-            req.app.locals.pensionAddedMessage = "Pension added successfully"
             res.redirect('add-pension')
         }
     }
@@ -589,8 +653,6 @@ router.post('/update-pension-details', function (req, res) {
     async function updatePension() {
     // create an instance of the client
         const client = new MongoClient(uri);        
-
-        req.app.locals.pensionUpdatedMessage = ""
 //        console.log('req.app.locals.pensionId ' + req.app.locals.pensionId)
         let pensionId = req.app.locals.pensionId
        
@@ -680,12 +742,7 @@ router.post('/update-pension-details', function (req, res) {
         let accrued_Unavailable = null
 
         try {
-            // Connect to the MongoDB cluster
             await client.connect();
-
-            // Make the appropriate DB calls
-            console.log('pension_Owner' + pension_Owner)
-
 
             await updatePensionDetails(client, pensionId, {
 
@@ -725,8 +782,6 @@ router.post('/update-pension-details', function (req, res) {
         } finally {
             // Close the connection to the MongoDB cluster
             await client.close()
-            req.app.locals.pensionUpdatedMessage = "Pension updated successfully"
-
             res.redirect('display-pensions')
         }
     }
@@ -906,7 +961,6 @@ router.get('/update-provider', function (req, res) {
 
 router.post('/update-provider-details', function (req, res) {    
 
-    req.app.locals.providerUpdatedMessage = ""
     let providerId = req.app.locals.providerId
     
     // format date
@@ -960,8 +1014,6 @@ router.post('/update-provider-details', function (req, res) {
         } finally {
             // Close the connection to the MongoDB cluster
             await client.close()
-            req.app.locals.providerUpdatedMessage = "Provider updated successfully"
-
             res.redirect('display-providers')
         }
     }
@@ -983,24 +1035,17 @@ router.post('/delete-pension/:id', function (req, res) {
         const client = new MongoClient(uri)
 
         try {
-            // Connect to the MongoDB cluster
-
             await client.connect()
-//            console.log('delete pension id ' + req.params.id)    
-//            await printIfPensionExists(client, req.params.id)
             await deletePensionWithId(client, req.params.id)
         } finally {
             // Close the connection to the MongoDB cluster
             await client.close()
-            req.app.locals.pensionDeletedMessage = "Pension deleted successfully"
             res.redirect ('/display-pensions')   
         }
     }
     deletePension().catch(console.error)
 
     async function deletePensionWithId(client, pensionId) {
-        console.log('passed id ' + pensionId)
-
         const result = await client.db("pensions").collection("pensionDetails")
             .deleteOne({_id: ObjectId(pensionId)});
         console.log(`${result.deletedCount} document(s) was/were deleted.`)
@@ -1013,33 +1058,76 @@ router.post('/copy-pension/:id', function (req, res) {
     async function copyPension() {
         
         const client = new MongoClient(uri)
-        let examplePensionDetail = []
+        let examplePensionDetail = {}
+        let today_timestamp = new Date().toLocaleString()
+
 
         try {
             // Connect to the MongoDB cluster
-
             await client.connect()
             // get the details of the pension to copy
-            examplePensionDetail = await addPension(client, req.params.id)
+            examplePensionDetail = await getPensionById(client, req.params.id)
+
+            await createPension(client, {
+
+                pensionOwnerType : "M",
+                pensionOwner : examplePensionDetail.pensionOwner,
+                pensionReference : examplePensionDetail.pensionReference,
+                pensionName : examplePensionDetail.pensionName,
+                pensionType : examplePensionDetail.pensionType,
+                pensionOrigin : examplePensionDetail.pensionOrigin,
+                pensionStatus : examplePensionDetail.pensionStatus,
+                pensionStartDate : examplePensionDetail.pensionStartDate,
+                pensionRetirementDate : examplePensionDetail.pensionRetirementDate,
+                pensionLink : examplePensionDetail.pensionLink,
+                administratorReference : examplePensionDetail.administratorReference,
+                administratorName : examplePensionDetail.administratorName,
+                employerName : examplePensionDetail.employerName,
+                employmentStartDate : examplePensionDetail.employmentStartDate,
+                employmentEndDate : examplePensionDetail.employmentEndDate,
+                ERIType : examplePensionDetail.ERIType,
+                ERIBasis : examplePensionDetail.ERIBasis,
+                ERICalculationDate : examplePensionDetail.ERICalculationDate,
+                ERIPayableDate : examplePensionDetail.ERIPayableDate,
+                ERIAnnualAmount : examplePensionDetail.ERIAnnualAmount,
+                ERIPot : examplePensionDetail.ERIPot,
+                ERISafeguardedBenefits : examplePensionDetail.ERISafeguardedBenefits,
+                ERIUnavailable : examplePensionDetail.ERIUnavailable,
+                accruedType : examplePensionDetail.accruedType,
+                accruedAmountType : examplePensionDetail.accruedAmountType,
+                accruedCalculationDate : examplePensionDetail.accruedCalculationDate,
+                accruedPayableDate : examplePensionDetail.accruedPayableDate,
+                accruedAmount : examplePensionDetail.accruedAmount,
+                accruedSafeguardedBenefits : examplePensionDetail.accruedSafeguardedBenefits,
+                accruedUnavailable : examplePensionDetail.accruedUnavailable,
+                timeStamp: today_timestamp
+
+            })
             // create the new record
 
         } finally {
+            // find the _id of the document just created
+            let newPensionDocument = await client.db("pensions").collection("pensionDetails").findOne({ timeStamp : today_timestamp});
+            let newPensionId = newPensionDocument._id
+            console.log('newPensionDocument ' + JSON.stringify(newPensionDocument))
             // Close the connection to the MongoDB cluster
             await client.close()
-//            req.app.locals.pensionDeletedMessage = "Pension deleted successfully"
-            res.redirect ('/undate-pension?pensionId=' + newPensionId)   
+            res.redirect ('/update-pension?pensionId=' + newPensionId)   
         }
     }
-    deleteCopy().catch(console.error)
+    copyPension().catch(console.error)
 
-    async function addPension(client, pensionId) {
-        console.log('passed id ' + pensionId)
-
-        const result = await client.db("pensions").collection("pensionDetails")
-            .deleteOne({_id: ObjectId(pensionId)});
-        console.log(`${result.deletedCount} document(s) was/were deleted.`)
+    async function getPensionById(client, pensionId) {
+        const results = await client.db("pensions").collection("pensionDetails")
+        // find all documents
+        .findOne({_id: ObjectId(pensionId)})
+        return results
     }
-
+    async function createPension(client, newPension){
+        console.log('create pension in copy')
+        const result = await client.db("pensions").collection("pensionDetails").insertOne(newPension);
+        console.log(`New Pension created with the following id: ${result.insertedId}`)
+    } 
 })
 
 module.exports = router

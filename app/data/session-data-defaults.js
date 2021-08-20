@@ -18,6 +18,8 @@ Example usage:
 */
 
 module.exports = {
+	"req.app.locals.ptype.number" : 1, 
+	"req.app.locals.ptype.text" : "Find"
 
   // Insert values here
 
