@@ -18,3 +18,10 @@ function deleteRow() {
 	   return false;
 	}
 }
+function deleteProviderRow() {
+	if (confirm('Do you want to delete this pension record?')) {
+	} 
+	else {
+	   return false;
+	}
+}

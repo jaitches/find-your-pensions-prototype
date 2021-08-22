@@ -37,13 +37,25 @@
             name: "administratorName",
             value: pensionProvider.administratorName
           }) }}
-
+          <div class="govuk-form-group">
+            <label class="govuk-label" for="pensionOrigin">
+              Prefered method of contact
+            </label>
+           <select class="govuk-select" id="contactMethod" name="pensionOrigin">
+            {% for penOrigin in pensionDetails.pensionOriginArr %}
+              <option value={{penOrigin.type}} {% if penOrigin.selected %} selected {% endif %}>{{penOrigin.text}}</option>
+            {% endfor %}  
+            </select>
+          </div>
           {{ govukInput({
             label: {
               html: 'Prefered method of contact'
             },
             classes: "govuk-!-width-two-thirds",
             id: "administratorContactPreference",
+            hint: {
+              text: "Only enter a value for the type of contact selected here. Leave the others blank"
+            },
             name: "administratorContactPreference",
             value: pensionProvider.administratorContactPreference
           }) }}

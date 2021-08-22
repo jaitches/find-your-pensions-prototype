@@ -21,9 +21,13 @@ const middleware = [
 const config = require('./app/config.js')
 const documentationRoutes = require('./docs/documentation_routes.js')
 const packageJson = require('./package.json')
-const routes = require('./app/routes.js')
+// const routes = require('./app/routes.js')
 const utils = require('./lib/utils.js')
 const extensions = require('./lib/extensions/extensions.js')
+// JHS 20 08 2021 add new routes files
+const routes = require('./app/routes/routes.js')
+const pensionRoutes = require('./app/routes/pension-routes.js')
+const providerRoutes = require('./app/routes/provider-routes.js')
 
 // Variables for v6 backwards compatibility
 // Set false by default, then turn on if we find /app/v6/routes.js
@@ -239,6 +243,12 @@ if (typeof (routes) !== 'function') {
 } else {
   app.use('/', routes)
 }
+
+// JHS 20 08 2021 Add extra routes file
+  app.use('/', pensionRoutes)
+  app.use('/', providerRoutes)
+
+
 
 if (useDocumentation) {
   // Clone app locals to documentation app locals

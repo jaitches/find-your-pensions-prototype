@@ -11,6 +11,10 @@
       {
         text: "Home",
         href: "/"
+      },
+      {
+        text: "Manage pension information",
+        href: "/manage-pensions"
       }
     ]
   }) }}
@@ -40,7 +44,7 @@
             <td class="govuk-table__cell">{{details.administratorURL}}</td>
             <td class="govuk-table__cell">{{details.administratorEmail}}</td>
             <td class="govuk-table__cell">{{details.administratorPhoneNumber}}<br>{{details.administratorPhoneNumberType}}</td>
-            <td class="govuk-table__cell">{{details.administratorAddressLine1}}<br>{{details.administratorAddressLine1}}</td>
+            <td class="govuk-table__cell">{{details.administratorAddressLine1}}<br>{{details.administratorAddressLine2}}<br>{{details.administratorAddressLine3}}<br>{{details.administratorPostcode}}</td>
             <td class="govuk-table__cell" ><a href="update-provider?providerId={{details._id}}" class="govuk-link">Edit</button></a></td>
             <form action="/delete-provider/{{details._id}}" method="post" class="form">
               <td class="govuk-table__cell" onclick="deleteProviderRow()"><button class="govuk-button govuk-button--warning" data-module="govuk-button">Delete</button></td>

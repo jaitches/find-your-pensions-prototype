@@ -13,6 +13,10 @@
       {
         text: "Home",
         href: "/"
+      },
+      {
+        text: "Manage pension information",
+        href: "/manage-pensions"
       }
     ]
   }) }}
@@ -50,10 +54,10 @@
             <td class="govuk-table__cell">{{details.pensionType}}</td>
             <td class="govuk-table__cell">{{details.pensionName}}</td>
             <td class="govuk-table__cell">{{details.administratorName}}</td>
-            <td class="govuk-table__cell">{{details.accruedAmount}}</td>
+            <td class="govuk-table__cell">£{{details.accruedAmount}}</td>
             <td class="govuk-table__cell">{{details.accruedCalculationDate}}</td>
-            <td class="govuk-table__cell">{{details.ERIPot}}</td>
-            <td class="govuk-table__cell">{{details.ERIAnnualAmount}}</td>
+            <td class="govuk-table__cell">£{{details.ERIPot}}</td>
+            <td class="govuk-table__cell">£{{details.ERIAnnualAmount}}</td>
             <td class="govuk-table__cell">{{details.ERICalculationDate}}</td>
             <td class="govuk-table__cell">{{details.ERIPayableDate}}</td>
             <td class="govuk-table__cell" ><a href="update-pension?pensionId={{details._id}}" class="govuk-link">Edit</button></a></td>
@@ -64,7 +68,7 @@
         </tbody>
       {% endfor %}
       </table>
-      <h2 class="govuk-heading-l">
+      <h2 class="govuk-heading-l" id="example-pensions">
         Example pensions
       </h2>
       <table class="govuk-table">
@@ -91,10 +95,10 @@
             <td class="govuk-table__cell">{{details.pensionType}}</td>
             <td class="govuk-table__cell">{{details.pensionName}}</td>
             <td class="govuk-table__cell">{{details.administratorName}}</td>
-            <td class="govuk-table__cell">{{details.accruedAmount}}</td>
+            <td class="govuk-table__cell">£{{details.accruedAmount}}</td>
             <td class="govuk-table__cell">{{details.accruedCalculationDate}}</td>
-            <td class="govuk-table__cell">{{details.ERIPot}}</td>
-            <td class="govuk-table__cell">{{details.ERIAnnualAmount}}</td>
+            <td class="govuk-table__cell">£{{details.ERIPot}}</td>
+            <td class="govuk-table__cell">£{{details.ERIAnnualAmount}}</td>
             <td class="govuk-table__cell">{{details.ERICalculationDate}}</td>
             <td class="govuk-table__cell">{{details.ERIPayableDate}}</td>
            

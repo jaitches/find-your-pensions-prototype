@@ -2,7 +2,7 @@
 {% extends "layout_unbranded.html" %}
 
 {% block pageTitle %}
-  {serviceName}} - add provider
+  {{serviceName}} - add provider
 {% endblock %}
 
 {% block content %}
@@ -11,12 +11,16 @@
       {
         text: "Home",
         href: "/"
+      },
+      {
+        text: "Manage pension information",
+        href: "/manage-pensions"
       }
     ]
   }) }}
   
   <div class="govuk-grid-row">
-    <div class="govuk-grid-column-full">
+    <div class="govuk-grid-column-two-thirds">
       <form action="/add-provider-details" method="post" class="form">
         <span class="govuk-caption-xl pdp-caption ">Admin page</span>
 
@@ -26,11 +30,15 @@
             classes: "govuk-fieldset__legend--l",
             isPageHeading: true
           }
+
         }) %}
 
           {{ govukInput({
             label: {
               html: 'Provider name'
+            },
+            hint: {
+              text: "Do not enter any special characters or punctation. The name you enter will be used to generate other fields e.g. the website address"
             },
             classes: "govuk-!-width-two-thirds",
             id: "administrator-name",
@@ -39,13 +47,16 @@
 
    
         {% endcall %}
+        <p>
+          Once you save the pension provider you will be taken to the update provider page.
+        </p>
         <div class="govuk-button-group">
           <button class="govuk-button" data-module="govuk-button" data-prevent-double-click="true">
             Save pension provider
           </button>
         </div>
-        <div>
       </form>
+    </div>
     <div class="govuk-grid-column-one-third">
       <h2 class="govuk-heading-m" id="subsection-title">
         Prototypes
@@ -92,8 +103,6 @@
           </li>
         </ul>
       </nav>
-    </div>
-
     </div>
   </div>
 
