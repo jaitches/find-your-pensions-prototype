@@ -307,36 +307,4 @@ router.post('/manage-pensions', function (req, res) {
     }
 })
 
-
-// index page - get the list of pension owners to select for the display
-
-router.get('/choose-owner', function (req, res) {
-// return a list of distict owners from the pensions collection to display for selection
-    async function findPensionOwners() {
-        const client = new MongoClient(uri);
-
-        try {
-            // Connect to the MongoDB cluster
-            await client.connect();
-            req.app.locals.pensionOwners = await getOwners(client)
-            console.log('req.app.locals.pensionOwners ' + JSON.stringify(results))
-
-        } finally {
-            // Close the connection to the MongoDB cluster
-            await client.close();    
-            res.render('index')
-        }
-    }
-
-    findPensionOwners().catch(console.error)
-
-    async function getOwners(client) {
-        const results = await client.db("pensions").collection("pensionDetails")
-        // find all documents
-        .distinct("pensionOwner")
-        return results
-    }
-
-})
-
 module.exports = router

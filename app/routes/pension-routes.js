@@ -21,7 +21,24 @@ const penStatus = [
     {type: "A", text: "Active", selected : ""},
     {type: "I", text: "Inactive", selected : ""}
 ]
+const penEriOrAccType = [
+    {type: "", text: "N/A", selected: ""},
+    {type: "DC", text: "Defined contribution", selected: ""},
+    {type: "DB", text: "Defined benefit", selected: ""},
+    {type: "DBL", text: "A separately accrued lump sum (not commutation)", selected: ""},
+    {type: "AVC", text: "Additional volunatary contribution", selected: ""},
+    {type: "CDI", text: "Collective DC (CC) benefits expressed as regular income", selected: ""},
+    {type: "CDL", text: "Collective DC (CC) benefits expressed as lump sum", selected: ""},
+    {type: "CBS", text: "Cash balance scheme", selected: ""}
+    ]
+const penHowEriCalc = [
+    {type: "SMPI", text: "SMPI - statutory money purchase illustration", selected: ""},              
+    {type: "COBS", text: "COBS - Income illustration FCA COBS rules", selected: ""},
+    {type: "BS", text: "BS - Benefit specific method no allowance of future build-up of benefits", selected: ""},
+    {type: "BSF",text: "BSF - Benefit specific method including future build-up of benefits", selected: ""}
+]              
 const penAccAmtType = [
+    {type: "", text: "N/A", selected : ""},
     {type: "POT", text: "Valuation of a DC pension pot", selected : ""},
     {type: "INC", text: "Calculation of an accrued recurring income", selected : ""},
     {type: "LS", text: "Calculation of the accrued value of DBLS/CDCLS type", selected : ""}
@@ -145,9 +162,8 @@ router.post('/add-pension-details', function (req, res) {
     let employer_Name = req.session.data['employerName']
     employment_Start_Date = req.session.data['employmentStartDate']
     employment_End_Date = req.session.data['employmentEndDate']
-//    let ERI_Type = req.session.data['ERIType']
-    let ERI_Type = pension_Type
-    let ERI_Basis = "SMPI"
+    let ERI_Type = req.session.data['ERIType']
+    let ERI_Basis = req.session.data['ERIBasis']
     ERI_Calculation_Date = req.session.data['ERICalculationDate'] 
     ERI_Payable_Date = pension_Retirement_Date
     let ERI_Annual_Amount = req.session.data['ERIAnnualAmount']
@@ -155,7 +171,7 @@ router.post('/add-pension-details', function (req, res) {
     let ERI_Safeguarded_Benefits = 0
     let ERI_Unavailable = null
     
-    let accrued_Type = pension_Type
+    let accrued_Type = req.session.data['accruedType']
     let accrued_Amount_Type = req.session.data['accruedAmountType']
     accrued_Calculation_Date = req.session.data['accruedCalculationDate'] 
     accrued_Payable_Date = pension_Retirement_Date
@@ -399,8 +415,8 @@ router.post('/update-pension-details', function (req, res) {
             employment_End_Date = null
         }
 
-        let ERI_Type = pension_Type
-        let ERI_Basis = "SMPI"
+        let ERI_Type = req.session.data['ERIType']
+        let ERI_Basis = req.session.data['ERIBasis']
         
         if (req.session.data['ERICalculationDate']) {
             ERI_Calculation_Date = req.session.data['ERICalculationDate'] 
@@ -414,7 +430,7 @@ router.post('/update-pension-details', function (req, res) {
         let ERI_Safeguarded_Benefits = 0
         let ERI_Unavailable = null
 
-        let accrued_Type = pension_Type
+        let accrued_Type = ['accruedType']
         let accrued_Amount_Type = req.session.data['accruedAmountType']
 
         if (req.session.data['accruedCalculationDate']) {

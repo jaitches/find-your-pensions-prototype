@@ -194,6 +194,78 @@
             isPageHeading: true
           }
         }) %}
+        {{ govukSelect({
+            id: "ERIType",
+            name: "ERIType",
+            label: {
+              text: "ERI type"
+            },
+            items: [
+              {
+                value: "",
+                text: "N/A"
+              },
+              {
+                value: "DC",
+                text: "Defined contribution"
+              },              
+              {
+                value: "DB",
+                text: "Defined benefit"
+              },           
+              {
+                value: "DBL",
+                text: "A separately accrued lump sum (not commutation)"
+              },              
+              {
+                value: "AVC",
+                text: "Additional volunatary contribution"
+              },              
+              {
+                value: "CDI",
+                text: "Collective DC (CC) benefits expressed as regular income"
+              },           
+              {
+                value: "CDL",
+                text: "Collective DC (CC) benefits expressed as lump sum"
+              },              
+              {
+                value: "CBS",
+                text: "Cash balance scheme"
+              }
+            ]
+          }) }}
+
+          {{ govukSelect({
+            id: "ERIBasis",
+            name: "ERIBasis",
+            label: {
+              text: "How ERI calculated"
+            },
+            items: [
+              {
+                value: "",
+                text: "N/A"
+              },
+              {
+                value: "SMPI",
+                text: "SMPI - statutory money purchase illustration"
+              },              
+              {
+                value: "COBS",
+                text: "COBS - Income illustration FCA COBS rules"
+              },             
+              {
+                value: "BS",
+                text: "BS - Benefit specific method no allowance of future build-up of benefits"
+              },              
+              {
+                value: "BSF",
+                text: "BSF - Benefit specific method including future build-up of benefits"
+              }
+            ]
+          }) }}
+
           <div class="govuk-form-group">
             <label for="ERICalculationDate" class="govuk-body">Date of ERI calculation</label>
             <p>
@@ -237,6 +309,60 @@
             isPageHeading: true
           }
         }) %}
+
+         {{ govukSelect({
+            id: "accruedType",
+            name: "accruedType",
+            label: {
+              text: "Accrued type"
+            },
+            items: [
+              {
+                value: "",
+                text: "N/A"
+              },
+              {
+                value: "DC",
+                text: "Defined contribution"
+              },              
+              {
+                value: "DB",
+                text: "Defined benefit"
+              },           
+              {
+                value: "DBL",
+                text: "A separately accrued lump sum (not commutation)"
+              },              
+              {
+                value: "AVC",
+                text: "Additional volunatary contribution"
+              },              
+              {
+                value: "CDI",
+                text: "Collective DC (CC) benefits expressed as regular income"
+              },           
+              {
+                value: "CDL",
+                text: "Collective DC (CC) benefits expressed as lump sum"
+              },              
+              {
+                value: "CBS",
+                text: "Cash balance scheme"
+              }
+            ]
+          }) }}
+
+          <div class="govuk-form-group">
+            <label class="govuk-label" for="pensionAccruedAmtType">
+              Accrued amount type
+            </label>
+           <select class="govuk-select" id="pensionAccruedAmtType" name="pensionAccruedAmtType">
+            {% for penAccAmtType in pensionDetails.pensionAccruedAmtTypeArr %}
+              <option value={{penAccAmtType.type}} {% if penAccAmtType.selected %} selected {% endif %}>{{penAccAmtType.text}}</option>
+            {% endfor %}  
+            </select>
+          </div>
+
           <div class="govuk-form-group">
             <label for="accruedCalculationDate" class="govuk-body">Date accrued amount calculated</label>
             <p>
@@ -257,24 +383,12 @@
             classes: "govuk-input--width-5"
           }) }}
 
-          <div class="govuk-form-group">
-            <label class="govuk-label" for="pensionAccruedAmtType">
-              Accrued amount type
-            </label>
-           <select class="govuk-select" id="pensionAccruedAmtType" name="pensionAccruedAmtType">
-            {% for penAccAmtType in pensionDetails.pensionAccruedAmtTypeArr %}
-              <option value={{penAccAmtType.type}} {% if penAccAmtType.selected %} selected {% endif %}>{{penAccAmtType.text}}</option>
-            {% endfor %}  
-            </select>
-          </div>
           {% endcall %}
         
         <div class="govuk-button-group">
           <button class="govuk-button" data-module="govuk-button" data-prevent-double-click="true">
             Update pension details
           </button>
-
-          <a class="govuk-link" href="display-pensions">List pensions</a>
         </div>
       </form>
     </div>

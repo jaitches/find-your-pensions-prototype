@@ -229,7 +229,7 @@
             isPageHeading: true
           }
         }) %}
-<!--
+
           {{ govukSelect({
             id: "ERIType",
             name: "ERIType",
@@ -237,6 +237,10 @@
               text: "ERI type"
             },
             items: [
+              {
+                value: "",
+                text: "N/A"
+              },
               {
                 value: "DC",
                 text: "Defined contribution"
@@ -269,12 +273,16 @@
           }) }}
 
           {{ govukSelect({
-            id: "ERIBasic",
+            id: "ERIBasis",
             name: "ERIBasis",
             label: {
               text: "How ERI calculated"
             },
             items: [
+              {
+                value: "",
+                text: "N/A"
+              },
               {
                 value: "SMPI",
                 text: "SMPI - statutory money purchase illustration"
@@ -293,7 +301,7 @@
               }
             ]
           }) }}
--->
+
           <div class="govuk-form-group">
 
             <label for="ERICalculationDate" class="govuk-body">Date of ERI calculation</label>
@@ -381,13 +389,17 @@
           }
         }) %}
 
-<!--          {{ govukSelect({
+         {{ govukSelect({
             id: "accruedType",
             name: "accruedType",
             label: {
               text: "Accrued type"
             },
             items: [
+              {
+                value: "",
+                text: "N/A"
+              },
               {
                 value: "DC",
                 text: "Defined contribution"
@@ -418,7 +430,7 @@
               }
             ]
           }) }}
--->
+
           {{ govukSelect({
             id: "accruedAmountType",
             name: "accruedAmountType",
@@ -426,6 +438,10 @@
               text: "Accrued amount type"
             },
             items: [
+              {
+                value: "",
+                text: "N/A"
+              },
               {
                 value: "POT",
                 text: "Valuation of a DC pension pot"
