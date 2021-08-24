@@ -3,7 +3,9 @@ const router = express.Router()
 const fs = require('fs')
 const { MongoClient } = require('mongodb');
 const { ObjectId } = require('mongodb')
-const uri = "mongodb+srv://all_dbs_user:U5oZLxA850eM8TFr@cluster0.de9k1.mongodb.net/pensions?retryWrites=true&w=majority";
+const uri = 'mongodb+srv://' + process.env.MONGODB_URI + '?retryWrites=true&w=majority'
+
+// const uri = "mongodb+srv://all_dbs_user:U5oZLxA850eM8TFr@cluster0.de9k1.mongodb.net/pensions?retryWrites=true&w=majority";
 // Use these arrays to store the options for the select element when updating the pensions
 const penTypes = [
     {type: "DC", text: "DC pension", selected : ""},
