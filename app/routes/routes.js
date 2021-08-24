@@ -96,7 +96,7 @@ router.post('/prototype-options', function (req, res) {
 //    console.log('req.app.locals.ptype.number ' + req.app.locals.ptype.number)
     switch (req.app.locals.ptype.number) {
         case 1:
-        res.redirect('01-find/01-start')
+        res.redirect('01-find-no-view/01-start')
         break;     
         case 2:
         res.redirect('02-find-accrued/02-start')        
@@ -113,7 +113,7 @@ router.post('/enter-your-name/:prototypeId', function (req, res) {
 
     pensionOwner = req.session.data['owner-name']
     if (req.params.prototypeId == "01") {
-        res.redirect('/01-find/01-display-pensions?owner=' + pensionOwner)
+        res.redirect('/01-find-no-view/01-display-pensions?owner=' + pensionOwner)
     }
     else if (req.params.prototypeId == "02") {
         res.redirect('/02-find-accrued/02-display-pensions')
@@ -126,7 +126,7 @@ router.post('/enter-your-name/:prototypeId', function (req, res) {
 //
 // 01 Find pension prototype
 //
-router.get('/01-find/01-display-pensions', function (req, res) {
+router.get('/01-find-no-view/01-display-pensions', function (req, res) {
 
     async function findPensionsByOwner() {
         let pensionOwnerName = req.query.owner
@@ -207,7 +207,7 @@ router.get('/01-find/01-display-pensions', function (req, res) {
         } finally {
             // Close the connection to the MongoDB cluster
             await client.close();    
-            res.render('01-find/01-display-pensions')
+            res.render('01-find-no-view/01-display-pensions')
         }
     }
 
@@ -237,7 +237,7 @@ router.get('/01-find/01-display-pensions', function (req, res) {
 })
 
 // 01 additional page of pension details 
-router.get('/01-find/01-pension-details', function (req, res) {
+router.get('/01-find-no-view/01-pension-details', function (req, res) {
 
     async function findPensionDetails() {
         req.app.locals.pensionDetails = []
@@ -266,7 +266,7 @@ router.get('/01-find/01-pension-details', function (req, res) {
         } finally {
             // Close the connection to the MongoDB cluster
             await client.close();    
-            res.render('01-find/01-pension-details')
+            res.render('01-find-no-view/01-pension-details')
         }
     }
 

@@ -38,6 +38,7 @@
     "keypather": "^3.0.0",
     "marked": "^2.0.0",
     "mongodb": "^4.0.1",
+    "mongoose": "^5.13.8",
     "notifications-node-client": "^4.7.2",
     "nunjucks": "^3.2.1",
     "portscanner": "^2.1.1",

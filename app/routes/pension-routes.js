@@ -1,10 +1,9 @@
 const express = require('express')
 const router = express.Router()
 const fs = require('fs')
-const { MongoClient } = require('mongodb');
+const { MongoClient } = require('mongodb')
 const { ObjectId } = require('mongodb')
-const uri = "mongodb+srv://all_dbs_user:U5oZLxA850eM8TFr@cluster0.de9k1.mongodb.net/pensions?retryWrites=true&w=majority";
-// Use these arrays to store the options for the select element when updating the pensions
+const uri = 'mongodb+srv://' + process.env.MONGODB_URI + '?retryWrites=true&w=majority'
 const penTypes = [
     {type: "DC", text: "DC pension", selected : ""},
     {type: "DB", text: "DB pension", selected : ""},
@@ -32,6 +31,7 @@ const penEriOrAccType = [
     {type: "CBS", text: "Cash balance scheme", selected: ""}
     ]
 const penHowEriCalc = [
+    {type: "", text: "N/A", selected: ""},
     {type: "SMPI", text: "SMPI - statutory money purchase illustration", selected: ""},              
     {type: "COBS", text: "COBS - Income illustration FCA COBS rules", selected: ""},
     {type: "BS", text: "BS - Benefit specific method no allowance of future build-up of benefits", selected: ""},
@@ -60,7 +60,7 @@ router.get('/display-pensions', function (req, res) {
 
         try {
             // Connect to the MongoDB cluster
-            await client.connect();
+            await client.connect()
             let allPensionDetails = await getAllPensions(client)
             let manualPensionDetails = []
             let examplePensionDetails = []
@@ -261,7 +261,6 @@ router.get('/update-pension', function (req, res) {
 // *** for the HTML select set the selected option to the value in document in MongoDB 
 
             // Pension type set the selected option
-
             req.app.locals.pensionDetails.pensionTypeArr = penTypes
             for (i=0; i < req.app.locals.pensionDetails.pensionTypeArr.length; i++) {
                 if (req.app.locals.pensionDetails.pensionType == req.app.locals.pensionDetails.pensionTypeArr[i].type) {
@@ -271,11 +270,7 @@ router.get('/update-pension', function (req, res) {
 
             // Pension origin set the selected option
             req.app.locals.pensionDetails.pensionOriginArr = penOrigin
-//            console.log('pensionOriginArr ' + JSON.stringify(req.app.locals.pensionDetails.pensionOriginArr))
             for (i=0; i < req.app.locals.pensionDetails.pensionOriginArr.length; i++) {
-//                console.log('origin on DB ' + req.app.locals.pensionDetails.pensionOrigin)
-//                console.log('origin in array ' + req.app.locals.pensionDetails.pensionOriginArr[i].type)
-
                 if (req.app.locals.pensionDetails.pensionOrigin == req.app.locals.pensionDetails.pensionOriginArr[i].type) {
                  req.app.locals.pensionDetails.pensionOriginArr[i].selected = 'selected'   
                 }
@@ -284,19 +279,38 @@ router.get('/update-pension', function (req, res) {
             // Pension origin set the selected option
             req.app.locals.pensionDetails.pensionStatusArr = penStatus
             for (i=0; i < req.app.locals.pensionDetails.pensionStatusArr.length; i++) {
-//                console.log('status on DB ' + req.app.locals.pensionDetails.pensionStatus)
-//                console.log('status in array ' + req.app.locals.pensionDetails.pensionStatusArr[i].type)
-
                 if (req.app.locals.pensionDetails.pensionStatus == req.app.locals.pensionDetails.pensionStatusArr[i].type) {
                  req.app.locals.pensionDetails.pensionStatusArr[i].selected = 'selected'   
                 }
             }
- //           console.log('pensionStatusArr ' + JSON.stringify(req.app.locals.pensionDetails.pensionStatusArr))
             
+            // Pension ERI type set the selected option
+            req.app.locals.pensionDetails.pensionERITypeArr = penEriOrAccType
+            for (i=0; i < req.app.locals.pensionDetails.pensionERITypeArr.length; i++) {
+                if (req.app.locals.pensionDetails.ERIType == req.app.locals.pensionDetails.pensionERITypeArr[i].type) {
+                 req.app.locals.pensionDetails.pensionERITypeArr[i].selected = 'selected'   
+                }
+            }            
+
+            // Pension how ERI calculated
+            req.app.locals.pensionDetails.pensionERICalcArr = penHowEriCalc
+            for (i=0; i < req.app.locals.pensionDetails.pensionERICalcArr.length; i++) {
+                if (req.app.locals.pensionDetails.ERICalcArr == req.app.locals.pensionDetails.pensionERICalcArr[i].type) {
+                 req.app.locals.pensionDetails.pensionERICalcArr[i].selected = 'selected'   
+                }
+            }
+
+            // Pension accrued type set the selected option
+            req.app.locals.pensionDetails.pensionAccruedTypeArr = penEriOrAccType
+            for (i=0; i < req.app.locals.pensionDetails.pensionAccruedTypeArr.length; i++) {
+                if (req.app.locals.pensionDetails.accruedType == req.app.locals.pensionDetails.pensionAccruedTypeArr[i].type) {
+                 req.app.locals.pensionDetails.pensionAccruedTypeArr[i].selected = 'selected'   
+                }
+            }   
+
             // Pension accrued amount type set the selected option
             req.app.locals.pensionDetails.pensionAccruedAmtTypeArr = penAccAmtType
             for (i=0; i < req.app.locals.pensionDetails.pensionAccruedAmtTypeArr.length; i++) {
-
                 if (req.app.locals.pensionDetails.accruedAmountType == req.app.locals.pensionDetails.pensionAccruedAmtTypeArr[i].type) {
                  req.app.locals.pensionDetails.pensionAccruedAmtTypeArr[i].selected = 'selected'   
                 }
