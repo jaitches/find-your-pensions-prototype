@@ -20,7 +20,7 @@ const penStatus = [
     {type: "A", text: "Active", selected : ""},
     {type: "I", text: "Inactive", selected : ""}
 ]
-const penEriOrAccType = [
+const penEriOrAccrType = [
     {type: "", text: "N/A", selected: ""},
     {type: "DC", text: "Defined contribution", selected: ""},
     {type: "DB", text: "Defined benefit", selected: ""},
@@ -37,7 +37,7 @@ const penHowEriCalc = [
     {type: "BS", text: "BS - Benefit specific method no allowance of future build-up of benefits", selected: ""},
     {type: "BSF",text: "BSF - Benefit specific method including future build-up of benefits", selected: ""}
 ]              
-const penAccAmtType = [
+const penAccrAmtType = [
     {type: "", text: "N/A", selected : ""},
     {type: "POT", text: "Valuation of a DC pension pot", selected : ""},
     {type: "INC", text: "Calculation of an accrued recurring income", selected : ""},
@@ -262,6 +262,7 @@ router.get('/update-pension', function (req, res) {
 
             // Pension type set the selected option
             req.app.locals.pensionDetails.pensionTypeArr = penTypes
+
             for (i=0; i < req.app.locals.pensionDetails.pensionTypeArr.length; i++) {
                 if (req.app.locals.pensionDetails.pensionType == req.app.locals.pensionDetails.pensionTypeArr[i].type) {
                  req.app.locals.pensionDetails.pensionTypeArr[i].selected = 'selected'   
@@ -285,7 +286,7 @@ router.get('/update-pension', function (req, res) {
             }
             
             // Pension ERI type set the selected option
-            req.app.locals.pensionDetails.pensionERITypeArr = penEriOrAccType
+            req.app.locals.pensionDetails.pensionERITypeArr = penEriOrAccrType
             for (i=0; i < req.app.locals.pensionDetails.pensionERITypeArr.length; i++) {
                 if (req.app.locals.pensionDetails.ERIType == req.app.locals.pensionDetails.pensionERITypeArr[i].type) {
                  req.app.locals.pensionDetails.pensionERITypeArr[i].selected = 'selected'   
@@ -301,7 +302,7 @@ router.get('/update-pension', function (req, res) {
             }
 
             // Pension accrued type set the selected option
-            req.app.locals.pensionDetails.pensionAccruedTypeArr = penEriOrAccType
+            req.app.locals.pensionDetails.pensionAccruedTypeArr = penEriOrAccrType
             for (i=0; i < req.app.locals.pensionDetails.pensionAccruedTypeArr.length; i++) {
                 if (req.app.locals.pensionDetails.accruedType == req.app.locals.pensionDetails.pensionAccruedTypeArr[i].type) {
                  req.app.locals.pensionDetails.pensionAccruedTypeArr[i].selected = 'selected'   
@@ -309,7 +310,7 @@ router.get('/update-pension', function (req, res) {
             }   
 
             // Pension accrued amount type set the selected option
-            req.app.locals.pensionDetails.pensionAccruedAmtTypeArr = penAccAmtType
+            req.app.locals.pensionDetails.pensionAccruedAmtTypeArr = penAccrAmtType
             for (i=0; i < req.app.locals.pensionDetails.pensionAccruedAmtTypeArr.length; i++) {
                 if (req.app.locals.pensionDetails.accruedAmountType == req.app.locals.pensionDetails.pensionAccruedAmtTypeArr[i].type) {
                  req.app.locals.pensionDetails.pensionAccruedAmtTypeArr[i].selected = 'selected'   
@@ -379,7 +380,7 @@ router.post('/update-pension-details', function (req, res) {
         // make the date variables have a date format
         let pension_Start_Date = new Date()
         let pension_Retirement_Date = new Date()
-        let employement_Start_Date = new Date()
+        let employment_Start_Date = new Date()
         let employment_End_Date = new Date()
         let ERI_Calculation_Date = new Date()
         let ERI_Payable_Date = new Date()
@@ -387,26 +388,15 @@ router.post('/update-pension-details', function (req, res) {
 
         // get the inputted pension data 
 
-        let pension_Owner_Type = "M"
         let pension_Owner = req.session.data['pensionOwner']
         let pension_Reference = req.session.data['pensionReference']
         let pension_Name = req.session.data['pensionName']
         let pension_Type = req.session.data['pensionType']
         let pension_Origin = req.session.data['pensionOrigin']
         let pension_Status = req.session.data['pensionStatus']
-
-        if (req.session.data['pensionStartDate']) {
-            pension_Start_Date = req.session.data['pensionStartDate']
-        }
-        else {
-            pension_Start_Date = ""
-        }
-        if (req.session.data['pensionRetirementDate']) {
-            pension_Retirement_Date = req.session.data['pensionRetirementDate']
-        }
-        else {
-            pension_Retirement_Date = ""
-        }
+        pension_Start_Date = req.session.data['pensionStartDate']
+        pension_Retirement_Date = req.session.data['pensionRetirementDate']
+ 
         let pension_Link = req.session.data['pensionLink']
 
         let administrator = req.session.data['administratorDetails']
@@ -415,29 +405,12 @@ router.post('/update-pension-details', function (req, res) {
         let administrator_Name = administratorArray [1]
 
         let employer_Name = req.session.data['employerName']   
-        if (req.session.data['employmentStartDate']) {
-            let employment_Start_Date = req.session.data['employmentStartDate']
-        }
-        else {
-            employment_Start_Date = null
-        }
-
-        if (req.session.data['employmentEndDate']) {
-            employment_End_Date = req.session.data['employmentEndDate']
-        }
-        else {
-            employment_End_Date = null
-        }
+        employment_Start_Date = req.session.data['employmentStartDate']
+        employment_End_Date = req.session.data['employmentEndDate']
 
         let ERI_Type = req.session.data['ERIType']
         let ERI_Basis = req.session.data['ERIBasis']
-        
-        if (req.session.data['ERICalculationDate']) {
-            ERI_Calculation_Date = req.session.data['ERICalculationDate'] 
-        }
-        else {
-            ERI_Calculation_Date = null
-        }
+        ERI_Calculation_Date = req.session.data['ERICalculationDate'] 
         ERI_Payable_Date = pension_Retirement_Date
         let ERI_Annual_Amount = req.session.data['ERIAnnualAmount']
         let ERI_Pot = req.session.data['ERIPot']
@@ -447,12 +420,7 @@ router.post('/update-pension-details', function (req, res) {
         let accrued_Type = ['accruedType']
         let accrued_Amount_Type = req.session.data['accruedAmountType']
 
-        if (req.session.data['accruedCalculationDate']) {
-            accrued_Calculation_Date = req.session.data['accruedCalculationDate'] 
-        }
-        else {
-            accrued_Calculation_Date = null
-        }
+        accrued_Calculation_Date = req.session.data['accruedCalculationDate'] 
         accrued_Payable_Date = pension_Retirement_Date
         let accrued_Amount = req.session.data['accruedAmount']
         let accrued_Safeguarded_Benefits = 0
@@ -463,7 +431,6 @@ router.post('/update-pension-details', function (req, res) {
 
             await updatePensionDetails(client, pensionId, {
 
-                pensionOwnerType : pension_Owner_Type,
                 pensionOwner : pension_Owner,
                 pensionReference : pension_Reference,
                 pensionName : pension_Name,
