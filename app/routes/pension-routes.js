@@ -371,7 +371,7 @@ router.post('/update-pension-details', function (req, res) {
     async function updatePension() {
     // create an instance of the client
         const client = new MongoClient(uri);        
-//        console.log('req.app.locals.pensionId ' + req.app.locals.pensionId)
+        console.log('req.app.locals.pensionId ' + req.app.locals.pensionId)
         let pensionId = req.app.locals.pensionId
        
         // format date
@@ -417,7 +417,7 @@ router.post('/update-pension-details', function (req, res) {
         let ERI_Safeguarded_Benefits = 0
         let ERI_Unavailable = null
 
-        let accrued_Type = ['accruedType']
+        let accrued_Type = req.session.data['accruedType']
         let accrued_Amount_Type = req.session.data['accruedAmountType']
 
         accrued_Calculation_Date = req.session.data['accruedCalculationDate'] 
@@ -474,8 +474,8 @@ router.post('/update-pension-details', function (req, res) {
 
     // Add functions that make DB calls here
     async function updatePensionDetails(client, pensionId, updatePension){
-//        console.log('updatePension ' + JSON.stringify(updatePension))
-//        console.log('pensionId ' + pensionId)
+        console.log('updatePension ' + JSON.stringify(updatePension))
+        console.log('pensionId ' + pensionId)
         const result = await client.db("pensions").collection("pensionDetails")
             .updateOne({ _id : ObjectId(pensionId)}, {$set: updatePension});
         console.log(`${result.modifiedCount} document was updated.`)

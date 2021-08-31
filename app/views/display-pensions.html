@@ -38,7 +38,7 @@
             <th scope="col" class="govuk-table__header">Pension name</th>
             <th scope="col" class="govuk-table__header">Provider</th>
             <th scope="col" class="govuk-table__header">Ref</th>
-            <th scope="col" class="govuk-table__header">Accrued Amount</th>
+            <th scope="col" class="govuk-table__header">Employer</th>
             <th scope="col" class="govuk-table__header">Date accrued calculated</th>
             <th scope="col" class="govuk-table__header">ERI Pot</th>
             <th scope="col" class="govuk-table__header">ERI Income</th>
@@ -56,7 +56,7 @@
             <td class="govuk-table__cell">{{details.pensionName}}</td>
             <td class="govuk-table__cell">{{details.administratorName}}</td>
             <td class="govuk-table__cell">{{details.pensionReference}}</td>
-            <td class="govuk-table__cell">£{{details.accruedAmount}}</td>
+            <td class="govuk-table__cell">{{details.employerName}}</td>
             <td class="govuk-table__cell">{{details.accruedCalculationDate}}</td>
             <td class="govuk-table__cell">£{{details.ERIPot}}</td>
             <td class="govuk-table__cell">£{{details.ERIAnnualAmount}}</td>
@@ -82,7 +82,7 @@
             <th scope="col" class="govuk-table__header">Pension name</th>
             <th scope="col" class="govuk-table__header">Provider</th>
             <th scope="col" class="govuk-table__header">Ref</th>
-            <th scope="col" class="govuk-table__header">Accrued Amount</th>
+            <th scope="col" class="govuk-table__header">Employer</th>
             <th scope="col" class="govuk-table__header">Date accrued calculated</th>
             <th scope="col" class="govuk-table__header">ERI Pot</th>
             <th scope="col" class="govuk-table__header">ERI Income</th>
@@ -101,7 +101,7 @@
             <td class="govuk-table__cell">{{details.pensionName}}</td>
             <td class="govuk-table__cell">{{details.administratorName}}</td>
             <td class="govuk-table__cell">{{details.pensionReference}}</td>
-            <td class="govuk-table__cell">£{{details.accruedAmount}}</td>
+            <td class="govuk-table__cell">{{details.employerName}}</td>
             <td class="govuk-table__cell">{{details.accruedCalculationDate}}</td>
             <td class="govuk-table__cell">£{{details.ERIPot}}</td>
             <td class="govuk-table__cell">£{{details.ERIAnnualAmount}}</td>
@@ -110,7 +110,7 @@
             <td class="govuk-table__cell" ><a href="update-pension?pensionId={{details._id}}" class="govuk-link">Edit</button></a></td>
             <form action="/copy-pension/{{details._id}}" method="post" class="form">
               <td class="govuk-table__cell">
-                <button class="govuk-button govuk-button--warning" data-module="govuk-button">Copy</button></td>
+                <button class="govuk-button govuk-button" data-module="govuk-button">Copy</button></td>
             </form>
             <form action="/delete-pension/{{details._id}}" method="post" class="form">
               <td class="govuk-table__cell" onclick="deleteRow()"><button class="govuk-button govuk-button--warning" data-module="govuk-button">Delete</button></td>
@@ -125,7 +125,7 @@
       <nav role="navigation" aria-labelledby="subsection-title">
         <ul class="govuk-list govuk-!-font-size-16">
           <li>
-            <a href="/01-find-no-view/01-start">Find pensions</a>
+            <a href="/01-find/01-start">Find pensions</a>
           </li>
           <li>
             <a href="/02-find-accrued/02-start">Find and accrued pensions</a>

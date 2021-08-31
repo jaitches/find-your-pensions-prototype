@@ -69,39 +69,6 @@ router.get('/display-providers', function (req, res) {
     }
 })
 
-// 
-/*
-router.get('/add-provider', function (req, res) {
-    async function findPensionProviders() {        
-        const client = new MongoClient(uri);
-
-        try {
-            // Connect to the MongoDB cluster
-            await client.connect();
-            req.app.locals.providerDetails = await getProviders(client)
-//            console.log('pensionProviders ' + req.app.locals.pensionProviders)
-        } finally {
-            // Close the connection to the MongoDB cluster
-            await client.close();    
-            res.render('add-provider')
-        }
-    }
-
-    findPensionProviders().catch(console.error);
-
-    async function getProviders(client) {
-        const results = await client.db("pensions").collection("pensionProvider")
-        // find all documents
-        .find({})
-        // save them to an array
-        .sort({administratorName: 1})        
-        .toArray()
-
-//        console.log('results providers' + JSON.stringify(results))
-        return results
-    }
-})
-*/
 router.post('/add-provider-details', function (req, res) {
 //get the pension provider list
 
@@ -130,7 +97,7 @@ router.post('/add-provider-details', function (req, res) {
             await createProvider(client, {
 
                 administratorName : administrator_Name,
-                administratorContactPreference : "Email",
+                administratorContactPreference : "Website",
                 administratorURL : administrator_URL,
                 administratorEmail : administrator_Email,
                 administratorPhoneNumber : administrator_Phone_Number,
