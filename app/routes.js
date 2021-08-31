@@ -69,7 +69,8 @@ router.post('/select-prototype', function (req, res) {
     }
     req.app.locals.ptype.text = findPtypeText(req.app.locals.ptype.number, prototypeDetails)
 
-    res.redirect('prototype-options')
+//    res.redirect('prototype-options')
+    res.redirect('/01-find/01-display-pensions')
 // get the prototype description from the list
     function findPtypeText (ptypeNo, prototypeArray) {
         for (let i=0; i < prototypeArray.length; i++) {
@@ -132,13 +133,13 @@ router.post('/enter-your-name/:prototypeId', function (req, res) {
 // 01 Find pension prototype
 //
 router.get('/01-find/01-display-pensions', function (req, res) {
+    console.log('******** changes to routes.js *******')
     // set the default values for while testing
-    req.app.locals.splitOrigin = true
-    req.app.locals.splitType = true
-    console.log('***** have I updated the routes file *****')
+        req.app.locals.splitOrigin = true
+        req.app.locals.splitType = true
 
-    req.app.locals.ptype.number = 1
-    req.app.locals.ptype.text = "find"
+        req.app.locals.ptype.number = 1
+        req.app.locals.ptype.text = "find"
 
     async function findPensionsByOwner() {
         let pensionOwnerName = req.query.owner
@@ -189,22 +190,23 @@ router.get('/01-find/01-display-pensions', function (req, res) {
                     for (i=0; i < pensionDetailsAll.length; i++) {
                         if (pensionDetailsAll[i].pensionOrigin == "W") {
                             req.app.locals.workplaceFlag = true
+                            console.log('pensionDetailsAll[i] ' + JSON.stringify(pensionDetailsAll[i]))
                             req.app.locals.workplacePensionDetails.push(pensionDetailsAll[i])
-                            console.log('pensionDetailsAll[i].pensionType ' + pensionDetailsAll[i].pensionType)
-                            if (pensionDetailsAll[i].pensionType = "DB") {
-                                console.log('pensionDetailsAll[i].pensionType DC' + pensionDetailsAll[i].pensionType)
+                            console.log('pensionType before ifs' + pensionDetailsAll[i].pensionType)
+                            if (pensionDetailsAll[i].pensionType == "DB") {
+                                console.log('pensionDetailsAll[i].pensionType DB ' + pensionDetailsAll[i].pensionType)
                                 req.app.locals.workplaceTypeDBFlag = true
                                 req.app.locals.workplaceDBPensionDetails.push(pensionDetailsAll[i])
                             }
-                            else if (pensionDetailsAll[i].pensionType = "DC") {                            console.log('pensionDetailsAll[i].pensionType ' + pensionDetailsAll[i].pensionType)
-                                console.log('pensionDetailsAll[i].pensionType DC' + pensionDetailsAll[i].pensionType)
+                            else if (pensionDetailsAll[i].pensionType == "DC") {                            
+                                console.log('pensionDetailsAll[i].pensionType DC ' + pensionDetailsAll[i].pensionType)
                                 req.app.locals.workplaceTypeDCFlag = true
                                 req.app.locals.workplaceDCPensionDetails.push(pensionDetailsAll[i])
                             }
                             else {                            
-                                console.log('pensionDetailsAll[i].pensionType other' + pensionDetailsAll[i].pensionType)
+                                console.log('pensionDetailsAll[i].pensionType other ' + pensionDetailsAll[i].pensionType)
                                 req.app.locals.workplaceTypeOtherFlag = true
-                                req.app.locals.workplaceDCPensionDetails.push(pensionDetailsAll[i])                       
+                                req.app.locals.workplaceOtherPensionDetails.push(pensionDetailsAll[i])                       
                             }
                         }
                         else if (pensionDetailsAll[i].pensionOrigin == "P") {
@@ -215,7 +217,7 @@ router.get('/01-find/01-display-pensions', function (req, res) {
                                 req.app.locals.privateDCPensionDetails.push(pensionDetailsAll[i])
                             }
                             else {
-                                req.app.locals.privateTypeOtherFlag = true
+                                req.app.locals.privateTypeOtherFlag == true
                                 req.app.locals.privateDCPensionDetails.push(pensionDetailsAll[i])                       
                             }
                         }
@@ -266,9 +268,9 @@ router.get('/01-find/01-display-pensions', function (req, res) {
     async function getPensionsByOwner(client) {
         const results = await client.db("pensions").collection("pensionDetails")
         // find all documents
-        .find({})
+        .find({pensionOwnerType: "M"})
         // save them to an array
-        .sort({pensionOrigin: 1, pensionType: 1, pensionRetirementDate: -1})        
+        .sort({pensionOrigin: 1, pensionType: 1, pensionRetirementDate: -1, pensionName: 1})        
         .toArray()
 //        console.log('results ' + JSON.stringify(results))
         return results
@@ -277,9 +279,9 @@ router.get('/01-find/01-display-pensions', function (req, res) {
     async function getAllPensions(client) {
         const results = await client.db("pensions").collection("pensionDetails")
         // find all documents
-        .find({})
+        .find({pensionOwnerType: "M"})
         // save them to an array
-        .sort({pensionOrigin: 1, pensionType: 1, pensionRetirementDate: -1})        
+        .sort({pensionRetirementDate: -1, pensionName: 1})        
         .toArray()
 //        console.log('results all pensions' + JSON.stringify(results))
         return results
