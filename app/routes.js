@@ -24,15 +24,70 @@ const penStatus = [
     {type: "I", text: "Inactive", selected : ""}
 ]
 const penAccAmtType = [
+    {type: "", text: "N/A", selected : ""},
     {type: "POT", text: "Valuation of a DC pension pot", selected : ""},
     {type: "INC", text: "Calculation of an accrued recurring income", selected : ""},
     {type: "LS", text: "Calculation of the accrued value of DBLS/CDCLS type", selected : ""}
 ]
-const prototypeDetails = [
-    {number: 1, text: "Find"},
-    {number: 2, text: "Find and accrued"},
-    {number: 3, text: "Find, accrued and estimated"}
+const penEriOrAccrType = [
+    {type: "", text: "N/A", selected : ""},
+    {type: "DC", text: "Defined contribution", selected : ""},              
+    {type: "DB", text: "Defined benefit", selected : ""},           
+    {type: "DBL", text: "A separately accrued lump sum (not commutation)", selected : ""},              
+    {type: "AVC", text: "Additional voluntary contribution", selected : ""},              
+    {type: "CDI", text: "Collective DC (CC) benefits expressed as regular income", selected : ""},           
+    {type: "CDL", text: "Collective DC (CC) benefits expressed as lump sum", selected : ""},              
+    {type: "CBS", text: "Cash balance scheme", selected : ""}
 ]
+const penHowEriCalc = [
+              {
+                type: "",
+                text: "N/A", selected : ""
+              },
+              {
+                type: "SMPI",
+                text: "SMPI - statutory money purchase illustration", selected : ""
+              },              
+              {
+                type: "COBS",
+                text: "COBS - Income illustration FCA COBS rules", selected : ""
+              },             
+              {
+                type: "BS",
+                text: "BS - Benefit specific method no allowance of future build-up of benefits", selected : ""
+              },              
+              {
+                type: "BSF",
+                text: "BSF - Benefit specific method including future build-up of benefits", selected : ""
+              }
+            ]
+const penAccrAmtType = [
+              {
+                value: "",
+                text: "N/A", selected : ""
+              },
+              {
+                value: "POT",
+                text: "Valuation of a DC pension pot", selected : ""
+              },              
+              {
+                value: "INC",
+                text: "Calculation of an accrued recurring income", selected : ""
+              },              
+              {
+                value: "LS",
+                text: "Calculation of the accrued value of DBLS/CDCLS type", selected : ""
+              }
+            ]
+
+const prototypeDetails = [
+    {number: 1, text: "Find only", startUrl: "01-find-only/01-start", displayUrl: "01-find-only/01-display-pensions"},
+    {number: 2, text: "Find and view", startUrl: "02-find-view/02-start", displayUrl: "02-find-view/02-display-pensions"},
+    {number: 3, text: "Find and accrued", startUrl: "03-find-accrued/03-start", displayUrl: "03-find-accrued/03-display-pensions"},
+    {number: 4, text: "Find, accrued and estimated", startUrl: "04-find-accrued-estimated/04-start", displayUrl: "04-find-accrued-estimated/04-display-pensions"}
+]
+
+
 //
 // ****** routes for main pages and prototypes
 //
@@ -55,33 +110,43 @@ router.post('/select-prototype', function (req, res) {
 //    console.log('selectPrototype ' + selectPrototype)
 
     switch (selectPrototype) {
-        case "prototype-find":
-        req.app.locals.ptype.number = 1
+        case "prototype-find-only":
+        ptypeNumber = 1
+        break;
+        case "prototype-find-view":
+        ptypeNumber = 2
         break;       
         case "prototype-find-accrued":
-        req.app.locals.ptype.number = 2  
+        ptypeNumber = 3  
         break;             
         case "prototype-find-accrued-estimated":
-        req.app.locals.ptype.number = 3
+        ptypeNumber = 4
         break;       
         default:
-        req.app.locals.ptype.number = 0
+        ptypeNumber = 0
     }
-    req.app.locals.ptype.text = findPtypeText(req.app.locals.ptype.number, prototypeDetails)
+    ptypeDetails = findPtypeText(ptypeNumber, prototypeDetails)
+    req.app.locals.ptype = ptypeDetails
+
 
 //    res.redirect('prototype-options')
-    res.redirect('/01-find/01-display-pensions')
+    res.redirect(ptypeDetails.startUrl)
 // get the prototype description from the list
     function findPtypeText (ptypeNo, prototypeArray) {
         for (let i=0; i < prototypeArray.length; i++) {
             if (prototypeArray[i].number === ptypeNo) {
-                return prototypeArray[i].text;
+                return {
+                    "number" : prototypeArray[i].number,
+                    "text" : prototypeArray[i].text,
+                    "startUrl" : prototypeArray[i].startUrl,
+                    "displayUrl" : prototypeArray[i].displayUrl
+                }
             }
         }
     }
 
 })
-
+/*
 // choose which prototype options to apply
 router.post('/prototype-options', function (req, res) {
     req.app.locals.splitOrigin = false
@@ -102,44 +167,47 @@ router.post('/prototype-options', function (req, res) {
     console.log('req.app.locals.ptype.number ' + req.app.locals.ptype.number)
     switch (req.app.locals.ptype.number) {
         case 1:
-        res.redirect('01-find/01-start')
+        res.redirect('02-find-view/01-start')
         break;     
         case 2:
-        res.redirect('02-find-accrued/02-start')        
+        res.redirect('03-find-accrued/02-start')        
         break;     
         default:
-        res.redirect('03-find-accrued-estimated/03-start')
+        res.redirect('04-find-accrued-estimated/03-start')
 
 
     }
 })
+
 // The user enters their name this is used to select the documents from MongoDB
 // the researcher will already have created their records
 router.post('/enter-your-name/:prototypeId', function (req, res) {
 
     pensionOwner = req.session.data['owner-name']
     if (req.params.prototypeId == "01") {
-        res.redirect('/01-find/01-display-pensions?owner=' + pensionOwner)
+        res.redirect('/01-find-view/01-display-pensions?owner=' + pensionOwner)
     }
     else if (req.params.prototypeId == "02") {
-        res.redirect('/02-find-accrued/02-display-pensions')
+        res.redirect('/02-find-view/02-display-pensions')
+    }    
+    else if (req.params.prototypeId == "02") {
+        res.redirect('/03-find-accrued/03-display-pensions')
     }
     else {
-        res.redirect('/03-find-accrued-estimated/03-display-pension')
+        res.redirect('/04-find-accrued-estimated/04-display-pension')
     }
 })
+*/
 
 //
-// 01 Find pension prototype
+// Get the documents from MongoDB to display fo rall prototypes
 //
-router.get('/01-find/01-display-pensions', function (req, res) {
-    console.log('******** changes to routes.js *******')
-    // set the default values for while testing
-        req.app.locals.splitOrigin = true
-        req.app.locals.splitType = true
+// the * is a wildcard for the prototype number in this get
+router.get('/*-display-pensions', function (req, res) {
 
-        req.app.locals.ptype.number = 1
-        req.app.locals.ptype.text = "find"
+// set the default values for while testing
+    req.app.locals.splitOrigin = true
+    req.app.locals.splitType = false
 
     async function findPensionsByOwner() {
         let pensionOwnerName = req.query.owner
@@ -229,8 +297,12 @@ router.get('/01-find/01-display-pensions', function (req, res) {
                     }
                 }
                 else {
+                    // split by origin not type
+
+ //                   console.log('show all pensions ' + JSON.stringify(pensionDetailsAll))
                     for (i=0; i < pensionDetailsAll.length; i++) {
                         if (pensionDetailsAll[i].pensionOrigin == "W") {
+//                            console.log('pensionDetailsAll[i].pensionOrigin W ' + pensionDetailsAll[i].pensionReference)
                             req.app.locals.workplaceFlag = true
                             req.app.locals.workplacePensionDetails.push(pensionDetailsAll[i])
                         }
@@ -258,8 +330,25 @@ router.get('/01-find/01-display-pensions', function (req, res) {
 */
         } finally {
             // Close the connection to the MongoDB cluster
-            await client.close();    
-            res.render('01-find/01-display-pensions')
+            await client.close()
+            console.log('req.app.locals.ptype ' + JSON.stringify(req.app.locals.ptype))
+            let ptypeDisplayUrl = ""
+            switch(req.app.locals.ptype.number) {
+                case 1:
+                ptypeDisplayUrl = req.app.locals.ptype.displayUrl
+                break;                
+                case 2:
+                ptypeDisplayUrl = req.app.locals.ptype.displayUrl
+                break;                
+                case 3:
+                ptypeDisplayUrl = req.app.locals.ptype.displayUrl
+                break;                
+                case 4:
+                ptypeDisplayUrl = req.app.locals.ptype.displayUrl
+                break;
+            }
+            console.log('displayUrl ' + ptypeDisplayUrl)
+            res.render(ptypeDisplayUrl)
         }
     }
 
@@ -281,7 +370,7 @@ router.get('/01-find/01-display-pensions', function (req, res) {
         // find all documents
         .find({pensionOwnerType: "M"})
         // save them to an array
-        .sort({pensionRetirementDate: -1, pensionName: 1})        
+        .sort({pensionOrigin: 1, pensionType: 1, pensionRetirementDate: -1, pensionName: 1})        
         .toArray()
 //        console.log('results all pensions' + JSON.stringify(results))
         return results
@@ -289,7 +378,7 @@ router.get('/01-find/01-display-pensions', function (req, res) {
 })
 
 // 01 additional page of pension details 
-router.get('/01-find/01-pension-details', function (req, res) {
+router.get('/02-find-view/02-pension-details', function (req, res) {
 
     async function findPensionDetails() {
         req.app.locals.pensionDetails = []
@@ -318,7 +407,7 @@ router.get('/01-find/01-pension-details', function (req, res) {
         } finally {
             // Close the connection to the MongoDB cluster
             await client.close();    
-            res.render('01-find/01-pension-details')
+            res.render('02-find-view/02-pension-details')
         }
     }
 
@@ -379,7 +468,7 @@ router.get('/display-pensions', function (req, res) {
                 if (allPensionDetails[i].pensionOwnerType == "M") {
                     manualPensionDetails.push(allPensionDetails[i])
                 }
-                else {
+                else if (allPensionDetails[i].pensionOwnerType == "E") {
                     examplePensionDetails.push(allPensionDetails[i])
                 }
             }
@@ -575,11 +664,14 @@ router.get('/update-pension', function (req, res) {
             req.app.locals.pensionDetails.pensionTypeArr = penTypes
 
             for (i=0; i < req.app.locals.pensionDetails.pensionTypeArr.length; i++) {
+                console.log('req.app.locals.pensionDetails.pensionType ' + req.app.locals.pensionDetails.pensionType)
+                console.log('req.app.locals.pensionDetails.pensionTypeArr[i].type ' + req.app.locals.pensionDetails.pensionTypeArr[i].type)
                 if (req.app.locals.pensionDetails.pensionType == req.app.locals.pensionDetails.pensionTypeArr[i].type) {
-                 req.app.locals.pensionDetails.pensionTypeArr[i].selected = 'selected'   
+                 req.app.locals.pensionDetails.pensionTypeArr[i].selected = 'selected'
+                 console.log('selected type ' + req.app.locals.pensionDetails.pensionTypeArr[i].type)   
                 }
             }
-
+            console.log('req.app.locals.pensionDetails.pensionTypeArr ' + JSON.stringify(req.app.locals.pensionDetails.pensionTypeArr))
             // Pension origin set the selected option
             req.app.locals.pensionDetails.pensionOriginArr = penOrigin
             for (i=0; i < req.app.locals.pensionDetails.pensionOriginArr.length; i++) {

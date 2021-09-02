@@ -23,20 +23,11 @@
               <thead class="govuk-table__head govuk-body-s">
                 <tr class="govuk-table__row">
                   <th scope="col" class="govuk-table__header">Pension provider</th>
-                  <th scope="col" class="govuk-table__header">Ref</th>
-                  <th scope="col" class="govuk-table__header">Pension name</th>
-                  <th scope="col" class="govuk-table__header">Date payable</th>
-                  <th scope="col" class="govuk-table__header"></th>
                 </tr>
               </thead>
               <tbody class="govuk-table__body govuk-body-xs">
                 <tr class="govuk-table__row">
-
                   <td class="govuk-table__cell">{{statePensionDetails.administratorName}}</td>
-                  <td class="govuk-table__cell">{{statePensionDetails.pensionReference}}</td>
-                  <td class="govuk-table__cell">{{statePensionDetails.pensionName}}</td>
-                  <td class="govuk-table__cell">{{statePensionDetails.pensionRetirementDate}}</td>
-                  <td class="govuk-table__cell"><a href="01-pension-details?pensionId={{statePensionDetails._id}}&providerId={{statePensionDetails.administratorReference}}">More information</a></td>
                </tr>
               </tbody>
             </table>
@@ -47,6 +38,24 @@
             <h2 class="govuk-heading-l">
               Workplace pensions
             </h2>
+            {% if not splitType %}
+            <div id="workplace-pension-all">    
+             <table class="govuk-table">
+                <thead class="govuk-table__head govuk-body-s">
+                  <tr class="govuk-table__row">
+                    <th scope="col" class="govuk-table__header">Pension provider</th>
+                 </tr>
+                </thead>
+                {% for details in workplacePensionDetails %}
+                  <tbody class="govuk-table__body govuk-body-xs">
+                    <tr class="govuk-table__row">
+                      <td class="govuk-table__cell">{{details.administratorName}}</td>
+                    </tr>
+                  </tbody>
+                {% endfor %} <!-- Workplace loop -->
+              </table>
+            </div>
+            {% else %} <!-- not split by type -->
             <div id="workplace-pension-DB">    
               {% if workplaceTypeDBFlag %}
                 <h3 class="govuk-heading-m">
@@ -56,20 +65,12 @@
                   <thead class="govuk-table__head govuk-body-s">
                     <tr class="govuk-table__row">
                       <th scope="col" class="govuk-table__header">Pension provider</th>
-                      <th scope="col" class="govuk-table__header">Ref</th>
-                      <th scope="col" class="govuk-table__header">Pension name</th>
-                      <th scope="col" class="govuk-table__header">Date payable</th>
-                      <th scope="col" class="govuk-table__header"></th>
                     </tr>
                   </thead>
                   {% for details in workplaceDBPensionDetails %}
                     <tbody class="govuk-table__body govuk-body-xs">
                       <tr class="govuk-table__row">
-                        <td class="govuk-table__cell">{{details.administratorName}}</td>
-                        <td class="govuk-table__cell">{{details.pensionReference}}</td>
-                        <td class="govuk-table__cell">{{details.pensionName}}</td>
-                        <td class="govuk-table__cell">{{details.pensionRetirementDate}}</td>
-                        <td class="govuk-table__cell"><a href="01-pension-details?pensionId={{details._id}}&providerId={{details.administratorReference}}">More information</a></td>       
+                        <td class="govuk-table__cell">{{details.administratorName}}</td>       
                       </tr>
                     </tbody>
                   {% endfor %} <!-- Workplace DB loop -->
@@ -85,20 +86,12 @@
                   <thead class="govuk-table__head govuk-body-s">
                     <tr class="govuk-table__row">
                       <th scope="col" class="govuk-table__header">Pension provider</th>
-                      <th scope="col" class="govuk-table__header">Ref</th>
-                      <th scope="col" class="govuk-table__header">Pension name</th>
-                      <th scope="col" class="govuk-table__header">Date payable</th>
-                      <th scope="col" class="govuk-table__header"></th>
                     </tr>
                   </thead>
                   {% for details in workplaceDCPensionDetails %}
                     <tbody class="govuk-table__body govuk-body-xs">
                       <tr class="govuk-table__row">
-                        <td class="govuk-table__cell">{{details.administratorName}}</td>
-                        <td class="govuk-table__cell">{{details.pensionReference}} {{details.pensionType}}</td>
-                        <td class="govuk-table__cell">{{details.pensionName}}</td>
-                        <td class="govuk-table__cell">{{details.pensionRetirementDate}}</td>
-                        <td class="govuk-table__cell"><a href="01-pension-details?pensionId={{details._id}}&providerId={{details.administratorReference}}">More information</a></td>       
+                        <td class="govuk-table__cell">{{details.administratorName}}</td>       
                       </tr>
                     </tbody>
                   {% endfor %} <!-- Workplace DC loop -->
@@ -108,26 +101,18 @@
             <div id="workplace-pension-other">    
               {% if workplaceTypeOtherFlag %}
                 <h3 class="govuk-heading-m">
-                  Defined contribution pensions
+                  Other workplace pensions
                 </h3>
                 <table class="govuk-table">
                   <thead class="govuk-table__head govuk-body-s">
                     <tr class="govuk-table__row">
                       <th scope="col" class="govuk-table__header">Pension provider</th>
-                      <th scope="col" class="govuk-table__header">Ref</th>
-                      <th scope="col" class="govuk-table__header">Pension name</th>
-                      <th scope="col" class="govuk-table__header">Date payable</th>
-                      <th scope="col" class="govuk-table__header"></th>
                     </tr>
                   </thead>
                   {% for details in workplaceOtherPensionDetails %}
                     <tbody class="govuk-table__body govuk-body-xs">
                       <tr class="govuk-table__row">
                         <td class="govuk-table__cell">{{details.administratorName}}</td>
-                        <td class="govuk-table__cell">{{details.pensionReference}} {{details.pensionType}}</td>
-                        <td class="govuk-table__cell">{{details.pensionName}}</td>
-                        <td class="govuk-table__cell">{{details.pensionRetirementDate}}</td>
-                        <td class="govuk-table__cell"><a href="01-pension-details?pensionId={{details._id}}&providerId={{details.administratorReference}}">More information</a></td>       
                       </tr>
                     </tbody>
                   {% endfor %} <!-- Workplace Other -->
@@ -136,11 +121,30 @@
             </div>
           {% endif %} <!-- Workplace -->
         </div>
+        {% endif %} <!-- split by type - workplace -->
+
         <div id="private-pension">    
           {% if privateFlag %}
             <h2 class="govuk-heading-l">
               Private pensions
             </h2>
+            {% if not splitType %}
+            <table class="govuk-table">
+                <thead class="govuk-table__head govuk-body-s">
+                  <tr class="govuk-table__row">
+                    <th scope="col" class="govuk-table__header">Pension provider</th>
+                  </tr>
+                </thead>
+                {% for details in privatePensionDetails %}
+                  <tbody class="govuk-table__body govuk-body-xs">
+                    <tr class="govuk-table__row">
+                      <td class="govuk-table__cell">{{details.administratorName}}</td>
+                    </tr>
+                  </tbody>
+                {% endfor %} <!-- Private DC loop-->
+                </table>
+ 
+            {% else %} <!-- split by type -->
             <div id="private-pension-DC">
               {% if privateTypeDCFlag %}
               <h3 class="govuk-heading-m">
@@ -150,20 +154,12 @@
                 <thead class="govuk-table__head govuk-body-s">
                   <tr class="govuk-table__row">
                     <th scope="col" class="govuk-table__header">Pension provider</th>
-                    <th scope="col" class="govuk-table__header">Ref</th>
-                    <th scope="col" class="govuk-table__header">Pension name</th>
-                    <th scope="col" class="govuk-table__header">Date payable</th>
-                    <th scope="col" class="govuk-table__header"></th>
                   </tr>
                 </thead>
                 {% for details in privateDCPensionDetails %}
                   <tbody class="govuk-table__body govuk-body-xs">
                     <tr class="govuk-table__row">
                       <td class="govuk-table__cell">{{details.administratorName}}</td>
-                      <td class="govuk-table__cell">{{details.pensionReference}} {{details.pensionType}}</td>
-                      <td class="govuk-table__cell">{{details.pensionName}}</td>
-                      <td class="govuk-table__cell">{{details.pensionRetirementDate}}</td>
-                      <td class="govuk-table__cell"><a href="01-pension-details?pensionId={{details._id}}&providerId={{details.administratorReference}}">More information</a></td>       
                     </tr>
                   </tbody>
                 {% endfor %} <!-- Private DC loop-->
@@ -179,20 +175,12 @@
                 <thead class="govuk-table__head govuk-body-s">
                   <tr class="govuk-table__row">
                     <th scope="col" class="govuk-table__header">Pension provider</th>
-                    <th scope="col" class="govuk-table__header">Ref</th>
-                    <th scope="col" class="govuk-table__header">Pension name</th>
-                    <th scope="col" class="govuk-table__header">Date payable</th>
-                    <th scope="col" class="govuk-table__header"></th>
                   </tr>
                 </thead>
                 {% for details in privateOtherPensionDetails %}
                   <tbody class="govuk-table__body govuk-body-xs">
                     <tr class="govuk-table__row">
                       <td class="govuk-table__cell">{{details.administratorName}}</td>
-                      <td class="govuk-table__cell">{{details.pensionReference}} {{details.pensionType}}</td>
-                      <td class="govuk-table__cell">{{details.pensionName}}</td>
-                      <td class="govuk-table__cell">{{details.pensionRetirementDate}}</td>
-                      <td class="govuk-table__cell"><a href="01-pension-details?pensionId={{details._id}}&providerId={{details.administratorReference}}">More information</a></td>       
                     </tr>
                   </tbody>
                 {% endfor %} <!-- Private other loop -->
@@ -203,6 +191,7 @@
             </div>
           {% endif %} <!-- not all pensions flag -->
         </div>
+        {% endif %} <!-- split by type - private -->
         <div id="all-pensions">    
           {% if allFlag %}
             <h2 class="govuk-heading-l">
@@ -212,18 +201,12 @@
               <thead class="govuk-table__head govuk-body-s">
                 <tr class="govuk-table__row">
                   <th scope="col" class="govuk-table__header">Pension provider</th>
-                  <th scope="col" class="govuk-table__header">Ref</th>
-                  <th scope="col" class="govuk-table__header">Pension name</th>
-                  <th scope="col" class="govuk-table__header">Date payable</th>
-                  <th scope="col" class="govuk-table__header"></th>
                 </tr>
               </thead>
               {% for details in pensionDetails %}
                 <tbody class="govuk-table__body govuk-body-xs">
                   <tr class="govuk-table__row">
                     <td class="govuk-table__cell">{{details.administratorName}}</td>
-                    <td class="govuk-table__cell">{{details.pensionName}}</td>
-                    <td class="govuk-table__cell"><a href="01-pension-details?pensionId={{details._id}}&providerId={{details.administratorReference}}">More information</a></td>
                  </tr>
                 </tbody>
               {% endfor %}
