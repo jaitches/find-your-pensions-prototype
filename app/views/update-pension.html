@@ -196,86 +196,25 @@
         }) %}
           <div class="govuk-form-group">
             <label class="govuk-label" for="ERIType">
-              Pension type
+              ERI type
             </label>
-           <select class="govuk-select" id="ERIType" name="eriType">
+           <select class="govuk-select" id="ERIType" name="ERIType">
             {% for ERIType in pensionDetails.pensionERITypeArr %}
               <option value={{ERIType.type}} {% if ERIType.selected %} selected {% endif %}>{{ERIType.text}}</option>
             {% endfor %}  
             </select>
           </div>
-          
-        {{ govukSelect({
-            id: "ERIType",
-            name: "ERIType",
-            label: {
-              text: "ERI type"
-            },
-            items: [
-              {
-                value: "",
-                text: "N/A"
-              },
-              {
-                value: "DC",
-                text: "Defined contribution"
-              },              
-              {
-                value: "DB",
-                text: "Defined benefit"
-              },           
-              {
-                value: "DBL",
-                text: "A separately accrued lump sum (not commutation)"
-              },              
-              {
-                value: "AVC",
-                text: "Additional voluntary contribution"
-              },              
-              {
-                value: "CDI",
-                text: "Collective DC (CC) benefits expressed as regular income"
-              },           
-              {
-                value: "CDL",
-                text: "Collective DC (CC) benefits expressed as lump sum"
-              },              
-              {
-                value: "CBS",
-                text: "Cash balance scheme"
-              }
-            ]
-          }) }}
 
-          {{ govukSelect({
-            id: "ERIBasis",
-            name: "ERIBasis",
-            label: {
-              text: "How ERI calculated"
-            },
-            items: [
-              {
-                value: "",
-                text: "N/A"
-              },
-              {
-                value: "SMPI",
-                text: "SMPI - statutory money purchase illustration"
-              },              
-              {
-                value: "COBS",
-                text: "COBS - Income illustration FCA COBS rules"
-              },             
-              {
-                value: "BS",
-                text: "BS - Benefit specific method no allowance of future build-up of benefits"
-              },              
-              {
-                value: "BSF",
-                text: "BSF - Benefit specific method including future build-up of benefits"
-              }
-            ]
-          }) }}
+          <div class="govuk-form-group">
+            <label class="govuk-label" for="ERIBasis">
+              How ERI calculated
+            </label>
+           <select class="govuk-select" id="ERIBasis" name="ERIBasis">
+            {% for ERIBasis in pensionDetails.pensionERIBasis %}
+              <option value={{ERIBasis.type}} {% if ERIBasis.selected %} selected {% endif %}>{{ERIBasis.text}}</option>
+            {% endfor %}  
+            </select>
+          </div>
 
           <div class="govuk-form-group">
             <label for="ERICalculationDate" class="govuk-body">Date of ERI calculation</label>
@@ -320,54 +259,22 @@
             isPageHeading: true
           }
         }) %}
-
-         {{ govukSelect({
-            id: "accruedType",
-            name: "accruedType",
-            label: {
-              text: "Accrued type"
-            },
-            items: [
-              {
-                value: "",
-                text: "N/A"
-              },
-              {
-                value: "DC",
-                text: "Defined contribution"
-              },              
-              {
-                value: "DB",
-                text: "Defined benefit"
-              },           
-              {
-                value: "DBL",
-                text: "A separately accrued lump sum (not commutation)"
-              },              
-              {
-                value: "AVC",
-                text: "Additional voluntary contribution"
-              },              
-              {
-                value: "CDI",
-                text: "Collective DC (CC) benefits expressed as regular income"
-              },           
-              {
-                value: "CDL",
-                text: "Collective DC (CC) benefits expressed as lump sum"
-              },              
-              {
-                value: "CBS",
-                text: "Cash balance scheme"
-              }
-            ]
-          }) }}
+          <div class="govuk-form-group">
+            <label class="govuk-label" for="accruedType">
+              Accrued type
+            </label>
+           <select class="govuk-select" id="accruedType" name="accruedType">
+            {% for accrType in pensionDetails.pensionAccruedTypeArr %}
+              <option value={{accrType.type}} {% if accrType.selected %} selected {% endif %}>{{accrType.text}}</option>
+            {% endfor %}  
+            </select>
+          </div>         
 
           <div class="govuk-form-group">
-            <label class="govuk-label" for="pensionAccruedAmtType">
+            <label class="govuk-label" for="accruedAmountType">
               Accrued amount type
             </label>
-           <select class="govuk-select" id="pensionAccruedAmtType" name="pensionAccruedAmtType">
+           <select class="govuk-select" id="accruedAmountType" name="accruedAmountType">
             {% for penAccAmtType in pensionDetails.pensionAccruedAmtTypeArr %}
               <option value={{penAccAmtType.type}} {% if penAccAmtType.selected %} selected {% endif %}>{{penAccAmtType.text}}</option>
             {% endfor %}  
@@ -405,51 +312,7 @@
     </div>
 
     <div class="govuk-grid-column-one-third">
-      <h2 class="govuk-heading-m" id="subsection-title">
-        Prototypes
-      </h2>
-      <nav role="navigation" aria-labelledby="subsection-title">
-        <ul class="govuk-list govuk-!-font-size-16">
-          <li>
-            <a href="/02-find-view/01-start">Find pensions</a>
-          </li>
-          <li>
-            <a href="/03-find-accrued/02-start">Find and accrued pensions</a>
-          </li>            
-          <li>
-            <a href="/04-find-accrued-estimated-pensions/03-start">Find, accrued and estimated pensions</a>
-          </li>
-        </ul>
-      </nav>
-      <h2 class="govuk-heading-m" id="subsection-title">
-        Manage data
-      </h2>
-      <h3 class="govuk-heading-s" id="subsection-title">
-        Providers
-      </h3>
-      <nav role="navigation" aria-labelledby="subsection-title">
-        <ul class="govuk-list govuk-!-font-size-16">
-          <li>
-            <a href="add-provider">Add a pension provider</a>
-          </li>
-          <li>
-            <a href="display-providers">Pension providers list</a>
-          </li>
-        </ul>
-      </nav>
-      <h3 class="govuk-heading-s" id="subsection-title">
-        Pensions
-      </h3>
-      <nav>
-        <ul class="govuk-list govuk-!-font-size-16">
-          <li>
-            <a href="add-pension">Add a pension</a> 
-          </li>
-          <li>
-            <a href="display-pensions">Pensions list</a>
-          </li>
-        </ul>
-      </nav>
+      {% include "sidebar-nav.html" %}
     </div>
   </div>
 

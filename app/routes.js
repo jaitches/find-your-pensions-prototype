@@ -24,13 +24,13 @@ const penStatus = [
     {type: "I", text: "Inactive", selected : ""}
 ]
 const penAccAmtType = [
-    {type: "", text: "N/A", selected : ""},
+    {type: "N/A", text: "N/A", selected : ""},
     {type: "POT", text: "Valuation of a DC pension pot", selected : ""},
     {type: "INC", text: "Calculation of an accrued recurring income", selected : ""},
     {type: "LS", text: "Calculation of the accrued value of DBLS/CDCLS type", selected : ""}
 ]
 const penEriOrAccrType = [
-    {type: "", text: "N/A", selected : ""},
+    {type: "N/A", text: "N/A", selected : ""},
     {type: "DC", text: "Defined contribution", selected : ""},              
     {type: "DB", text: "Defined benefit", selected : ""},           
     {type: "DBL", text: "A separately accrued lump sum (not commutation)", selected : ""},              
@@ -41,7 +41,7 @@ const penEriOrAccrType = [
 ]
 const penHowEriCalc = [
               {
-                type: "",
+                type: "N/A",
                 text: "N/A", selected : ""
               },
               {
@@ -62,23 +62,11 @@ const penHowEriCalc = [
               }
             ]
 const penAccrAmtType = [
-              {
-                value: "",
-                text: "N/A", selected : ""
-              },
-              {
-                value: "POT",
-                text: "Valuation of a DC pension pot", selected : ""
-              },              
-              {
-                value: "INC",
-                text: "Calculation of an accrued recurring income", selected : ""
-              },              
-              {
-                value: "LS",
-                text: "Calculation of the accrued value of DBLS/CDCLS type", selected : ""
-              }
-            ]
+    {type: "N/A",text: "N/A", selected : ""},
+    {type: "POT", text: "Valuation of a DC pension pot", selected : ""},              
+    {type: "INC",text: "Calculation of an accrued recurring income", selected : ""},              
+    {type: "LS", text: "Calculation of the accrued value of DBLS/CDCLS type", selected : ""}
+]
 
 const prototypeDetails = [
     {number: 1, text: "Find only", startUrl: "01-find-only/01-start", displayUrl: "01-find-only/01-display-pensions"},
@@ -130,7 +118,7 @@ router.post('/select-prototype', function (req, res) {
 
 
 //    res.redirect('prototype-options')
-    res.redirect(ptypeDetails.startUrl)
+    res.redirect(ptypeDetails.startUrl + '?ptype=' + ptypeNumber)
 // get the prototype description from the list
     function findPtypeText (ptypeNo, prototypeArray) {
         for (let i=0; i < prototypeArray.length; i++) {
@@ -146,59 +134,6 @@ router.post('/select-prototype', function (req, res) {
     }
 
 })
-/*
-// choose which prototype options to apply
-router.post('/prototype-options', function (req, res) {
-    req.app.locals.splitOrigin = false
-    req.app.locals.splitType = false
-    let ptypeOption = req.session.data['ptype-option']
-
-    if (ptypeOption) {
-
-        for (i=0; i < ptypeOption.length; i++ ) {
-            if (ptypeOption[i] == 'split-origin') {
-                req.app.locals.splitOrigin =true
-            }
-            if (ptypeOption[i] == 'split-type') {
-                req.app.locals.splitType =true
-            }
-        }
-    }
-    console.log('req.app.locals.ptype.number ' + req.app.locals.ptype.number)
-    switch (req.app.locals.ptype.number) {
-        case 1:
-        res.redirect('02-find-view/01-start')
-        break;     
-        case 2:
-        res.redirect('03-find-accrued/02-start')        
-        break;     
-        default:
-        res.redirect('04-find-accrued-estimated/03-start')
-
-
-    }
-})
-
-// The user enters their name this is used to select the documents from MongoDB
-// the researcher will already have created their records
-router.post('/enter-your-name/:prototypeId', function (req, res) {
-
-    pensionOwner = req.session.data['owner-name']
-    if (req.params.prototypeId == "01") {
-        res.redirect('/01-find-view/01-display-pensions?owner=' + pensionOwner)
-    }
-    else if (req.params.prototypeId == "02") {
-        res.redirect('/02-find-view/02-display-pensions')
-    }    
-    else if (req.params.prototypeId == "02") {
-        res.redirect('/03-find-accrued/03-display-pensions')
-    }
-    else {
-        res.redirect('/04-find-accrued-estimated/04-display-pension')
-    }
-})
-*/
-
 //
 // Get the documents from MongoDB to display fo rall prototypes
 //
@@ -437,8 +372,8 @@ router.post('/manage-pensions', function (req, res) {
     if (whatDataToManage == "add-pension") {
         res.redirect('add-pension')
     }
-    else if (whatDataToManage == "display-pensions") {
-        res.redirect('display-pensions')
+    else if (whatDataToManage == "pensions-list") {
+        res.redirect('pensions-list')
     }    
     else if (whatDataToManage == "add-provider") {
         res.redirect('add-provider')
@@ -453,7 +388,7 @@ router.post('/manage-pensions', function (req, res) {
 //
 
 // Display pensions
-router.get('/display-pensions', function (req, res) {
+router.get('/pensions-list', function (req, res) {
 // connect to MongoDB to add the doc (record) to the collection (table)
     async function findAllPensions() {
         const client = new MongoClient(uri);
@@ -477,7 +412,7 @@ router.get('/display-pensions', function (req, res) {
         } finally {
             // Close the connection to the MongoDB cluster
             await client.close();    
-            res.render('display-pensions')
+            res.render('pensions-list')
         }
     }
 
@@ -643,10 +578,15 @@ router.post('/add-pension-details', function (req, res) {
 
 router.get('/update-pension', function (req, res) {
     // find the pension providers for the select options
+
     async function findAndDisplayPension() { 
+
         let pensionId = req.query.pensionId
+        // initialise variables
+
         req.app.locals.pensionProviders = []
-        req.app.locals.pensionDetail = []
+        req.app.locals.pensionDetails = []
+
         req.app.locals.pensionId = req.query.pensionId
 //        console.log('req.app.locals.pensionId ' + req.app.locals.pensionId)
 
@@ -658,20 +598,16 @@ router.get('/update-pension', function (req, res) {
             req.app.locals.pensionProviders = await getProviders(client)
             req.app.locals.pensionDetails = await getPensionById(client, pensionId)
 
-// *** for the HTML select set the selected option to the value in document in MongoDB 
+        // *** for the HTML select component -  set the selected option to the value in document in MongoDB 
 
             // Pension type set the selected option
             req.app.locals.pensionDetails.pensionTypeArr = penTypes
 
             for (i=0; i < req.app.locals.pensionDetails.pensionTypeArr.length; i++) {
-                console.log('req.app.locals.pensionDetails.pensionType ' + req.app.locals.pensionDetails.pensionType)
-                console.log('req.app.locals.pensionDetails.pensionTypeArr[i].type ' + req.app.locals.pensionDetails.pensionTypeArr[i].type)
                 if (req.app.locals.pensionDetails.pensionType == req.app.locals.pensionDetails.pensionTypeArr[i].type) {
                  req.app.locals.pensionDetails.pensionTypeArr[i].selected = 'selected'
-                 console.log('selected type ' + req.app.locals.pensionDetails.pensionTypeArr[i].type)   
                 }
             }
-            console.log('req.app.locals.pensionDetails.pensionTypeArr ' + JSON.stringify(req.app.locals.pensionDetails.pensionTypeArr))
             // Pension origin set the selected option
             req.app.locals.pensionDetails.pensionOriginArr = penOrigin
             for (i=0; i < req.app.locals.pensionDetails.pensionOriginArr.length; i++) {
@@ -680,7 +616,7 @@ router.get('/update-pension', function (req, res) {
                 }
             }
 
-            // Pension origin set the selected option
+            // Pension status set the selected option
             req.app.locals.pensionDetails.pensionStatusArr = penStatus
             for (i=0; i < req.app.locals.pensionDetails.pensionStatusArr.length; i++) {
                 if (req.app.locals.pensionDetails.pensionStatus == req.app.locals.pensionDetails.pensionStatusArr[i].type) {
@@ -693,14 +629,15 @@ router.get('/update-pension', function (req, res) {
             for (i=0; i < req.app.locals.pensionDetails.pensionERITypeArr.length; i++) {
                 if (req.app.locals.pensionDetails.ERIType == req.app.locals.pensionDetails.pensionERITypeArr[i].type) {
                  req.app.locals.pensionDetails.pensionERITypeArr[i].selected = 'selected'   
+
                 }
             }            
 
-            // Pension how ERI calculated
-            req.app.locals.pensionDetails.pensionERICalcArr = penHowEriCalc
-            for (i=0; i < req.app.locals.pensionDetails.pensionERICalcArr.length; i++) {
-                if (req.app.locals.pensionDetails.ERICalcArr == req.app.locals.pensionDetails.pensionERICalcArr[i].type) {
-                 req.app.locals.pensionDetails.pensionERICalcArr[i].selected = 'selected'   
+            // Pension how ERI calculated - Basis
+            req.app.locals.pensionDetails.pensionERIBasis = penHowEriCalc
+            for (i=0; i < req.app.locals.pensionDetails.pensionERIBasis.length; i++) {
+               if (req.app.locals.pensionDetails.ERIBasis == req.app.locals.pensionDetails.pensionERIBasis[i].type) {
+                    req.app.locals.pensionDetails.pensionERIBasis[i].selected = 'selected'   
                 }
             }
 
@@ -710,7 +647,8 @@ router.get('/update-pension', function (req, res) {
                 if (req.app.locals.pensionDetails.accruedType == req.app.locals.pensionDetails.pensionAccruedTypeArr[i].type) {
                  req.app.locals.pensionDetails.pensionAccruedTypeArr[i].selected = 'selected'   
                 }
-            }   
+            }  
+            console.log('options ' +  JSON.stringify(req.app.locals.pensionDetails.pensionAccruedTypeArr))
 
             // Pension accrued amount type set the selected option
             req.app.locals.pensionDetails.pensionAccruedAmtTypeArr = penAccrAmtType
@@ -869,7 +807,7 @@ router.post('/update-pension-details', function (req, res) {
         } finally {
             // Close the connection to the MongoDB cluster
             await client.close()
-            res.redirect('display-pensions')
+            res.redirect('pensions-list')
         }
     }
 
@@ -900,7 +838,7 @@ router.post('/delete-pension/:id', function (req, res) {
         } finally {
             // Close the connection to the MongoDB cluster
             await client.close()
-            res.redirect ('/display-pensions')   
+            res.redirect ('/pensions-list')   
         }
     }
     deletePension().catch(console.error)

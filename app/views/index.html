@@ -51,7 +51,7 @@
 
       <h2 class="govuk-heading-m">Before you start</h2>
       <p>
-        You must set up pensions for the participant before you can use the prototype. This can be done by <a href="add-pensions">adding new pensions</a> or by copying a pension from the <a href="display-pensions#example-pensions">list of example pensions</a>. This will create a new pension and allow you to update the information.
+        You must set up pensions for the participant before you can use the prototype. This can be done by <a href="add-pensions">adding new pensions</a> or by copying a pension from the <a href="pensions-list#example-pensions">list of example pensions</a>. This will create a new pension and allow you to update the information.
       </p>
 
       <p>
@@ -67,41 +67,7 @@
     <div class="govuk-grid-column-one-third">
 
       <aside class="app-related-items" role="complementary">
-        <h2 class="govuk-heading-m" id="subsection-title">
-          Prototypes
-        </h2>
-        <nav role="navigation" aria-labelledby="subsection-title">
-          <ul class="govuk-list govuk-!-font-size-16">
-            <li>
-              <a href="/02-find-view/01-start">Find pensions</a>
-            </li>
-            <li>
-              <a href="/03-find-accrued/02-start">Find and accrued pensions</a>
-            </li>            
-            <li>
-              <a href="04-find-accrued-estimatedd-pensions">Find, accrued and estimated pensions</a>
-            </li>
-          </ul>
-        </nav>
-        <h2 class="govuk-heading-m" id="subsection-title">
-          Manage data
-        </h2>
-        <nav role="navigation" aria-labelledby="subsection-title">
-          <ul class="govuk-list govuk-!-font-size-16">
-            <li>
-              <a href="add-provider">Add a pension provider</a>
-            </li>
-            <li>
-              <a href="display-providers">Pension providers list</a>
-            </li>
-            <li>
-              <a href="add-pension">Add pension details</a> 
-            </li>
-            <li>
-              <a href="display-pensions">Pensions list</a>
-            </li>
-          </ul>
-        </nav>
+        {% include "sidebar-nav.html" %}
       </aside>
 
     </div>
