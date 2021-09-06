@@ -33,7 +33,7 @@
 
         {% call govukFieldset({
           legend: {
-            text: "Pension owner",
+            text: "Pension description",
             classes: "govuk-fieldset__legend--l",
             isPageHeading: true
           }
@@ -41,7 +41,7 @@
 
           {{ govukInput({
             label: {
-              html: 'Enter the name of the pension owner'
+              html: 'Enter a brief description of the pension'
             },
             classes: "govuk-!-width-two-thirds",
             id: "pensionOwner",

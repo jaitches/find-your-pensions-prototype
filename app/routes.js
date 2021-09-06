@@ -582,7 +582,23 @@ router.get('/update-pension', function (req, res) {
     async function findAndDisplayPension() { 
 
         let pensionId = req.query.pensionId
-        // initialise variables
+        // initialise variables - I have no idea how the selected values are being updated in the const copied into the seesion variables
+    
+        for (i=0; i < penTypes.length; i++) {
+            penTypes[i].selected = ""
+        }
+        for (i=0; i < penOrigin.length; i++) {
+            penOrigin[i].selected = ""
+        }
+        for (i=0; i < penStatus.length; i++) {
+            penStatus[i].selected = ""
+        }
+        for (i=0; i < penEriOrAccrType.length; i++) {
+            penEriOrAccrType[i].selected = ""
+        }
+        for (i=0; i < penAccrAmtType.length; i++) {
+            penAccrAmtType[i].selected = ""
+        }
 
         req.app.locals.pensionProviders = []
         req.app.locals.pensionDetails = []
@@ -597,10 +613,13 @@ router.get('/update-pension', function (req, res) {
             await client.connect();
             req.app.locals.pensionProviders = await getProviders(client)
             req.app.locals.pensionDetails = await getPensionById(client, pensionId)
+            // reset selected in penTypes 
+
 
         // *** for the HTML select component -  set the selected option to the value in document in MongoDB 
 
             // Pension type set the selected option
+
             req.app.locals.pensionDetails.pensionTypeArr = penTypes
 
             for (i=0; i < req.app.locals.pensionDetails.pensionTypeArr.length; i++) {
@@ -648,7 +667,6 @@ router.get('/update-pension', function (req, res) {
                  req.app.locals.pensionDetails.pensionAccruedTypeArr[i].selected = 'selected'   
                 }
             }  
-            console.log('options ' +  JSON.stringify(req.app.locals.pensionDetails.pensionAccruedTypeArr))
 
             // Pension accrued amount type set the selected option
             req.app.locals.pensionDetails.pensionAccruedAmtTypeArr = penAccrAmtType
@@ -972,11 +990,11 @@ router.post('/add-provider-details', function (req, res) {
     let administrator_Name = req.session.data['administrator-name']
     let administrator_URL = "https://" + administrator_Name.toLowerCase().replace(/ /g,"") + ".co.uk"
     let administrator_Email = "info@" + administrator_Name.toLowerCase().replace(/ /g,"") + ".co.uk"
-    let administrator_Phone_Number = "01" + Math.floor(Math.random() * 1000).toString().substring(1,3) + " 020500"
-    let administrator_Annual_Report_URL = "https://" + administrator_Name.toLowerCase().replace(/ /g,"") + "/annual-report.co.uk"
-    let administrator_Costs_Charges_URL = "https://" + administrator_Name.toLowerCase().replace(/ /g,"") + "/costs-and-charges.co.uk"
-    let administrator_Implementation_URL = "https://" + administrator_Name.toLowerCase().replace(/ /g,"") + "/implementation-statement.co.uk"
-    let administrator_SIP_URL = "https://" + administrator_Name.toLowerCase().replace(/ /g,"") + "/statement-of-investment.co.uk"
+    let administrator_Phone_Number = "01234 020500"
+    let administrator_Annual_Report_URL = administrator_URL + "/annual-report"
+    let administrator_Costs_Charges_URL = administrator_URL + "/costs-and-charges"
+    let administrator_Implementation_URL = administrator_URL  + "/implementation-statement"
+    let administrator_SIP_URL = administrator_URL + "/statement-of-investment.co.uk"
 
 // connect to MongoDB to add the doc (record) to the collection (table)
     async function addProvider() {
