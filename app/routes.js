@@ -877,6 +877,33 @@ router.post('/delete-pension/:id', function (req, res) {
 
 })
 
+// the delete button from the list of pensions
+
+router.post('/delete-all-pensions', function (req, res) {
+
+    async function deleteAllPension() {
+        
+        const client = new MongoClient(uri)
+
+        try {
+            await client.connect()
+            await deletePensions(client, req.params.id)
+        } finally {
+            // Close the connection to the MongoDB cluster
+            await client.close()
+            res.redirect ('/pensions-list')   
+        }
+    }
+    deleteAllPension().catch(console.error)
+
+    async function deletePensions(client, pensionId) {
+        const result = await client.db("pensions").collection("pensionDetails")
+            .deleteMany({pensionOwnerType: "M"});
+        console.log(`${result.deletedCount} document(s) was/were deleted.`)
+    }
+
+})
+
 router.post('/copy-pension/:id', function (req, res) {
 
     async function copyPension() {

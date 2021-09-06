@@ -44,7 +44,10 @@
             <th scope="col" class="govuk-table__header">ERI Income</th>
             <th scope="col" class="govuk-table__header">Date ERI calculated</th>
             <th scope="col" class="govuk-table__header">Date payable</th>
-            <th scope="col" class="govuk-table__header"></th>
+            <th scope="col" class="govuk-table__header">            
+              <form action="/delete-all-pensions" method="post" class="form">
+                <td class="govuk-table__cell" onclick="deleteAllPensions()"><button class="govuk-button govuk-button--warning" data-module="govuk-button">Delete All</button></td>
+              </form></th>
             <th scope="col" class="govuk-table__header"></th>
           </tr>
         </thead>
@@ -67,8 +70,8 @@
               <td class="govuk-table__cell" onclick="deleteRow()"><button class="govuk-button govuk-button--warning" data-module="govuk-button">Delete</button></td>
             </form>
           </tr>
+        {% endfor %}
         </tbody>
-      {% endfor %}
       </table>
       <h2 class="govuk-heading-l" id="example-pensions">
         Example pensions

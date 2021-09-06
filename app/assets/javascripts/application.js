@@ -19,7 +19,14 @@ function deleteRow() {
 	}
 }
 function deleteProviderRow() {
-	if (confirm('Do you want to delete this pension record?')) {
+	if (confirm('Do you want to delete this provider record?')) {
+	} 
+	else {
+	   return false;
+	}
+}
+function deleteAllPensions() {
+	if (confirm('Do you want to delete ALL the pension records?')) {
 	} 
 	else {
 	   return false;
