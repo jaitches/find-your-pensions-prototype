@@ -1,0 +1,28 @@
+
+{% extends "layout_unbranded.html" %}
+
+{% block pageTitle %}
+  {{serviceName}} - Your pension providers
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      <div class="loading loading--full-height">
+      </div>
+      <p class="loading-message">
+        Fetching your pensions ...
+      </p>
+    </div>
+  </div>
+{% endblock %}
+
+{% block bodyEnd %}
+<script>
+  var timeout = 3000;
+
+  setTimeout(function () {
+     window.location = "/02-display-pensions.html"
+  }, timeout);
+</script>
+{% endblock %}

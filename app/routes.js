@@ -69,10 +69,10 @@ const penAccrAmtType = [
 ]
 
 const prototypeDetails = [
-    {number: 1, text: "Find only", startUrl: "01-find-only/01-start", displayUrl: "01-find-only/01-display-pensions"},
-    {number: 2, text: "Find and view", startUrl: "02-find-view/02-start", displayUrl: "02-find-view/02-display-pensions"},
-    {number: 3, text: "Find and accrued", startUrl: "03-find-accrued/03-start", displayUrl: "03-find-accrued/03-display-pensions"},
-    {number: 4, text: "Find, accrued and estimated", startUrl: "04-find-accrued-estimated/04-start", displayUrl: "04-find-accrued-estimated/04-display-pensions"}
+    {number: 1, text: "Find only", urlPath: "01-find-only", startUrl: "01-find-only/01-start", displayUrl: "01-find-only/01-display-pensions"},
+    {number: 2, text: "Find and view", urlPath: "02-find-view", startUrl: "02-find-view/02-start", displayUrl: "02-find-view/02-display-pensions"},
+    {number: 3, text: "Find and accrued", urlPath: "03-find-accrued", startUrl: "03-find-accrued/03-start", displayUrl: "03-find-accrued/03-display-pensions"},
+    {number: 4, text: "Find, accrued and estimated", urlPath: "04-find-accrued-estimated", startUrl: "04-find-accrued-estimated/04-start", displayUrl: "04-find-accrued-estimated/04-display-pensions"}
 ]
 
 
@@ -93,6 +93,7 @@ router.post('/display-or-manage-data', function (req, res) {
 
 // choose which prototype to display
 router.post('/select-prototype', function (req, res) {
+
     const selectPrototype = req.session.data['select-prototype']
     req.app.locals.ptype = {}
 //    console.log('selectPrototype ' + selectPrototype)
@@ -134,9 +135,14 @@ router.post('/select-prototype', function (req, res) {
     }
 
 })
-//
+
+// enter your details
+router.post('/enter-your-details', function (req, res) {
+
+    res.redirect('02-find-view/02-display-pensions')
+})
+
 // Get the documents from MongoDB to display fo rall prototypes
-//
 // the * is a wildcard for the prototype number in this get
 router.get('/*-display-pensions', function (req, res) {
 
@@ -312,6 +318,7 @@ router.get('/*-display-pensions', function (req, res) {
     }
 })
 
+
 // 01 additional page of pension details 
 router.get('/02-find-view/02-pension-details', function (req, res) {
 
@@ -331,13 +338,14 @@ router.get('/02-find-view/02-pension-details', function (req, res) {
             req.app.locals.pensionDetails = await getPensionById(client, pensionId)
             req.app.locals.pensionProvider = await getProviderById(client, providerId)
  //           console.log('req.app.locals.pensionProvider.administratorURL ' + req.app.locals.pensionProvider.administratorURL)
-            
-            req.app.locals.pensionProvider.administratorShortURL = req.app.locals.pensionProvider.administratorURL.replace(/^https?\:\/\//i, "")
-            req.app.locals.pensionProvider.administratorAnnualReportShortURL = req.app.locals.pensionProvider.administratorAnnualReportURL.replace(/^https?\:\/\//i, "")
-            req.app.locals.pensionProvider.administratorCostsChargesShortPURL = req.app.locals.pensionProvider.administratorCostsChargesURL.replace(/^https?\:\/\//i, "")
-            req.app.locals.pensionProvider.administratorImplementationShortURL = req.app.locals.pensionProvider.administratorImplementationURL.replace(/^https?\:\/\//i, "")
-            req.app.locals.pensionProvider.administratorShortSIPURL = req.app.locals.pensionProvider.administratorSIPURL.replace(/^https?\:\/\//i, "")
-            console.log('req.app.locals.pensionProvider.administratorShortURL ' +req.app.locals.pensionProvider.administratorShortURL).replace(/^https?\:\/\//i, "")
+            if (req.app.locals.pensionProvider.administratorURL){
+                req.app.locals.pensionProvider.administratorShortURL = req.app.locals.pensionProvider.administratorURL.replace(/^https?\:\/\//i, "")
+                req.app.locals.pensionProvider.administratorAnnualReportShortURL = req.app.locals.pensionProvider.administratorAnnualReportURL.replace(/^https?\:\/\//i, "")
+                req.app.locals.pensionProvider.administratorCostsChargesShortPURL = req.app.locals.pensionProvider.administratorCostsChargesURL.replace(/^https?\:\/\//i, "")
+                req.app.locals.pensionProvider.administratorImplementationShortURL = req.app.locals.pensionProvider.administratorImplementationURL.replace(/^https?\:\/\//i, "")
+                req.app.locals.pensionProvider.administratorShortSIPURL = req.app.locals.pensionProvider.administratorSIPURL.replace(/^https?\:\/\//i, "")
+                console.log('req.app.locals.pensionProvider.administratorShortURL ' +req.app.locals.pensionProvider.administratorShortURL).replace(/^https?\:\/\//i, "")
+            }
 
         } finally {
             // Close the connection to the MongoDB cluster

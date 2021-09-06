@@ -53,3 +53,43 @@ $govuk-assets-path: '/govuk/assets/';
 	border-color: #058282;
 
 }
+//
+// loading wheel
+//
+.loading {
+  display: flex;
+  justify-content: center;
+}
+
+.loading--full-height {
+  align-items: center;
+  height: 100%;
+}
+
+.loading::after {
+  content: "";
+  width: 50px;
+  height: 50px;
+  border: 10px solid #dddddd;
+  border-top-color: #058282;
+  border-radius: 50%;
+  transform: rotate(0.16turn);
+  animation: loading 1s ease infinite;
+}
+
+@keyframes loading {
+  /* Safari support */
+  from {
+    transform: rotate(0turn);
+  }
+  
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+.loading-message {
+	text-align: center;
+	color: grey;
+	padding-top:20px
+}
