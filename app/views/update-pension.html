@@ -43,7 +43,7 @@
             {% for name in pensionProviders %}
             {% set administratorDetails =  name._id + ":" + name.administratorName %}
 
-            <option value="{{administratorDetails}}" {% if name.selected %} selected {% endif %}>{{name.administratorName}} {{name.selected}}</option>
+            <option value="{{administratorDetails}}" {% if name.selected %} selected {% endif %}>{{name.administratorName}}</option>
 
             {% endfor %}
 

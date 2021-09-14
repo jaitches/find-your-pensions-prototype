@@ -4,6 +4,7 @@ const fs = require('fs')
 const { MongoClient } = require('mongodb');
 const { ObjectId } = require('mongodb')
 const uri = 'mongodb+srv://' + process.env.MONGODB_URI + '?retryWrites=true&w=majority'
+const dataBaseName = process.env.PENSIONS_DB
 const monthNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
 // Use these arrays to store the options for the select element when updating the pensions
 const penTypes = [
@@ -237,7 +238,7 @@ router.get('/*-display-pensions', function (req, res) {
     findPensionsByOwner().catch(console.error)
 
     async function getPensionsByOwner(client) {
-        const results = await client.db("pensions").collection("pensionDetails")
+        const results = await client.db(dataBaseName).collection("pensionDetails")
         // find all documents
         .find({pensionOwnerType: "M"})
         // save them to an array
@@ -248,7 +249,7 @@ router.get('/*-display-pensions', function (req, res) {
     }    
 
     async function getAllPensions(client) {
-        const results = await client.db("pensions").collection("pensionDetails")
+        const results = await client.db(dataBaseName).collection("pensionDetails")
         // find all documents
         .find({pensionOwnerType: "M"})
         // save them to an array
@@ -308,14 +309,14 @@ router.get('/02-find-view/02-pension-details', function (req, res) {
 
     // get the pension details
     async function getPensionById(client, pensionId) {
-        const results = await client.db("pensions").collection("pensionDetails")
+        const results = await client.db(dataBaseName).collection("pensionDetails")
         .findOne({ _id : ObjectId(pensionId)})
 //        console.log('results getPensionById' + JSON.stringify(results))
         return results
     }
     // get the provider details
     async function getProviderById(client, providerId) {
-        const results = await client.db("pensions").collection("pensionProvider")
+        const results = await client.db(dataBaseName).collection("pensionProvider")
         // find all documents
         .findOne({ _id : ObjectId(providerId)})
         console.log('results providers' + JSON.stringify(results))
@@ -380,7 +381,7 @@ router.get('/pensions-list', function (req, res) {
     findAllPensions().catch(console.error);
 
     async function getAllPensions(client) {
-        const results = await client.db("pensions").collection("pensionDetails")
+        const results = await client.db(dataBaseName).collection("pensionDetails")
         // find all documents
         .find({})
         // save them to an array
@@ -411,7 +412,7 @@ router.get('/add-pension', function (req, res) {
     findPensionProviders().catch(console.error);
 
     async function getProviders(client) {
-        const results = await client.db("pensions").collection("pensionProvider")
+        const results = await client.db(dataBaseName).collection("pensionProvider")
         // find all documents
         .find({})
         // save them to an array
@@ -531,7 +532,7 @@ router.post('/add-pension-details', function (req, res) {
 
     // Add functions that make DB calls here
     async function createPension(client, newPension){
-        const result = await client.db("pensions").collection("pensionDetails").insertOne(newPension);
+        const result = await client.db(dataBaseName).collection("pensionDetails").insertOne(newPension);
         console.log(`New Pension created with the following id: ${result.insertedId}`)
     } 
 
@@ -648,7 +649,7 @@ router.get('/update-pension', function (req, res) {
     findAndDisplayPension().catch(console.error);
 
     async function getProviders(client) {
-        const results = await client.db("pensions").collection("pensionProvider")
+        const results = await client.db(dataBaseName).collection("pensionProvider")
         // find all documents
         .find({})
         // save them to an array
@@ -660,30 +661,13 @@ router.get('/update-pension', function (req, res) {
     }
 
     async function getPensionById(client, pensionId, providerId) {
-        const results = await client.db("pensions").collection("pensionDetails")
+        const results = await client.db(dataBaseName).collection("pensionDetails")
         // find all documents
         .findOne({_id: ObjectId(pensionId)})
 
 //        console.log('results ' + JSON.stringify(results))
 //        console.log('req.app.locals.pensionProviders.length ' + req.app.locals.pensionProviders.length)
         // if the provider is in the query string, the page has been called from add provider so select the new provider not the one on the database
-/*      
-// remove check for existing provider  
-if (providerId) {
-            console.log('providerId exists ' + providerId)
-            for (i=0; i < req.app.locals.pensionProviders.length; i++) {
-                if (providerId == req.app.locals.pensionProviders[i]._id) {
-                    console.log('req.app.locals.pensionProviders[i].administratorName ' + req.app.locals.pensionProviders[i].administratorName)
-
-                    req.app.locals.pensionProviders[i].selected = 'selected'
-                }
-                else {
-                    req.app.locals.pensionProviders[i].selected = ""
-                }
-            }
-        } 
-        else {
-    */
         for (i=0; i < req.app.locals.pensionProviders.length; i++) {
 //            console.log('req.app.locals.pensionProviders[i].administratorName ' + req.app.locals.pensionProviders[i].administratorName)
 //            console.log('results.administratorName ' + results.administratorName)
@@ -699,7 +683,6 @@ if (providerId) {
             }
         
         }
-// remove check for existing provider end bracket        }
         return results
     }
 
@@ -816,7 +799,7 @@ router.post('/update-pension-details', function (req, res) {
     async function updatePensionDetails(client, pensionId, updatePension){
         console.log('updatePension ' + JSON.stringify(updatePension))
         console.log('pensionId ' + pensionId)
-        const result = await client.db("pensions").collection("pensionDetails")
+        const result = await client.db(dataBaseName).collection("pensionDetails")
             .updateOne({ _id : ObjectId(pensionId)}, {$set: updatePension});
         console.log(`${result.modifiedCount} document was updated.`)
     }
@@ -843,7 +826,7 @@ router.post('/delete-pension/:id', function (req, res) {
     deletePension().catch(console.error)
 
     async function deletePensionWithId(client, pensionId) {
-        const result = await client.db("pensions").collection("pensionDetails")
+        const result = await client.db(dataBaseName).collection("pensionDetails")
             .deleteOne({_id: ObjectId(pensionId)});
         console.log(`${result.deletedCount} document(s) was/were deleted.`)
     }
@@ -870,7 +853,7 @@ router.post('/delete-all-pensions', function (req, res) {
     deleteAllPension().catch(console.error)
 
     async function deletePensions(client, pensionId) {
-        const result = await client.db("pensions").collection("pensionDetails")
+        const result = await client.db(dataBaseName).collection("pensionDetails")
             .deleteMany({pensionOwnerType: "M"});
         console.log(`${result.deletedCount} document(s) was/were deleted.`)
     }
@@ -931,7 +914,7 @@ router.post('/copy-pension/:id', function (req, res) {
 
         } finally {
             // find the _id of the document just created
-            let newPensionDocument = await client.db("pensions").collection("pensionDetails").findOne({ timeStamp : today_timestamp});
+            let newPensionDocument = await client.db(dataBaseName).collection("pensionDetails").findOne({ timeStamp : today_timestamp});
             let newPensionId = newPensionDocument._id
             console.log('newPensionDocument ' + JSON.stringify(newPensionDocument))
             // Close the connection to the MongoDB cluster
@@ -942,14 +925,14 @@ router.post('/copy-pension/:id', function (req, res) {
     copyPension().catch(console.error)
 
     async function getPensionById(client, pensionId) {
-        const results = await client.db("pensions").collection("pensionDetails")
+        const results = await client.db(dataBaseName).collection("pensionDetails")
         // find all documents
         .findOne({_id: ObjectId(pensionId)})
         return results
     }
     async function createPension(client, newPension){
         console.log('create pension in copy')
-        const result = await client.db("pensions").collection("pensionDetails").insertOne(newPension);
+        const result = await client.db(dataBaseName).collection("pensionDetails").insertOne(newPension);
         console.log(`New Pension created with the following id: ${result.insertedId}`)
     } 
 })
@@ -978,7 +961,7 @@ router.get('/providers-list', function (req, res) {
     findAllProviders().catch(console.error);
 
     async function getAllProviders(client) {
-        const results = await client.db("pensions").collection("pensionProvider")
+        const results = await client.db(dataBaseName).collection("pensionProvider")
         // find all documents
         .find({})
         // save them to an array
@@ -989,32 +972,8 @@ router.get('/providers-list', function (req, res) {
     }
 })
 
-router.get('/add-provider', function (req, res) {
-    req.app.locals.calledFromAddPension = null
-    req.app.locals.calledFromUpdPension = null
-    req.app.locals.queryPensionId = null
-    req.app.locals.lastPage = null
-
-    // save query strings from the url to use in the post function
-    console.log('req.query ' + JSON.stringify(req.query))
-    if (req.query.lastPage == 'addPension') {
-        req.app.locals.calledFromAddPension = true
-    }    
-    if (req.query.lastPage == 'updatePension') {
-        req.app.locals.calledFromUpdPension = true
-    }
-    req.app.locals.queryPensionId = null
-    req.app.locals.lastPage = null
-
-    req.app.locals.queryPensionId = req.query.pensionId
-    req.app.locals.lastPage = req.query.lastPage 
-
-    res.render('add-provider')
-})
-
 router.post('/add-provider-details', function (req, res) {
 //get the pension provider list
-// remove check for existing provider -    req.app.locals.providerExistsMsg = ""
 // format date
     let today_timestamp = new Date().toLocaleString()
 
@@ -1036,19 +995,6 @@ router.post('/add-provider-details', function (req, res) {
         try {
             // Connect to the MongoDB cluster
             await client.connect();
-
-            // Make the appropriate DB calls
-            // check that provider doesn't already exist
-// remove check for existing provider  
-/*            let providerExists = await getProvider(client, administrator_Name)
-            if (providerExists) {
-                req.app.locals.providerExistsMsg = administrator_Name + ' already exists <a href= "providers-list">check the list of providers> or <a href="">return to the prev
-            }
-            else if (administrator_Name == "") {
-                req.app.locals.providerExistsMsg = 'Enter a pension provider name'
-            }
-            else {
-*/
             await createProvider(client, {
 
                 administratorName : administrator_Name,
@@ -1070,44 +1016,25 @@ router.post('/add-provider-details', function (req, res) {
                 administratorSIPURL : administrator_SIP_URL,
                 timeStamp: today_timestamp
             });
-// remove check for existing provider  - bracket            }
         } finally {
             // Close the connection to the MongoDB cluster
-// remove check for existing provider  
-/*            console.log('req.app.locals.lastPage ' + req.app.locals.lastPage)
-            if (req.app.locals.providerExistsMsg) {
-                await client.close()
-                console.log('provider already exists ')
-
-                res.redirect('add-provider?lastPage='+ req.app.locals.lastPage + '&pensionId=' + req.app.locals.queryPensionId)
-            }
-            else {
-*/
-            let newProviderDocument = await client.db("pensions").collection("pensionProvider").findOne({ timeStamp : today_timestamp});
+            let newProviderDocument = await client.db(dataBaseName).collection("pensionProvider").findOne({ timeStamp : today_timestamp});
             await client.close()
-            if (req.app.locals.calledFromAddPension) {
-                res.redirect('add-pension')
-            }
-            else if (req.app.locals.calledFromUpdPension) {
-                res.redirect('update-pension?pensionId=' + req.app.locals.queryPensionId + '&providerId=' + newProviderDocument._id)
-            }
-            else {
-                res.redirect('update-provider?providerId=' + newProviderDocument._id)
-            }
-// remove check for existing provider  - bracket            }
+
+            res.redirect('update-provider?providerId=' + newProviderDocument._id)
         }
     }
 
     addProvider().catch(console.error);
 
     async function getProvider(client, providerName) {
-        const results = await client.db("pensions").collection("pensionProvider")
+        const results = await client.db(dataBaseName).collection("pensionProvider")
        .findOne({administratorName: providerName})
         return results
     }
 
     async function createProvider(client, newPension){
-        const result = await client.db("pensions").collection("pensionProvider").insertOne(newPension);
+        const result = await client.db(dataBaseName).collection("pensionProvider").insertOne(newPension);
         console.log(`New Pension created with the following id: ${result.insertedId}`);
     } 
 
@@ -1138,7 +1065,7 @@ router.get('/update-provider', function (req, res) {
     findAndDisplayProviders().catch(console.error);
 
     async function getProvider(client, providerId) {
-        const results = await client.db("pensions").collection("pensionProvider")
+        const results = await client.db(dataBaseName).collection("pensionProvider")
         // find all documents
        .findOne({_id: ObjectId(providerId)})
         return results
@@ -1208,7 +1135,7 @@ router.post('/update-provider-details', function (req, res) {
     updateProvider().catch(console.error);
 
     async function updateProviderDetails(client, providerId, updateProvider){
-        const result = await client.db("pensions").collection("pensionProvider")
+        const result = await client.db(dataBaseName).collection("pensionProvider")
             .updateOne({ _id : ObjectId(providerId)}, {$set: updateProvider})
         console.log(`${result.modifiedCount} document was updated.`)
     }
@@ -1233,7 +1160,7 @@ router.post('/delete-provider/:id', function (req, res) {
     deleteProvider().catch(console.error)
 
     async function deleteProviderById(client, providerId) {
-        const result = await client.db("pensions").collection("pensionProvider")
+        const result = await client.db(dataBaseName).collection("pensionProvider")
             .deleteOne({_id: ObjectId(providerId)})
             console.log('providerId' + providerId)
             console.log('result ' + JSON.stringify(result))
