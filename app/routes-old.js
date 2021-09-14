@@ -667,9 +667,7 @@ router.get('/update-pension', function (req, res) {
 //        console.log('results ' + JSON.stringify(results))
 //        console.log('req.app.locals.pensionProviders.length ' + req.app.locals.pensionProviders.length)
         // if the provider is in the query string, the page has been called from add provider so select the new provider not the one on the database
-/*      
-// remove check for existing provider  
-if (providerId) {
+        if (providerId) {
             console.log('providerId exists ' + providerId)
             for (i=0; i < req.app.locals.pensionProviders.length; i++) {
                 if (providerId == req.app.locals.pensionProviders[i]._id) {
@@ -683,23 +681,22 @@ if (providerId) {
             }
         } 
         else {
-    */
-        for (i=0; i < req.app.locals.pensionProviders.length; i++) {
-//            console.log('req.app.locals.pensionProviders[i].administratorName ' + req.app.locals.pensionProviders[i].administratorName)
-//            console.log('results.administratorName ' + results.administratorName)
-        // where the select option is used to display fields, find the correct option from the mongo document and mark it as the selected option
-            // mark the administrator name as selected 
+            for (i=0; i < req.app.locals.pensionProviders.length; i++) {
+    //            console.log('req.app.locals.pensionProviders[i].administratorName ' + req.app.locals.pensionProviders[i].administratorName)
+    //            console.log('results.administratorName ' + results.administratorName)
+            // where the select option is used to display fields, find the correct option from the mongo document and mark it as the selected option
+                // mark the administrator name as selected 
 
-            if (results.administratorName == req.app.locals.pensionProviders[i].administratorName) {
-//                console.log('selected ' + results.administratorName)
-                req.app.locals.pensionProviders[i].selected = 'selected'
+                if (results.administratorName == req.app.locals.pensionProviders[i].administratorName) {
+    //                console.log('selected ' + results.administratorName)
+                    req.app.locals.pensionProviders[i].selected = 'selected'
+                }
+                else {
+                    req.app.locals.pensionProviders[i].selected = ""
+                }
+            
             }
-            else {
-                req.app.locals.pensionProviders[i].selected = ""
-            }
-        
         }
-// remove check for existing provider end bracket        }
         return results
     }
 
@@ -1014,7 +1011,7 @@ router.get('/add-provider', function (req, res) {
 
 router.post('/add-provider-details', function (req, res) {
 //get the pension provider list
-// remove check for existing provider -    req.app.locals.providerExistsMsg = ""
+    req.app.locals.providerExistsMsg = ""
 // format date
     let today_timestamp = new Date().toLocaleString()
 
@@ -1039,42 +1036,41 @@ router.post('/add-provider-details', function (req, res) {
 
             // Make the appropriate DB calls
             // check that provider doesn't already exist
-// remove check for existing provider  
-/*            let providerExists = await getProvider(client, administrator_Name)
+
+            let providerExists = await getProvider(client, administrator_Name)
             if (providerExists) {
-                req.app.locals.providerExistsMsg = administrator_Name + ' already exists <a href= "providers-list">check the list of providers> or <a href="">return to the prev
+                req.app.locals.providerExistsMsg = administrator_Name + " already exists "
             }
             else if (administrator_Name == "") {
                 req.app.locals.providerExistsMsg = 'Enter a pension provider name'
             }
             else {
-*/
-            await createProvider(client, {
 
-                administratorName : administrator_Name,
-                administratorContactPreference : "Website",
-                administratorURL : administrator_URL,
-                administratorEmail : administrator_Email,
-                administratorPhoneNumber : administrator_Phone_Number,
-                administratorPhoneNumberType: "Enquiries",
-                admisistratorPostalName : administrator_Name,
-                administratorAddressLine1 : "Floor 21",        
-                administratorAddressLine2 : "Palmerston Tower",
-                administratorAddressLine3 : "High Street",
-                administratorAddressLine4 : "Avontown", 
-                administratorAddressLine5 : "",
-                administratorPostcode : "AV7 5DS",
-                administratorAnnualReportURL : administrator_Annual_Report_URL,
-                administratorCostsChargesURL : administrator_Costs_Charges_URL,
-                administratorImplementationURL : administrator_Implementation_URL,
-                administratorSIPURL : administrator_SIP_URL,
-                timeStamp: today_timestamp
-            });
-// remove check for existing provider  - bracket            }
+                await createProvider(client, {
+
+                    administratorName : administrator_Name,
+                    administratorContactPreference : "Website",
+                    administratorURL : administrator_URL,
+                    administratorEmail : administrator_Email,
+                    administratorPhoneNumber : administrator_Phone_Number,
+                    administratorPhoneNumberType: "Enquiries",
+                    admisistratorPostalName : administrator_Name,
+                    administratorAddressLine1 : "Floor 21",        
+                    administratorAddressLine2 : "Palmerston Tower",
+                    administratorAddressLine3 : "High Street",
+                    administratorAddressLine4 : "Avontown", 
+                    administratorAddressLine5 : "",
+                    administratorPostcode : "AV7 5DS",
+                    administratorAnnualReportURL : administrator_Annual_Report_URL,
+                    administratorCostsChargesURL : administrator_Costs_Charges_URL,
+                    administratorImplementationURL : administrator_Implementation_URL,
+                    administratorSIPURL : administrator_SIP_URL,
+                    timeStamp: today_timestamp
+                });
+            }
         } finally {
             // Close the connection to the MongoDB cluster
-// remove check for existing provider  
-/*            console.log('req.app.locals.lastPage ' + req.app.locals.lastPage)
+            console.log('req.app.locals.lastPage ' + req.app.locals.lastPage)
             if (req.app.locals.providerExistsMsg) {
                 await client.close()
                 console.log('provider already exists ')
@@ -1082,19 +1078,18 @@ router.post('/add-provider-details', function (req, res) {
                 res.redirect('add-provider?lastPage='+ req.app.locals.lastPage + '&pensionId=' + req.app.locals.queryPensionId)
             }
             else {
-*/
-            let newProviderDocument = await client.db("pensions").collection("pensionProvider").findOne({ timeStamp : today_timestamp});
-            await client.close()
-            if (req.app.locals.calledFromAddPension) {
-                res.redirect('add-pension')
+                let newProviderDocument = await client.db("pensions").collection("pensionProvider").findOne({ timeStamp : today_timestamp});
+                await client.close()
+                if (req.app.locals.calledFromAddPension) {
+                    res.redirect('add-pension')
+                }
+                else if (req.app.locals.calledFromUpdPension) {
+                    res.redirect('update-pension?pensionId=' + req.app.locals.queryPensionId + '&providerId=' + newProviderDocument._id)
+                }
+                else {
+                    res.redirect('update-provider?providerId=' + newProviderDocument._id)
+                }
             }
-            else if (req.app.locals.calledFromUpdPension) {
-                res.redirect('update-pension?pensionId=' + req.app.locals.queryPensionId + '&providerId=' + newProviderDocument._id)
-            }
-            else {
-                res.redirect('update-provider?providerId=' + newProviderDocument._id)
-            }
-// remove check for existing provider  - bracket            }
         }
     }
 

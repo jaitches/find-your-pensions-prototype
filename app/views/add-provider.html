@@ -45,13 +45,12 @@
             id: "administrator-name",
             name: "administrator-name"
           }) }} 
-<!-- remove exiting provider messaging
         {% if providerExistsMsg %}
           <p class="pdp-warning-message">
             {{providerExistsMsg}}
           </p>
         {% endif %}
--->
+   
         {% endcall %}
         {% if calledFromAddPension or calledFromUpdPension %}
           <div class="govuk-button-group">
