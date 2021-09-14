@@ -37,28 +37,39 @@
             label: {
               html: 'Provider name'
             },
+
             hint: {
-              text: "Do not enter any special characters or punctation. The name you enter will be used to generate other fields e.g. the website address"
+              text: "Do not enter any special characters or punctation."
             },
             classes: "govuk-!-width-two-thirds",
             id: "administrator-name",
             name: "administrator-name"
           }) }} 
-
-   
+<!-- remove exiting provider messaging
+        {% if providerExistsMsg %}
+          <p class="pdp-warning-message">
+            {{providerExistsMsg}}
+          </p>
+        {% endif %}
+-->
         {% endcall %}
-        <p>
-          Once you save the pension provider name you will be taken to the update provider page.
-        </p>
-        <div class="govuk-button-group">
-          <button class="govuk-button" data-module="govuk-button" data-prevent-double-click="true">
-            Save pension provider
-          </button>
-        </div>
+        {% if calledFromAddPension or calledFromUpdPension %}
+          <div class="govuk-button-group">
+            <button class="govuk-button" data-module="govuk-button" data-prevent-double-click="true">
+              Save and return
+            </button>
+          </div>
+        {% else %}
+          <div class="govuk-button-group">
+            <button class="govuk-button" data-module="govuk-button" data-prevent-double-click="true">
+              Save
+            </button>
+          </div>
+        {% endif %}
       </form>
     </div>
     <div class="govuk-grid-column-one-third">
-
+      {% include "sidebar-nav.html" %}
     </div>
   </div>
 

@@ -22,11 +22,11 @@
 
 
       {{ govukRadios({
-        idPrefix: "what-do-you-want-to-manage",
-        name: "what-do-you-want-to-manage",
+        idPrefix: "what-do-you-want-to-do",
+        name: "what-do-you-want-to-do",
         fieldset: {
           legend: {
-            text: "What do you want to do with the pension information?",
+            text: "What do you want to do?",
             isPageHeading: true,
             classes: "govuk-fieldset__legend--l"
           }
@@ -35,13 +35,13 @@
         items: [
           {
             value: "add-pension",
-            text: "Add a new pension entry"
+            text: "Add a new pension for the participant"
           },
           {
             value: "pensions-list",
-            text: "View a list of all pensions",
+            text: "View the list of pensions",
             hint : {
-              text : "To edit or delete existing pension entries "
+              text : "To copy, edit or delete pensions"
             }      
           },          
           {
@@ -49,10 +49,10 @@
             text: "Add a new pension provider"
           },
           {
-            value: "display-providers",
-            text: "View a list of all pension providers",
+            value: "providers-list",
+            text: "View the list of pension providers",
             hint : {
-              text : "To edit or delete existing pension providers "
+              text : "To edit or delete pension providers "
             }       
           }
         ]

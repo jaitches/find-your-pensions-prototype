@@ -26,14 +26,28 @@
         Add pension details
       </h1>
 
-      <form action="/add-pension-details" method="post" class="form">
-        <p class="pension-crud-message">
-          {{pensionAddedMessage}}
-        </p>
+      <form action="/add-pension-details" method="post" class="form">      
+        <div class="govuk-form-group">
+          <h1 class="govuk-label-wrapper"><label class="govuk-label govuk-label--l" for="administratorName">
+              Select the pension provider
+            </label>
+          </h1>
+          <div id="administrator-name-hint" class="govuk-hint">
+            If the pension provider is not on the list you can <a href='add-provider?pensionID=' + >add a new provider</a>
+          </div>
+          <select class="govuk-select" id="administratorDetails" name="administratorDetails">
+          {% for name in pensionProviders %}
+          {% set administratorDetails =  name._id + ":" + name.administratorName %}
+
+            <option value="{{administratorDetails}}">{{name.administratorName}}</option>
+
+          {% endfor %}
+          </select>
+        </div>
 
         {% call govukFieldset({
           legend: {
-            text: "Pension owner",
+            text: "Pension description",
             classes: "govuk-fieldset__legend--l",
             isPageHeading: true
           }
@@ -41,39 +55,12 @@
 
           {{ govukInput({
             label: {
-              html: 'Enter the name of the pension owner'
+              html: 'The description will not be displayed on the prototypes'
             },
             classes: "govuk-!-width-two-thirds",
             id: "pensionOwner",
             name: "pensionOwner"
           }) }} 
-        {% endcall %}
-
-        {% call govukFieldset({
-          legend: {
-            text: "Select pension provider",
-            classes: "govuk-fieldset__legend--l",
-            isPageHeading: true
-          }
-        }) %}
-
-          <div class="govuk-form-group">
-            <label class="govuk-label" for="administratorName">
-              Pension provider name
-            </label>
-              <div id="administrator-name-hint" class="govuk-hint">
-                If the pension provider is not displayed you can <a href="add-provider">add a new provider</a>
-              </div>
-              <select class="govuk-select" id="administratorDetails" name="administratorDetails">
-              {% for name in pensionProviders %}
-              {% set administratorDetails =  name._id + ":" + name.administratorName %}
-
-              <option value="{{administratorDetails}}">{{name.administratorName}}</option>
-
-              {% endfor %}
-
-            </select>
-          </div>
         {% endcall %}
 
         {% call govukFieldset({
@@ -137,7 +124,7 @@
             id: "pensionOrigin",
             name: "pensionOrigin",          
             label: {
-              html: 'Pension origin'
+              html: 'Pension origin' 
             },
             items: [
               {
@@ -182,7 +169,7 @@
             </p>
           </div>          
           <div class="govuk-form-group">
-            <label for="pensionRetirementDate" class="govuk-body">Pension retirement date</label>
+            <label for="pensionRetirementDate" class="govuk-body">Date payable</label>
             <p>
               <input type="date" id="pensionRetirementDate" name="pensionRetirementDate" class="govuk-body">
             </p>

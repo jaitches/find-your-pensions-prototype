@@ -31,6 +31,24 @@
       </h1>
       <form action="/update-pension-details" method="post" class="form">
 
+        <div class="govuk-form-group">
+          <h1 class="govuk-label-wrapper"><label class="govuk-label govuk-label--l" for="administratorName">
+              Select the pension provider
+            </label>
+          </h1>
+            <div id="event-name-hint" class="govuk-hint">
+              If the pension provider is not displayed on the list you can <a href="add-provider?lastPage=updatePension&pensionId={{pensionDetails._id}}">add a new provider</a>
+            </div>
+            <select class="govuk-select" id="administratorDetails" name="administratorDetails" >
+            {% for name in pensionProviders %}
+            {% set administratorDetails =  name._id + ":" + name.administratorName %}
+
+            <option value="{{administratorDetails}}" {% if name.selected %} selected {% endif %}>{{name.administratorName}} {{name.selected}}</option>
+
+            {% endfor %}
+
+          </select>
+        </div>
         {% call govukFieldset({
           legend: {
             text: "Pension description",
@@ -58,23 +76,7 @@
           }
         }) %}
 
-          <div class="govuk-form-group">
-            <label class="govuk-label" for="administratorName">
-              Pension provider name
-            </label>
-              <div id="event-name-hint" class="govuk-hint">
-                If the pension provider is not displayed you can <a href="add-provider">add a new provider</a>
-              </div>
-              <select class="govuk-select" id="administratorDetails" name="administratorDetails" >
-              {% for name in pensionProviders %}
-              {% set administratorDetails =  name._id + ":" + name.administratorName %}
 
-              <option value="{{administratorDetails}}" {% if name.selected %} selected {% endif %}>{{name.administratorName}}</option>
-
-              {% endfor %}
-
-            </select>
-          </div>
         {% endcall %}
         {% call govukFieldset({
           legend: {
