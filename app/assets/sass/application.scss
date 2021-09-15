@@ -54,6 +54,30 @@ $govuk-assets-path: '/govuk/assets/';
 
 }
 //
+// table formatting
+//
+.pdp-width-20 {
+	width: 20%;
+}
+.pdp-width-15 {
+	width: 15%;
+}
+.pdp-width-10 {
+	width: 10%;
+}
+.pdp-align-center {
+	text-align: center;
+}
+.pdp-align-right {
+	text-align: right;
+}
+.pdp-table-shaded-1 {
+	background-color: #E5F2F2;	
+}
+.pdp-table-shaded-2 {
+	background-color: #CCE5E5;	
+}
+//
 // loading wheel
 //
 .loading {

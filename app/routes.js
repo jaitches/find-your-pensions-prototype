@@ -5,7 +5,7 @@ const { MongoClient } = require('mongodb');
 const { ObjectId } = require('mongodb')
 const uri = 'mongodb+srv://' + process.env.MONGODB_URI + '?retryWrites=true&w=majority'
 const dataBaseName = process.env.PENSIONS_DB
-const monthNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
+const formatDate = require('./formatDate.js')
 // Use these arrays to store the options for the select element when updating the pensions
 const penTypes = [
     {type: "DC", text: "DC pension", selected : ""},
@@ -40,27 +40,12 @@ const penEriOrAccrType = [
     {type: "CBS", text: "Cash balance scheme", selected : ""}
 ]
 const penHowEriCalc = [
-              {
-                type: "N/A",
-                text: "N/A", selected : ""
-              },
-              {
-                type: "SMPI",
-                text: "SMPI - statutory money purchase illustration", selected : ""
-              },              
-              {
-                type: "COBS",
-                text: "COBS - Income illustration FCA COBS rules", selected : ""
-              },             
-              {
-                type: "BS",
-                text: "BS - Benefit specific method no allowance of future build-up of benefits", selected : ""
-              },              
-              {
-                type: "BSF",
-                text: "BSF - Benefit specific method including future build-up of benefits", selected : ""
-              }
-            ]
+    {type: "N/A", text: "N/A", selected : ""},
+    {type: "SMPI", text: "SMPI - statutory money purchase illustration", selected : ""},              
+    {type: "COBS", text: "COBS - Income illustration FCA COBS rules", selected : ""},             
+    {type: "BS", text: "BS - Benefit specific method no allowance of future build-up of benefits", selected : ""},              
+    {type: "BSF", text: "BSF - Benefit specific method including future build-up of benefits", selected : ""}
+]
 const penAccrAmtType = [
     {type: "N/A",text: "N/A", selected : ""},
     {type: "POT", text: "Valuation of a DC pension pot", selected : ""},              
@@ -116,9 +101,7 @@ router.post('/select-prototype', function (req, res) {
     }
     ptypeDetails = findPtypeText(ptypeNumber, prototypeDetails)
     req.app.locals.ptype = ptypeDetails
-
-
-//    res.redirect('prototype-options')
+// use the stored start url for the redirect
     res.redirect(ptypeDetails.startUrl + '?ptype=' + ptypeNumber)
 // get the prototype description from the list
     function findPtypeText (ptypeNo, prototypeArray) {
@@ -138,17 +121,28 @@ router.post('/select-prototype', function (req, res) {
 
 // enter your details
 router.post('/enter-your-details', function (req, res) {
+    // redirect to the correct display-pensions page for the prototype
+    switch(req.app.locals.ptype.number) {
+        case 1:
+        ptypeDisplayUrl = req.app.locals.ptype.displayUrl
+        break;                
+        case 2:
+        ptypeDisplayUrl = req.app.locals.ptype.displayUrl
+        break;                
+        case 3:
+        ptypeDisplayUrl = req.app.locals.ptype.displayUrl
+        break;                
+        case 4:
+        ptypeDisplayUrl = req.app.locals.ptype.displayUrl
+        break;
+    }
 
-    res.redirect('02-find-view/02-display-pensions')
+    res.redirect(ptypeDisplayUrl)
 })
 
-// Get the documents from MongoDB to display fo rall prototypes
+// Get the documents from MongoDB to display for all prototypes
 // the * is a wildcard for the prototype number in this get
 router.get('/*-display-pensions', function (req, res) {
-
-// set the default values for while testing
-//    req.app.locals.splitOrigin = true
-//    req.app.locals.splitType = false
 
     async function findPensionsByOwner() {
         let pensionOwnerName = req.query.owner
@@ -169,26 +163,18 @@ router.get('/*-display-pensions', function (req, res) {
         try {
             // Connect to the MongoDB cluster
             await client.connect()
-            // if no name enter find all the pension documents
-            if (pensionOwnerName == "") {
-                // get all pensions
-                pensionDetailsAll = await getAllPensions(client)
-            }
-            // convert dates to string and display as dd mon yyyy
+   
 
-
-            // if a name is entered select the relevant documents
-            else {
-                 pensionDetailsAll = await getPensionsByOwner(client, pensionOwnerName)
-            }
-//            console.log('pensionDetailsAll ' + JSON.stringify(pensionDetailsAll))
+            pensionDetailsAll = await getAllPensions(client)
             // split into workplace, private and state pensions if prototypeOptionOrigin selected
 
- //                   console.log('show all pensions ' + JSON.stringify(pensionDetailsAll))
             for (i=0; i < pensionDetailsAll.length; i++) {
+            // convert dates to string and display as dd mon yyyy
+                console.log('pensionDetailsAll[i] ' +JSON.stringify(pensionDetailsAll[i]))
                 console.log('pensionDetailsAll[i].pensionRetirementDate ' + pensionDetailsAll[i].pensionRetirementDate)
 
-                let pensionRetirementDateString = await convertDateToString(pensionDetailsAll[i].pensionRetirementDate)
+                let pensionRetirementDateString = await formatDate(pensionDetailsAll[i].pensionRetirementDate)
+                pensionDetailsAll[i].pensionRetirementDateString =pensionRetirementDateString
                 console.log('pensionDatePayableString ' + pensionRetirementDateString)
 
                 if (pensionDetailsAll[i].pensionOrigin == "W") {
@@ -206,15 +192,10 @@ router.get('/*-display-pensions', function (req, res) {
                     req.app.locals.statePensionDetails = pensionDetailsAll[i]
                 }
             }
-/*          console.log('req.app.locals.workplacePensionDetails ' +JSON.stringify(req.app.locals.workplacePensionDetails))
-            console.log('req.app.locals.privatePensionDetails ' +JSON.stringify(req.app.locals.privatePensionDetails))
-            console.log('req.app.locals.statePensionDetails ' +JSON.stringify(req.app.locals.statePensionDetails))
-            console.log('req.app.locals.pensionDetails ' +JSON.stringify(req.app.locals.pensionDetails))
-*/
+
         } finally {
             // Close the connection to the MongoDB cluster
             await client.close()
-            console.log('req.app.locals.ptype ' + JSON.stringify(req.app.locals.ptype))
             let ptypeDisplayUrl = ""
             switch(req.app.locals.ptype.number) {
                 case 1:
@@ -230,25 +211,14 @@ router.get('/*-display-pensions', function (req, res) {
                 ptypeDisplayUrl = req.app.locals.ptype.displayUrl
                 break;
             }
-            console.log('displayUrl ' + ptypeDisplayUrl)
             res.render(ptypeDisplayUrl)
         }
     }
 
     findPensionsByOwner().catch(console.error)
-
-    async function getPensionsByOwner(client) {
-        const results = await client.db(dataBaseName).collection("pensionDetails")
-        // find all documents
-        .find({pensionOwnerType: "M"})
-        // save them to an array
-        .sort({pensionOrigin: 1, pensionType: 1, pensionRetirementDate: -1, pensionName: 1})        
-        .toArray()
-//        console.log('results ' + JSON.stringify(results))
-        return results
-    }    
-
+   
     async function getAllPensions(client) {
+        console.log('dataBaseName ' + dataBaseName)
         const results = await client.db(dataBaseName).collection("pensionDetails")
         // find all documents
         .find({pensionOwnerType: "M"})
@@ -257,15 +227,6 @@ router.get('/*-display-pensions', function (req, res) {
         .toArray()
 //        console.log('results all pensions' + JSON.stringify(results))
         return results
-    }
-
-    async function convertDateToString (inputDate) {
-        let stringDateArr = inputDate.split('-')
-        let stringDate = ""
-        stringDate = stringDateArr[2] + ' ' + monthNames[stringDate[1] + 1] + ' ' + stringDate[0]
-
-        console.log('stringDate ' + stringDate)
-        return stringDate
     }
 }) 
 
