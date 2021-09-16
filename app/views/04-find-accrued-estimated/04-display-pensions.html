@@ -11,45 +11,43 @@
       <h1 class="govuk-heading-xl">
         Your pensions
       </h1>
-      <div id="state-pension">    
-        {% if stateFlag %}
-          <h2 class="govuk-heading-l">
-            State pension
-          </h2>
+      {% if stateFlag %}
+        <h2 class="govuk-heading-l">
+          State pension
+        </h2>
+        <div id="state-pension" class="pdp-box-border">    
           <table class="govuk-table">
             <thead class="govuk-table__head govuk-body-s">
               <tr class="govuk-table__row">
                 <colgroup>
                   <col span="3">
                   <col span="1" class="pdp-table-shaded-1">
-                  <col span="2" class="pdp-table-shaded-2">
+                  <col span="1" class="pdp-table-shaded-2">
                 </colgroup>
                 <th scope="col" class="govuk-table__header"></th>
                 <th scope="col" class="govuk-table__header"></th>
                 <th scope="col" class="govuk-table__header"></th>
                 <th scope="col" class="govuk-table__header pdp-align-center">Your current valuation</th>
-                <th scope="col" class="govuk-table__header pdp-align-center" colspan="2">Amount at your retirement date</th>
+                <th scope="col" class="govuk-table__header pdp-align-center">Amount when you take your pension</th>
                 <th scope="col" class="govuk-table__header"></th>
               </tr>
               <tr class="govuk-table__row">
-                <th scope="col" class="govuk-table__header">Pension provider</th>
-                <th scope="col" class="govuk-table__header">Your pension reference</th>
-                <th scope="col" class="govuk-table__header">Date your pension is payable</th>
-                <th scope="col" class="govuk-table__header pdp-align-center">Income each year</th>
-                <th scope="col" class="govuk-table__header pdp-align-center">Estimated income each year</th>
-                <th scope="col" class="govuk-table__header pdp-align-center">Estimated pot value</th>
+                <th scope="col" class="govuk-table__header pdp-width-20  pdp-align-bottom">Pension provider</th>
+                <th scope="col" class="govuk-table__header pdp-width-15  pdp-align-bottom">Your pension reference</th>
+                <th scope="col" class="govuk-table__header pdp-width-15  pdp-align-bottom">Date your pension will be payable</th>
+                <th scope="col" class="govuk-table__header pdp-width-20 pdp-align-center  pdp-align-bottom">Income each year</th>
+                <th scope="col" class="govuk-table__header pdp-width-20 pdp-align-center  pdp-align-bottom">Estimated income each year</th>
                 <th scope="col" class="govuk-table__header"></th>
               </tr>
             </thead>
             <tbody class="govuk-table__body govuk-body-xs">
               <tr class="govuk-table__row">
-                <td class="govuk-table__cell pdp-width-20">{{statePensionDetails.administratorName}}</td>
-                <td class="govuk-table__cell pdp-width-15">{{statePensionDetails.pensionReference}}</td>
-                <td class="govuk-table__cell pdp-width-15">{{statePensionDetails.pensionRetirementDateString}}</td>
-                <td class="govuk-table__cell pdp-width-15 pdp-align-right">{{statePensionDetails.accruedValue}}</td>
-                <td class="govuk-table__cell pdp-width-15 pdp-align-right">{{statePensionDetails.ERIAnnualAmount}}</td>
-                <td class="govuk-table__cell pdp-width-15 pdp-align-right">{{statePensionDetails.ERIPot}}</td>
-                <td class="govuk-table__cell pdp-align-center"><a href="04-pension-details?pensionId={{statePensionDetails._id}}&providerId={{statePensionDetails.administratorReference}}">More details</a></td>
+                <td class="govuk-table__cell pdp-word-break">{{statePensionDetails.administratorName}}</td>
+                <td class="govuk-table__cell pdp-word-break">{{statePensionDetails.pensionReference}}</td>
+                <td class="govuk-table__cell">{{statePensionDetails.pensionRetirementDateString}}</td>
+                <td class="govuk-table__cell pdp-align-right">{{statePensionDetails.accruedAmountSterling}}</td>
+                <td class="govuk-table__cell pdp-align-right">{{statePensionDetails.ERIAnnualAmountSterling}}</td>
+                <td class="govuk-table__cell pdp-align-center"><a href="04-pension-details?pensionId={{statePensionDetails._id}}&providerId={{statePensionDetails.administratorReference}}">Pension details</a></td>
              </tr>
             </tbody>
           </table>
@@ -60,34 +58,86 @@
           <h2 class="govuk-heading-l">
             Workplace pensions
           </h2>
-          <div id="workplace-pension-all">    
-           <table class="govuk-table">
-              <thead class="govuk-table__head govuk-body-s">
+          {% if workplaceDBFlag %}
+            <div id="workplace-pension-DB" class="pdp-box-border">    
+             <table class="govuk-table">
+                <thead class="govuk-table__head govuk-body-s">
                 <tr class="govuk-table__row">
-                <th scope="col" class="govuk-table__header">Pension provider</th>
-                <th scope="col" class="govuk-table__header">Reference</th>
-                <th scope="col" class="govuk-table__header">Date payable</th>
-                <th scope="col" class="govuk-table__header">Accrued per year</th>
-                <th scope="col" class="govuk-table__header">ERI income</th>
-                <th scope="col" class="govuk-table__header">ERI pot</th>
-                <th scope="col" class="govuk-table__header"></th>
+                  <colgroup>
+                    <col span="3">
+                    <col span="1" class="pdp-table-shaded-1">
+                    <col span="1" class="pdp-table-shaded-2">
+                  </colgroup>
+                  <th scope="col" class="govuk-table__header govuk-body-l pdp-align-bottom" colspan="3">Defined benefit pensions</th>
+                  <th scope="col" class="govuk-table__header pdp-table-header">Your current valuation</th>
+                  <th scope="col" class="govuk-table__header pdp-table-header">Amount when you take your pension</th>
+                  <th scope="col" class="govuk-table__header"></th>
+                </tr>
+                <tr class="govuk-table__row ">
+                  <th scope="col" class="govuk-table__header pdp-width-20 pdp-align-bottom">Pension provider</th>
+                  <th scope="col" class="govuk-table__header pdp-width-15 pdp-align-bottom">Your pension reference</th>
+                  <th scope="col" class="govuk-table__header pdp-width-15 pdp-align-bottom">Date your pension is payable</th>
+                  <th scope="col" class="govuk-table__header pdp-width-20 pdp-table-header">Income each year</th>
+                  <th scope="col" class="govuk-table__header pdp-width-20 pdp-table-header">Estimated income each year</th>
+                  <th scope="col" class="govuk-table__header"></th>
                 </tr>
               </thead>
-              {% for details in workplacePensionDetails %}
-                <tbody class="govuk-table__body govuk-body-xs">
+                {% for details in workplaceDBPensionDetails %}
+                  <tbody class="govuk-table__body govuk-body-xs">
+                    <tr class="govuk-table__row">
+                      <td class="govuk-table__cell pdp-word-break">{{details.administratorName}}</td>
+                      <td class="govuk-table__cell pdp-word-break">{{details.pensionReference}}</td>
+                      <td class="govuk-table__cell">{{details.pensionRetirementDateString}}</td>
+                      <td class="govuk-table__cell pdp-align-right">{{details.accruedAmountSterling}}</td>
+                      <td class="govuk-table__cell pdp-align-right">{{details.ERIAnnualAmountSterling}}</td>
+                      <td class="govuk-table__cell pdp-align-center"><a href="04-pension-details?pensionId={{details._id}}&providerId={{details.administratorReference}}">Pension details</a></td>       
+                    </tr>
+                  </tbody>
+                {% endfor %} <!-- Workplace loop -->
+              </table>
+            </div>
+          {% endif %} <!-- Workplace DB pension -->
+          {% if workplaceDCFlag %}
+            <div id="workplace-pension-DC" class="pdp-box-border">    
+             <table class="govuk-table">
+                <thead class="govuk-table__head govuk-body-s">
                   <tr class="govuk-table__row">
-                    <td class="govuk-table__cell">{{details.administratorName}}</td>
-                    <td class="govuk-table__cell">{{details.pensionReference}}</td>
-                    <td class="govuk-table__cell">{{details.pensionRetirementDateString}}</td>
-                    <td class="govuk-table__cell">{{details.accruedAmount}}</td>
-                    <td class="govuk-table__cell">{{details.ERIAnnualAmount}}</td>
-                    <td class="govuk-table__cell">{{details.ERIPot}}</td>
-                    <td class="govuk-table__cell"><a href="04-pension-details?pensionId={{details._id}}&providerId={{details.administratorReference}}">More information</a></td>       
+                    <colgroup>
+                      <col span="3">
+                      <col span="1" class="pdp-table-shaded-1">
+                      <col span="2" class="pdp-table-shaded-2">
+                    </colgroup>
+                    <th scope="col" class="govuk-table__header govuk-body-l pdp-align-bottom" colspan="3">Defined contibution pensions</th>
+                    <th scope="col" class="govuk-table__header pdp-align-center">Your current valuation</th>
+                    <th scope="col" class="govuk-table__header pdp-align-center" colspan="2">Amount when you take your pension</th>
+                    <th scope="col" class="govuk-table__header"></th>
                   </tr>
-                </tbody>
-              {% endfor %} <!-- Workplace loop -->
-            </table>
-          </div>
+                  <tr class="govuk-table__row">
+                    <th scope="col" class="govuk-table__header pdp-width-20 pdp-align-bottom">Pension provider</th>
+                    <th scope="col" class="govuk-table__header pdp-width-15 pdp-align-bottom">Your pension reference</th>
+                    <th scope="col" class="govuk-table__header pdp-width-15 pdp-align-bottom">Date your pension is payable</th>
+                    <th scope="col" class="govuk-table__header pdp-width-20 pdp-table-header">Income each year</th>
+                    <th scope="col" class="govuk-table__header pdp-table-header">Estimated income each year</th>
+                    <th scope="col" class="govuk-table__header pdp-table-header">Estimated pot value</th>
+                    <th scope="col" class="govuk-table__header pdp-width-10"></th>
+                  </tr>
+                </thead>
+                  {% for details in workplaceDCPensionDetails %}
+                    <tbody class="govuk-table__body govuk-body-xs">
+                      <tr class="govuk-table__row">
+                        <td class="govuk-table__cell pdp-word-break">{{details.administratorName}}</td>
+                        <td class="govuk-table__cell pdp-word-break">{{details.pensionReference}}</td>
+                        <td class="govuk-table__cell">{{details.pensionRetirementDateString}}</td>
+                        <td class="govuk-table__cell pdp-align-right">{{details.accruedAmountSterling}}</td>
+                        <td class="govuk-table__cell pdp-align-right">{{details.ERIAnnualAmountSterling}}</td>
+                        <td class="govuk-table__cell pdp-align-right">{{details.ERIPotSterling}}</td>
+                        <td class="govuk-table__cell pdp-align-center"><a href="04-pension-details?pensionId={{details._id}}&providerId={{details.administratorReference}}">Pension details</a></td>       
+                      </tr>
+                    </tbody>
+                  {% endfor %} <!-- Workplace loop -->
+                </table>
+              </div>          
+            {% endif %} <!-- Workplace DC pension -->
         {% endif %} <!-- Workplace pension -->
 
       </div>
@@ -96,33 +146,44 @@
           <h2 class="govuk-heading-l">
             Private pensions
           </h2>
-          <table class="govuk-table">
-            <thead class="govuk-table__head govuk-body-s">
-              <tr class="govuk-table__row">
-                <th scope="col" class="govuk-table__header">Pension provider</th>
-                <th scope="col" class="govuk-table__header">Reference</th>
-                <th scope="col" class="govuk-table__header">Date your pension is payable</th>
-                <th scope="col" class="govuk-table__header">Accrued per year</th>
-                <th scope="col" class="govuk-table__header">ERI income</th>
-                <th scope="col" class="govuk-table__header">ERI pot</th>
-                <th scope="col" class="govuk-table__header"></th>
-              </tr>
-            </thead>
-            {% for details in privatePensionDetails %}
-              <tbody class="govuk-table__body govuk-body-xs">
-                <tr class="govuk-table__row">
-                  <td class="govuk-table__cell">{{details.administratorName}}</td>
-                  <td class="govuk-table__cell">{{details.pensionReference}}</td>
-                  <td class="govuk-table__cell">{{details.pensionRetirementDateString}}</td>
-                  <td class="govuk-table__cell">{{details.accruedValue}}</td>
-                  <td class="govuk-table__cell">{{details.ERIAnnualAmount}}</td>
-                  <td class="govuk-table__cell">{{details.ERIPot}}</td>
-                  <td class="govuk-table__cell"><a href="04-pension-details?pensionId={{details._id}}&providerId={{details.administratorReference}}">More information</a></td>       
-                </tr>
-              </tbody>
-            {% endfor %} <!-- Private loop-->
-          </table>
-        {% endif %} <!-- Private pension -->
+            <table class="govuk-table">
+                <thead class="govuk-table__head govuk-body-s">
+                  <tr class="govuk-table__row">
+                    <colgroup>
+                      <col span="3">
+                      <col span="1" class="pdp-table-shaded-1">
+                      <col span="2" class="pdp-table-shaded-2">
+                    </colgroup>
+                    <th scope="col" class="govuk-table__header govuk-body-l pdp-align-bottom" colspan="3">Defined contibution pensions</th>
+                    <th scope="col" class="govuk-table__header pdp-table-header">Your current valuation</th>
+                    <th scope="col" class="govuk-table__header pdp-table-header" colspan="2">Value at retirement</th>
+                    <th scope="col" class="govuk-table__header"></th>
+                  </tr>
+                  <tr class="govuk-table__row">
+                    <th scope="col" class="govuk-table__header pdp-width-20 pdp-align-bottom">Pension provider</th>
+                    <th scope="col" class="govuk-table__header pdp-width-15 pdp-align-bottom">Your pension reference</th>
+                    <th scope="col" class="govuk-table__header pdp-width-15 pdp-align-bottom">Date your pension is payable</th>
+                    <th scope="col" class="govuk-table__header pdp-width-20 pdp-table-header">Income each year</th>
+                    <th scope="col" class="govuk-table__header pdp-table-header">Estimated income each year</th>
+                    <th scope="col" class="govuk-table__header pdp-table-header">Estimated pot value</th>
+                    <th scope="col" class="govuk-table__header pdp-width-10"></th>
+                  </tr>
+                </thead>
+                  {% for details in privatePensionDetails %}
+                    <tbody class="govuk-table__body govuk-body-xs">
+                      <tr class="govuk-table__row">
+                        <td class="govuk-table__cell pdp-word-break">{{details.administratorName}}</td>
+                        <td class="govuk-table__cell pdp-word-break">{{details.pensionReference}}</td>
+                        <td class="govuk-table__cell">{{details.pensionRetirementDateString}}</td>
+                        <td class="govuk-table__cell pdp-align-right">{{details.accruedAmountSterling}}</td>
+                        <td class="govuk-table__cell pdp-align-right">{{details.ERIAnnualAmountSterling}}</td>
+                        <td class="govuk-table__cell pdp-align-right">{{details.ERIPotSterling}}</td>
+                        <td class="govuk-table__cell pdp-align-center"><a href="04-pension-details?pensionId={{details._id}}&providerId={{details.administratorReference}}">Pension details</a></td>       
+                      </tr>
+                    </tbody>
+                  {% endfor %} <!-- Workplace loop -->
+                </table>
+           {% endif %} <!-- Private pension -->
       </div>
     </div>
   </div>

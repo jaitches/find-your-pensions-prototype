@@ -53,24 +53,48 @@ $govuk-assets-path: '/govuk/assets/';
 	border-color: #058282;
 
 }
+// box round pension groups e.g. DC and DB in workplace
+.pdp-box-border {
+	border-top: 1px solid #b1b4b6;
+//	border-left: 1px solid #b1b4b6;
+//	border-right: 1px solid #b1b4b6;
+}
 //
 // table formatting
 //
+
 .pdp-width-20 {
 	width: 20%;
+	box-sizing: border-box;
 }
 .pdp-width-15 {
 	width: 15%;
+	box-sizing: border-box;
 }
 .pdp-width-10 {
 	width: 10%;
+	box-sizing: border-box;
+}
+.pdp-word-break {
+	word-break: break-word;
+}
+
+.pdp-align-bottom {
+	vertical-align: bottom;	
+}
+
+.pdp-table-header {
+	text-align: center;
+	vertical-align: bottom;	
 }
 .pdp-align-center {
 	text-align: center;
 }
+
 .pdp-align-right {
 	text-align: right;
 }
+
 .pdp-table-shaded-1 {
 	background-color: #E5F2F2;	
 }

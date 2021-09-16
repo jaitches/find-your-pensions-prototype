@@ -150,11 +150,25 @@ router.get('/*-display-pensions', function (req, res) {
         req.app.locals.pensionOwner = pensionOwnerName
         // set the local variables to false so that the elements are not displayed in the html unless they exist
         req.app.locals.workplaceFlag = false
+            req.app.locals.workplaceDBFlag = false
+            req.app.locals.workplaceDCFlag = false
+            req.app.locals.workplaceOtherFlag = false
         req.app.locals.privateFlag = false
+            req.app.locals.privateDCFlag = false
+            req.app.locals.privateOtherFlag = false
         req.app.locals.stateFlag = false
+//        req.app.locals.allFlag = false
+
 
         req.app.locals.workplacePensionDetails = []
+            req.app.locals.workplaceDBPensionDetails = []
+            req.app.locals.workplaceDCPensionDetails = []
+            req.app.locals.workplaceOtherPensionDetails = []
+
         req.app.locals.privatePensionDetails = []
+            req.app.locals.privateDCPensionDetails = []
+            req.app.locals.privateOtherPensionDetails = []
+
         req.app.locals.statePensionDetails = []
 
 
@@ -170,30 +184,58 @@ router.get('/*-display-pensions', function (req, res) {
 
             for (i=0; i < pensionDetailsAll.length; i++) {
             // convert dates to string and display as dd mon yyyy
-                console.log('pensionDetailsAll[i] ' +JSON.stringify(pensionDetailsAll[i]))
-                console.log('pensionDetailsAll[i].pensionRetirementDate ' + pensionDetailsAll[i].pensionRetirementDate)
+//                console.log('pensionDetailsAll[i] ' +JSON.stringify(pensionDetailsAll[i]))
+//                console.log('pensionDetailsAll[i].pensionRetirementDate ' + pensionDetailsAll[i].pensionRetirementDate)
 
                 let pensionRetirementDateString = await formatDate(pensionDetailsAll[i].pensionRetirementDate)
-                pensionDetailsAll[i].pensionRetirementDateString =pensionRetirementDateString
-                console.log('pensionDatePayableString ' + pensionRetirementDateString)
+                pensionDetailsAll[i].pensionRetirementDateString = pensionRetirementDateString
+
+                let ERIAnnualAmountSterling = Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(pensionDetailsAll[i].ERIAnnualAmount)
+                let ERIPotSterling = Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(pensionDetailsAll[i].ERIPot)
+                let accruedAmountSterling = Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(pensionDetailsAll[i].accruedAmount)
+                console.log('ERIAnnualAmountSterling ' + ERIAnnualAmountSterling) 
+                pensionDetailsAll[i].ERIAnnualAmountSterling = ERIAnnualAmountSterling
+                pensionDetailsAll[i].ERIPotSterling = ERIPotSterling
+                pensionDetailsAll[i].accruedAmountSterling = accruedAmountSterling
+
 
                 if (pensionDetailsAll[i].pensionOrigin == "W") {
 //                            console.log('pensionDetailsAll[i].pensionOrigin W ' + pensionDetailsAll[i].pensionReference)
                     req.app.locals.workplaceFlag = true
                     req.app.locals.workplacePensionDetails.push(pensionDetailsAll[i])
+                    if (pensionDetailsAll[i].pensionType == "DB") {
+                        req.app.locals.workplaceDBFlag = true
+                        req.app.locals.workplaceDBPensionDetails.push(pensionDetailsAll[i])
+                    }                    
+                    else if (pensionDetailsAll[i].pensionType == "DC") {
+                        req.app.locals.workplaceDCFlag = true
+                        req.app.locals.workplaceDCPensionDetails.push(pensionDetailsAll[i])
+                    }
+                    else {
+                        req.app.locals.workplaceOtherFlag = true
+                        req.app.locals.workplaceOtherPensionDetails.push(pensionDetailsAll[i])
+                    }
                 }
                 else if (pensionDetailsAll[i].pensionOrigin == "P") {
                     req.app.locals.privateFlag = true
                     req.app.locals.privatePensionDetails.push(pensionDetailsAll[i])
+                    if (pensionDetailsAll[i].pensionType == "DC") {
+                        req.app.locals.privateDCFlag = true
+                        req.app.locals.privateDCPensionDetails.push(pensionDetailsAll[i])
+                    }
+                    else {
+                        req.app.locals.workplaceOtherFlag = true
+                        req.app.locals.workplaceOtherPensionDetails.push(pensionDetailsAll[i])
+                    } 
                 }
-                else if (pensionDetailsAll[i].pensionOrigin == "S"){
+                else if (pensionDetailsAll[i].pensionOrigin == "S") {
                     req.app.locals.stateFlag = true
                     // there will only be one record for State pension!
                     req.app.locals.statePensionDetails = pensionDetailsAll[i]
                 }
             }
-
-        } finally {
+        } 
+        finally {
             // Close the connection to the MongoDB cluster
             await client.close()
             let ptypeDisplayUrl = ""
