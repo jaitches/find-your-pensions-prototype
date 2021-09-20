@@ -6,6 +6,7 @@ const { ObjectId } = require('mongodb')
 const uri = 'mongodb+srv://' + process.env.MONGODB_URI + '?retryWrites=true&w=majority'
 const dataBaseName = process.env.PENSIONS_DB
 const formatDate = require('./formatDate.js')
+const getPrototypeDetails = require('./getPrototypeDetails.js')
 // Use these arrays to store the options for the select element when updating the pensions
 const penTypes = [
     {type: "DC", text: "DC pension", selected : ""},
@@ -53,17 +54,21 @@ const penAccrAmtType = [
     {type: "LS", text: "Calculation of the accrued value of DBLS/CDCLS type", selected : ""}
 ]
 
-const prototypeDetails = [
-    {number: 1, text: "Find only", urlPath: "01-find-only", startUrl: "01-find-only/01-start", displayUrl: "01-find-only/01-display-pensions"},
-    {number: 2, text: "Find and view", urlPath: "02-find-view", startUrl: "02-find-view/02-start", displayUrl: "02-find-view/02-display-pensions"},
-    {number: 3, text: "Find and accrued", urlPath: "03-find-accrued", startUrl: "03-find-accrued/03-start", displayUrl: "03-find-accrued/03-display-pensions"},
-    {number: 4, text: "Find, accrued and estimated", urlPath: "04-find-accrued-estimated", startUrl: "04-find-accrued-estimated/04-start", displayUrl: "04-find-accrued-estimated/04-display-pensions"}
-]
-
-
 //
 // ****** routes for main pages and prototypes
 //
+
+// start page
+router.get('/', function (req, res) {
+    if (process.env.PENSIONS_DB == "pdp-test") {
+        req.app.locals.testMessage = 'This is the test version of the prototype.'
+    }
+    else {
+        req.app.locals.testMessage = ""
+    }
+    res.render('index')
+
+})
 
 // choose to manage data or display prototypes
 router.post('/display-or-manage-data', function (req, res) {
@@ -99,50 +104,24 @@ router.post('/select-prototype', function (req, res) {
         default:
         ptypeNumber = 0
     }
-    ptypeDetails = findPtypeText(ptypeNumber, prototypeDetails)
+    ptypeDetails = getPrototypeDetails(ptypeNumber)
     req.app.locals.ptype = ptypeDetails
 // use the stored start url for the redirect
     res.redirect(ptypeDetails.startUrl + '?ptype=' + ptypeNumber)
-// get the prototype description from the list
-    function findPtypeText (ptypeNo, prototypeArray) {
-        for (let i=0; i < prototypeArray.length; i++) {
-            if (prototypeArray[i].number === ptypeNo) {
-                return {
-                    "number" : prototypeArray[i].number,
-                    "text" : prototypeArray[i].text,
-                    "startUrl" : prototypeArray[i].startUrl,
-                    "displayUrl" : prototypeArray[i].displayUrl
-                }
-            }
-        }
-    }
 
 })
 
 // enter your details
-router.post('/enter-your-details', function (req, res) {
+router.post('/enter-your-details*', function (req, res) {
+    let ptypeNumber = req.query.ptype
     // redirect to the correct display-pensions page for the prototype
-    switch(req.app.locals.ptype.number) {
-        case 1:
-        ptypeDisplayUrl = req.app.locals.ptype.displayUrl
-        break;                
-        case 2:
-        ptypeDisplayUrl = req.app.locals.ptype.displayUrl
-        break;                
-        case 3:
-        ptypeDisplayUrl = req.app.locals.ptype.displayUrl
-        break;                
-        case 4:
-        ptypeDisplayUrl = req.app.locals.ptype.displayUrl
-        break;
-    }
-
-    res.redirect(ptypeDisplayUrl)
+    ptypeDetails = getPrototypeDetails(ptypeNumber)
+    res.redirect(ptypeDetails.displayUrl + '?ptype=' + ptypeNumber)
 })
 
 // Get the documents from MongoDB to display for all prototypes
 // the * is a wildcard for the prototype number in this get
-router.get('/*-display-pensions', function (req, res) {
+router.get('/*-display-pensions*', function (req, res) {
 
     async function findPensionsByOwner() {
         let pensionOwnerName = req.query.owner
@@ -193,7 +172,7 @@ router.get('/*-display-pensions', function (req, res) {
                 let ERIAnnualAmountSterling = Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(pensionDetailsAll[i].ERIAnnualAmount)
                 let ERIPotSterling = Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(pensionDetailsAll[i].ERIPot)
                 let accruedAmountSterling = Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(pensionDetailsAll[i].accruedAmount)
-                console.log('ERIAnnualAmountSterling ' + ERIAnnualAmountSterling) 
+//                console.log('ERIAnnualAmountSterling ' + ERIAnnualAmountSterling) 
                 pensionDetailsAll[i].ERIAnnualAmountSterling = ERIAnnualAmountSterling
                 pensionDetailsAll[i].ERIPotSterling = ERIPotSterling
                 pensionDetailsAll[i].accruedAmountSterling = accruedAmountSterling
@@ -238,22 +217,15 @@ router.get('/*-display-pensions', function (req, res) {
         finally {
             // Close the connection to the MongoDB cluster
             await client.close()
-            let ptypeDisplayUrl = ""
-            switch(req.app.locals.ptype.number) {
-                case 1:
-                ptypeDisplayUrl = req.app.locals.ptype.displayUrl
-                break;                
-                case 2:
-                ptypeDisplayUrl = req.app.locals.ptype.displayUrl
-                break;                
-                case 3:
-                ptypeDisplayUrl = req.app.locals.ptype.displayUrl
-                break;                
-                case 4:
-                ptypeDisplayUrl = req.app.locals.ptype.displayUrl
-                break;
-            }
-            res.render(ptypeDisplayUrl)
+            let ptypeNumber = req.query.ptype
+            console.log('req.query.ptype ' + req.query.ptype)
+            console.log('ptypeNumber ' + ptypeNumber)
+
+            // render the correct display-pensions page for the prototype
+            ptypeDetails = getPrototypeDetails(ptypeNumber)
+            console.log('ptypeDetails ' + JSON.stringify(ptypeDetails))
+
+            res.render(ptypeDetails.displayUrl)
         }
     }
 

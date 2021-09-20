@@ -47,6 +47,17 @@
 
 
       <h2 class="govuk-heading-m">Before you start</h2>
+      {% if testMessage %}     
+        <p class="govuk-inset-text">
+          {{testMessage}} <br>
+          The infomation you enter will be saved to a database and can be viewed by anyone with access to this prototype.
+        <br>
+          DO NOT USE THIS VERSION WITH USERS <br>
+          You can <a href="https://pdp-find-your-pensions.herokuapp.com/">access the live protoype</a> version for testing.
+
+          </a>
+        </p>
+      {% endif%}
       <p>
         You must set up pensions for the participant before you can use the prototype. This can be done by <a href="add-pensions">adding a new pension</a> or by copying a pension from the <a href="pensions-list#example-pensions">list of example pensions</a>. This will create a new pension and allow you to update the information.
       </p>
