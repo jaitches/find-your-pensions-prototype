@@ -44,7 +44,7 @@
                 <td class="govuk-table__cell">{{statePensionDetails.pensionRetirementDateString}}</td>
                 <td class="govuk-table__cell pdp-align-right pdp-box-border">{{statePensionDetails.accruedAmountSterling}}</td>
                 <td class="govuk-table__cell pdp-align-right pdp-box-border">{{statePensionDetails.ERIAnnualAmountSterling}}</td>
-                <td class="govuk-table__cell pdp-align-center pdp-box-border"><a href="04-pension-details?ptype=4&pensionId={{statePensionDetails._id}}&providerId={{statePensionDetails.administratorReference}}">more details</a></td>
+                <td class="govuk-table__cell pdp-align-center pdp-box-border"><a href="04-pension-details?ptype=5&pensionId={{statePensionDetails._id}}&providerId={{statePensionDetails.administratorReference}}">more details</a></td>
              </tr>
             </tbody>
           </table>
@@ -90,7 +90,7 @@
                       <td class="govuk-table__cell">{{details.pensionRetirementDateString}}</td>
                       <td class="govuk-table__cell pdp-box-border pdp-align-right">{{details.accruedAmountSterling}}</td>
                       <td class="govuk-table__cell pdp-box-border pdp-align-right">{{details.ERIAnnualAmountSterling}}</td>
-                      <td class="govuk-table__cell pdp-box-border pdp-align-center"><a href="04-pension-details?ptype=4&pensionId={{details._id}}&providerId={{details.administratorReference}}">more details</a></td>       
+                      <td class="govuk-table__cell pdp-box-border pdp-align-center"><a href="04-pension-details?ptype=5&pensionId={{details._id}}&providerId={{details.administratorReference}}">more details</a></td>       
                     </tr>
                   </tbody>
                 {% endfor %} <!-- Workplace loop -->
@@ -132,7 +132,7 @@
                         <td class="govuk-table__cell pdp-box-border pdp-align-right">{{details.accruedAmountSterling}}</td>
                         <td class="govuk-table__cell pdp-box-border pdp-align-right">{{details.ERIAnnualAmountSterling}}</td>
                         <td class="govuk-table__cell pdp-box-border pdp-align-right">{{details.ERIPotSterling}}</td>
-                        <td class="govuk-table__cell pdp-box-border pdp-align-center"><a href="04-pension-details?ptype=4&pensionId={{details._id}}&providerId={{details.administratorReference}}">more details</a></td>       
+                        <td class="govuk-table__cell pdp-box-border pdp-align-center"><a href="04-pension-details?ptype=5&pensionId={{details._id}}&providerId={{details.administratorReference}}">more details</a></td>       
                       </tr>
                     </tbody>
                   {% endfor %} <!-- Workplace loop -->
@@ -179,7 +179,7 @@
                         <td class="govuk-table__cell pdp-box-border pdp-align-right">{{details.accruedAmountSterling}}</td>
                         <td class="govuk-table__cell pdp-box-border pdp-align-right">{{details.ERIAnnualAmountSterling}}</td>
                         <td class="govuk-table__cell pdp-box-border pdp-align-right">{{details.ERIPotSterling}}</td>
-                        <td class="govuk-table__cell pdp-align-center pdp-box-border"><a href="04-pension-details?ptype=4&pensionId={{details._id}}&providerId={{details.administratorReference}}">more details</a></td>       
+                        <td class="govuk-table__cell pdp-align-center pdp-box-border"><a href="04-pension-details?ptype=5&pensionId={{details._id}}&providerId={{details.administratorReference}}">more details</a></td>       
                       </tr>
                     </tbody>
                   {% endfor %} <!-- Workplace loop -->

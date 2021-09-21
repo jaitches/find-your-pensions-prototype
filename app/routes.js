@@ -100,6 +100,9 @@ router.post('/select-prototype', function (req, res) {
         break;             
         case "prototype-find-accrued-estimated":
         ptypeNumber = 4
+        break;        
+        case "prototype-full-display-alt":
+        ptypeNumber = 5
         break;       
         default:
         ptypeNumber = 0
@@ -114,9 +117,12 @@ router.post('/select-prototype', function (req, res) {
 // enter your details
 router.post('/enter-your-details*', function (req, res) {
     const pensionOwnerName = req.session.data['full-name']
+    console.log('req.query.ptype enter your details ' + req.query.ptype)
+
     let ptypeNumber = req.query.ptype
     // redirect to the correct display-pensions page for the prototype
     ptypeDetails = getPrototypeDetails(ptypeNumber)
+    console.log('ptypeNumber enter your details' + ptypeNumber)
     res.redirect(ptypeDetails.displayUrl + '?ptype=' + ptypeNumber + '&owner=' + pensionOwnerName)
 })
 
@@ -267,7 +273,7 @@ router.get('/*-display-pensions*', function (req, res) {
 
 
 // 01 additional page of pension details 
-router.get('/02-find-view/02-pension-details', function (req, res) {
+router.get('/*-pension-details*', function (req, res) {
 
     async function findPensionDetails() {
         req.app.locals.pensionDetails = []
@@ -284,20 +290,31 @@ router.get('/02-find-view/02-pension-details', function (req, res) {
             await client.connect();
             req.app.locals.pensionDetails = await getPensionById(client, pensionId)
             req.app.locals.pensionProvider = await getProviderById(client, providerId)
- //           console.log('req.app.locals.pensionProvider.administratorURL ' + req.app.locals.pensionProvider.administratorURL)
+//            console.log('req.app.locals.pensionProvider.administratorURL ' + req.app.locals.pensionProvider.administratorURL)
             if (req.app.locals.pensionProvider.administratorURL) {
                 req.app.locals.pensionProvider.administratorShortURL = req.app.locals.pensionProvider.administratorURL.replace(/^https?\:\/\//i, "")
+            }
+            if (req.app.locals.pensionProvider.administratorAnnualReportURL) {
                 req.app.locals.pensionProvider.administratorAnnualReportShortURL = req.app.locals.pensionProvider.administratorAnnualReportURL.replace(/^https?\:\/\//i, "")
-                req.app.locals.pensionProvider.administratorCostsChargesShortPURL = req.app.locals.pensionProvider.administratorCostsChargesURL.replace(/^https?\:\/\//i, "")
+            }
+            if (req.app.locals.pensionProvider.administratorCostsChargesURL) {
+                req.app.locals.pensionProvider.administratorCostsChargesShortURL = req.app.locals.pensionProvider.administratorCostsChargesURL.replace(/^https?\:\/\//i, "")
+            }
+            if (req.app.locals.pensionProvider.administratorImplementationURL) {
                 req.app.locals.pensionProvider.administratorImplementationShortURL = req.app.locals.pensionProvider.administratorImplementationURL.replace(/^https?\:\/\//i, "")
-                req.app.locals.pensionProvider.administratorShortSIPURL = req.app.locals.pensionProvider.administratorSIPURL.replace(/^https?\:\/\//i, "")
-                console.log('req.app.locals.pensionProvider.administratorShortURL ' +req.app.locals.pensionProvider.administratorShortURL).replace(/^https?\:\/\//i, "")
+            }
+            if (req.app.locals.pensionProvider.administratorSIPURL) {  
+                req.app.locals.pensionProvider.administratorSIPShortURL = req.app.locals.pensionProvider.administratorSIPURL.replace(/^https?\:\/\//i, "")
             }
 
         } finally {
             // Close the connection to the MongoDB cluster
             await client.close();    
-            res.render('02-find-view/02-pension-details')
+            let ptypeNumber = req.query.ptype
+            // render the correct display-pensions page for the prototype
+            ptypeDetails = getPrototypeDetails(ptypeNumber)
+
+            res.render(ptypeDetails.urlPath + '/0' + ptypeNumber + '-pension-details')
         }
     }
 
@@ -1045,7 +1062,7 @@ router.post('/add-provider-details', function (req, res) {
                 administratorEmail : administrator_Email,
                 administratorPhoneNumber : administrator_Phone_Number,
                 administratorPhoneNumberType: "Enquiries",
-                admisistratorPostalName : administrator_Name,
+                administratorPostalName : administrator_Name,
                 administratorAddressLine1 : "Floor 21",        
                 administratorAddressLine2 : "Palmerston Tower",
                 administratorAddressLine3 : "High Street",
@@ -1135,7 +1152,7 @@ router.post('/update-provider-details', function (req, res) {
     let administrator_Address_Line_5 = req.session.data['administratorAddressLine5']
     let administrator_Postcode = req.session.data['administrator_Postcode']
     let administrator_Annual_Report_URL = req.session.data['administratorAnnualReportURL']
-    let administrator_Costs_Charges_URL = req.session.data['administrator_Costs_Charges_URL']
+    let administrator_Costs_Charges_URL = req.session.data['administratorCostsChargesURL']
     let administrator_Implementation_URL = req.session.data['administratorImplementationURL']
     let administrator_SIP_URL = req.session.data['administratorSIPURL']
 
@@ -1153,7 +1170,7 @@ router.post('/update-provider-details', function (req, res) {
                 administratorEmail : administrator_Email,
                 administratorPhoneNumber : administrator_Phone_Number,
                 administratorPhoneNumberType: administrator_Phone_Number_Type,
-                admisistratorPostalName : administrator_Name,
+                administratorPostalName : administrator_Name,
                 administratorAddressLine1 : administrator_Address_Line_1,        
                 administratorAddressLine2 : administrator_Address_Line_2,
                 administratorAddressLine3 : administrator_Address_Line_3,
