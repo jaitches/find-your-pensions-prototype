@@ -11,7 +11,7 @@ const getPrototypeDetails = require('./getPrototypeDetails.js')
 const penTypes = [
     {type: "DC", text: "DC pension", selected : ""},
     {type: "DB", text: "DB pension", selected : ""},
-    {type: "ST", text: "State pension", selected : ""},
+    {type: "ST", text: "State Pension", selected : ""},
     {type: "AVC", text: "AVC pension", selected : ""},
     {type: "HYB", text: "Hybrid pension", selected : ""}
 ]
@@ -61,10 +61,10 @@ const penAccrAmtType = [
 // start page
 router.get('/', function (req, res) {
     if (process.env.PENSIONS_DB == "pdp-test") {
-        req.app.locals.testMessage = 'This is the test version of the prototype.'
+        req.app.locals.testEnv = true
     }
     else {
-        req.app.locals.testMessage = ""
+        req.app.locals.testEnv = false
     }
     res.render('index')
 
@@ -113,10 +113,11 @@ router.post('/select-prototype', function (req, res) {
 
 // enter your details
 router.post('/enter-your-details*', function (req, res) {
+    const pensionOwnerName = req.session.data['full-name']
     let ptypeNumber = req.query.ptype
     // redirect to the correct display-pensions page for the prototype
     ptypeDetails = getPrototypeDetails(ptypeNumber)
-    res.redirect(ptypeDetails.displayUrl + '?ptype=' + ptypeNumber)
+    res.redirect(ptypeDetails.displayUrl + '?ptype=' + ptypeNumber + '&owner=' + pensionOwnerName)
 })
 
 // Get the documents from MongoDB to display for all prototypes
@@ -156,9 +157,15 @@ router.get('/*-display-pensions*', function (req, res) {
         try {
             // Connect to the MongoDB cluster
             await client.connect()
+
+            if (pensionOwnerName && process.env.PENSIONS_DB == "pdp-test") {
+                pensionDetailsAll = await getPensionsByOwner(client, pensionOwnerName)
+            }
+            else {
+                pensionDetailsAll = await getAllPensions(client)     
+            }
    
 
-            pensionDetailsAll = await getAllPensions(client)
             // split into workplace, private and state pensions if prototypeOptionOrigin selected
 
             for (i=0; i < pensionDetailsAll.length; i++) {
@@ -209,7 +216,7 @@ router.get('/*-display-pensions*', function (req, res) {
                 }
                 else if (pensionDetailsAll[i].pensionOrigin == "S") {
                     req.app.locals.stateFlag = true
-                    // there will only be one record for State pension!
+                    // there will only be one record for State Pension!
                     req.app.locals.statePensionDetails = pensionDetailsAll[i]
                 }
             }
@@ -240,6 +247,20 @@ router.get('/*-display-pensions*', function (req, res) {
         .sort({pensionOrigin: 1, pensionType: 1, pensionRetirementDate: -1, pensionName: 1})        
         .toArray()
 //        console.log('results all pensions' + JSON.stringify(results))
+        return results
+    }
+
+    async function getPensionsByOwner(client, ownerName) {
+        console.log('dataBaseName ' + dataBaseName)
+        console.log('ownerName ' + ownerName)
+
+        const results = await client.db(dataBaseName).collection("pensionDetails")
+        // find all documents
+        .find({pensionOwnerType: "M", pensionOwner :  ownerName})
+        // save them to an array
+        .sort({pensionOrigin: 1, pensionType: 1, pensionRetirementDate: -1, pensionName: 1})        
+        .toArray()
+//        console.log('results ' + JSON.stringify(results))
         return results
     }
 }) 
@@ -325,20 +346,44 @@ router.post('/manage-pensions', function (req, res) {
 //
 
 // Display pensions
-router.get('/pensions-list', function (req, res) {
+router.get('/pensions-list*', function (req, res) {
+    let pensionOwnerSelected = ""
 // connect to MongoDB to add the doc (record) to the collection (table)
+    if (process.env.PENSIONS_DB == "pdp-test") {
+        req.app.locals.testEnv = true
+    }
+    else {
+        req.app.locals.testEnv = false
+    }
+    if (req.query.owner) {
+        pensionOwnerSelected = req.query.owner
+    }
+    else {
+        pensionOwnerSelected = "All"
+    }
+
     async function findAllPensions() {
-        const client = new MongoClient(uri);
+        const client = new MongoClient(uri)
 
         try {
             // Connect to the MongoDB cluster
             await client.connect()
+            // populate filter list
+            req.app.locals.pensionOwners = await getOwners(client)
+            console.log('req.app.locals.pensionOwners ' + JSON.stringify(req.app.locals.pensionOwners))
+
             let allPensionDetails = await getAllPensions(client)
             let manualPensionDetails = []
             let examplePensionDetails = []
-            for (i=0; i<allPensionDetails.length; i++){
+
+            for (i=0; i < allPensionDetails.length; i++){
                 if (allPensionDetails[i].pensionOwnerType == "M") {
-                    manualPensionDetails.push(allPensionDetails[i])
+                    if (pensionOwnerSelected == "All" || pensionOwnerSelected == null) {
+                        manualPensionDetails.push(allPensionDetails[i])
+                    }
+                    else if (pensionOwnerSelected == allPensionDetails[i].pensionOwner) {
+                        manualPensionDetails.push(allPensionDetails[i])
+                    }
                 }
                 else if (allPensionDetails[i].pensionOwnerType == "E") {
                     examplePensionDetails.push(allPensionDetails[i])
@@ -349,6 +394,7 @@ router.get('/pensions-list', function (req, res) {
         } finally {
             // Close the connection to the MongoDB cluster
             await client.close();    
+//            res.render('pensions-list?owner=' + pensionOwnerSelected)
             res.render('pensions-list')
         }
     }
@@ -364,7 +410,24 @@ router.get('/pensions-list', function (req, res) {
         .toArray()
         return results
     }
+
+    async function getOwners(client) {
+        const query = {pensionOwnerType:"M"}
+        const results = await client.db(dataBaseName).collection("pensionDetails")
+        // find all documents
+        .distinct("pensionOwner",query)
+//        console.log('results owners' + JSON.stringify(results))
+        return results
+    }
 })
+// filter by name on the pensions-list
+router.post('/filter-pensions', function (req, res) {
+    // reload the pensions-list page with the filter
+    pensionOwnerSelected = req.session.data['ownerName']
+    console.log('pensionOwnerSelected ' + pensionOwnerSelected)
+    res.redirect('pensions-list?owner=' + pensionOwnerSelected)
+})
+
 
 router.get('/add-pension', function (req, res) {
     // load pension providers into local var to select on form
@@ -416,6 +479,7 @@ router.post('/add-pension-details', function (req, res) {
 //set type to manual added - M (not default - D)
     let pension_Owner_Type = "M"
     let pension_Owner = req.session.data['pensionOwner']
+    let pension_Description = req.session.data['pensionDescription']
     let pension_Reference = req.session.data['pensionReference']
     let pension_Name = req.session.data['pensionName']
     let pension_Type = req.session.data['pensionType']
@@ -465,6 +529,7 @@ router.post('/add-pension-details', function (req, res) {
 
                 pensionOwnerType : pension_Owner_Type,
                 pensionOwner : pension_Owner,
+                pensionDescription: pension_Description,
                 pensionReference : pension_Reference,
                 pensionName : pension_Name,
                 pensionType : pension_Type,
@@ -687,6 +752,7 @@ router.post('/update-pension-details', function (req, res) {
         // get the inputted pension data 
 
         let pension_Owner = req.session.data['pensionOwner']
+        let pension_Description = req.session.data['pensionDescription']
         let pension_Reference = req.session.data['pensionReference']
         let pension_Name = req.session.data['pensionName']
         let pension_Type = req.session.data['pensionType']
@@ -730,6 +796,7 @@ router.post('/update-pension-details', function (req, res) {
             await updatePensionDetails(client, pensionId, {
 
                 pensionOwner : pension_Owner,
+                pensionDescription: pension_Description,
                 pensionReference : pension_Reference,
                 pensionName : pension_Name,
                 pensionType : pension_Type,

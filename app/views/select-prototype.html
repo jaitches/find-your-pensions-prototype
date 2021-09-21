@@ -33,21 +33,27 @@
         },
 
         items: [
-          {
-            value: "prototype-find-only",
-            text: "Find pension provider only"
-          },
+          
           {
             value: "prototype-find-view",
-            text: "Find and view pension and provider information"
+            text: "Find and view pension and provider information",
+            hint: {
+              text: "Pension and provider information but no figures"
+            }
           },
           {
             value: "prototype-find-accrued",
-            text: "Find pension information and current values"
+            text: "Find pension information and current values",
+            hint: {
+              text: "Accrued figures only"
+            }
           },
           {
             value: "prototype-find-accrued-estimated",
-            text: "Find pension information, current and projected values"
+            text: "Find pension information, current and projected values", 
+            hint: {
+              text: "Accrued and estimated figures"
+            }
           }
         ]
       }) }}
@@ -56,6 +62,23 @@
         text: "Continue"
       }) }}
       </form>
+      <details class="govuk-details" data-module="govuk-details">
+        <summary class="govuk-details__summary">
+          <span class="govuk-details__summary-text">
+            Previous versions of the protoypes
+          </span>
+        </summary>
+        <div class="govuk-details__text">
+          <pl class="govuk-list govuk-list--number">
+            <li>
+              <a href="prototype-sep-21">Sep 2021</a> - ERI tests no figures displayed
+            </li>
+            <li>             
+              <a href="prototype-oct-21">Oct 2021</a> - ERI tests current and projected figures
+            </li>
+          </ul>
+        </div>
+    </details>
     </div>
     <div class="govuk-grid-column-one-third">
         {% include "sidebar-nav.html" %}

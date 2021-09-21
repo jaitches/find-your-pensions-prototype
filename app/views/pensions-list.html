@@ -26,6 +26,23 @@
       <h1 class="govuk-heading-xl">
         Pension list
       </h1>
+      {% if testEnv %}  
+      <form action="/filter-pensions" method="post" class="form">
+        <h2 class="govuk-label-wrapper">
+          <label class="govuk-label govuk-label--m" for="ownerName">
+            Filter by pension owner
+          </label>
+        </h2>
+        <select class="govuk-select" id="ownerName" name="ownerName">
+          <option value="All">All</option>
+        {% for name in pensionOwners %}
+          <option value="{{name}}">{{name}}</option>
+        {% endfor %}
+        </select>
+        <button class="govuk-button govuk-button" data-module="govuk-button">Apply filter</button>
+      </form>
+      {% endif %}     
+
       <h2 class="govuk-heading-l">
         Pensions displayed on the prototype
       </h2>
@@ -34,15 +51,15 @@
 
           <tr class="govuk-table__row">
             <th scope="col" class="govuk-table__header">Pension owner</th>
+            <th scope="col" class="govuk-table__header">Pension description</th>
             <th scope="col" class="govuk-table__header">Pension type</th>
             <th scope="col" class="govuk-table__header">Pension name</th>
             <th scope="col" class="govuk-table__header">Provider</th>
             <th scope="col" class="govuk-table__header">Ref</th>
             <th scope="col" class="govuk-table__header">Employer</th>
-            <th scope="col" class="govuk-table__header">Date accrued calculated</th>
+            <th scope="col" class="govuk-table__header">Accrued Income</th>
             <th scope="col" class="govuk-table__header">ERI Pot</th>
             <th scope="col" class="govuk-table__header">ERI Income</th>
-            <th scope="col" class="govuk-table__header">Date ERI calculated</th>
             <th scope="col" class="govuk-table__header">Date payable</th>
             <th scope="col" class="govuk-table__header">            
               <form action="/delete-all-pensions" method="post" class="form">
@@ -55,15 +72,15 @@
         <tbody class="govuk-table__body govuk-body-xs">
           <tr class="govuk-table__row">
             <td class="govuk-table__cell">{{details.pensionOwner}}</td>
+            <td class="govuk-table__cell">{{details.pensionDescription}}</td>
             <td class="govuk-table__cell">{{details.pensionType}}</td>
             <td class="govuk-table__cell">{{details.pensionName}}</td>
             <td class="govuk-table__cell">{{details.administratorName}}</td>
             <td class="govuk-table__cell">{{details.pensionReference}}</td>
             <td class="govuk-table__cell">{{details.employerName}}</td>
-            <td class="govuk-table__cell">{{details.accruedCalculationDate}}</td>
+            <td class="govuk-table__cell">£{{details.accruedAnnualIncome}}</td>
             <td class="govuk-table__cell">£{{details.ERIPot}}</td>
             <td class="govuk-table__cell">£{{details.ERIAnnualAmount}}</td>
-            <td class="govuk-table__cell">{{details.ERICalculationDate}}</td>
             <td class="govuk-table__cell">{{details.ERIPayableDate}}</td>
             <td class="govuk-table__cell" ><a href="update-pension?pensionId={{details._id}}" class="govuk-link">Edit</button></a></td>
             <form action="/delete-pension/{{details._id}}" method="post" class="form">
@@ -83,16 +100,15 @@
         <thead class="govuk-table__head govuk-body-s">
 
           <tr class="govuk-table__row">
-            <th scope="col" class="govuk-table__header">Pension owner</th>
+            <th scope="col" class="govuk-table__header">Pension description</th>
             <th scope="col" class="govuk-table__header">Pension type</th>
             <th scope="col" class="govuk-table__header">Pension name</th>
             <th scope="col" class="govuk-table__header">Provider</th>
             <th scope="col" class="govuk-table__header">Ref</th>
             <th scope="col" class="govuk-table__header">Employer</th>
-            <th scope="col" class="govuk-table__header">Date accrued calculated</th>
+            <th scope="col" class="govuk-table__header">Accrued Income</th>
             <th scope="col" class="govuk-table__header">ERI Pot</th>
             <th scope="col" class="govuk-table__header">ERI Income</th>
-            <th scope="col" class="govuk-table__header">Date ERI calculated</th>
             <th scope="col" class="govuk-table__header">Date payable</th>
             <th scope="col" class="govuk-table__header"></th>
             <th scope="col" class="govuk-table__header"></th>
@@ -102,16 +118,15 @@
       {% for details in examplePensionDetails %}
         <tbody class="govuk-table__body govuk-body-xs">
           <tr class="govuk-table__row">
-            <td class="govuk-table__cell">{{details.pensionOwner}}</td>
+            <td class="govuk-table__cell">{{details.pensionDescription}}</td>
             <td class="govuk-table__cell">{{details.pensionType}}</td>
             <td class="govuk-table__cell">{{details.pensionName}}</td>
             <td class="govuk-table__cell">{{details.administratorName}}</td>
             <td class="govuk-table__cell">{{details.pensionReference}}</td>
             <td class="govuk-table__cell">{{details.employerName}}</td>
-            <td class="govuk-table__cell">{{details.accruedCalculationDate}}</td>
+            <td class="govuk-table__cell">£{{details.accruedAnnualIncome}}</td>
             <td class="govuk-table__cell">£{{details.ERIPot}}</td>
             <td class="govuk-table__cell">£{{details.ERIAnnualAmount}}</td>
-            <td class="govuk-table__cell">{{details.ERICalculationDate}}</td>
             <td class="govuk-table__cell">{{details.ERIPayableDate}}</td>
             <td class="govuk-table__cell" ><a href="update-pension?pensionId={{details._id}}" class="govuk-link">Edit</button></a></td>
             <form action="/copy-pension/{{details._id}}" method="post" class="form">

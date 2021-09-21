@@ -21,6 +21,8 @@
       }
     ]
   }) }}
+<!-- for testing -->
+  {% set testEnv = true %}
   
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
@@ -49,35 +51,7 @@
 
           </select>
         </div>
-        {% call govukFieldset({
-          legend: {
-            text: "Pension description",
-            classes: "govuk-fieldset__legend--l",
-            isPageHeading: true
-          }
-        }) %}
 
-          {{ govukInput({
-            label: {
-              html: 'Enter a brief description of the pension'
-            },
-            classes: "govuk-!-width-two-thirds",
-            id: "pensionOwner",
-            name: "pensionOwner",
-            value: pensionDetails.pensionOwner
-          }) }} 
-        {% endcall %}
-
-        {% call govukFieldset({
-          legend: {
-            text: "Select pension provider",
-            classes: "govuk-fieldset__legend--l",
-            isPageHeading: true
-          }
-        }) %}
-
-
-        {% endcall %}
         {% call govukFieldset({
           legend: {
             text: "Pension arrangement details",
@@ -85,8 +59,37 @@
             isPageHeading: true
           }
         }) %}
+        {% if testEnv %}     
+          {{ govukInput({
+            label: {
+              html: 'Pension owner'
+            },
+            classes: "govuk-!-width-two-thirds",
+            hint: {
+              text: "The name you enter will be used by the prototype to select your pensions"
+            },
+            id: "pensionOwner",
+            name: "pensionOwner",
+            value: pensionDetails.pensionOwner
+
+          }) }} 
+        {% endif %}
 
           {{ govukInput({
+            label: {
+              html: 'Enter a brief description of the pension'
+            },
+            classes: "govuk-!-width-two-thirds",  
+            hint: {
+              text: "e.g. DC workplace active"
+            },
+            id: "pensionDescription",
+            name: "pensionDescription",
+            value: pensionDetails.pensionDescription
+
+          }) }}
+
+      {{ govukInput({
             label: {
               html: 'Pension reference'
             },
