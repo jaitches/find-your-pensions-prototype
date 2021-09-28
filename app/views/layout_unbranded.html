@@ -14,9 +14,12 @@
 {% endblock %}
 
 {% block header %}
+
 <div class="govuk-header__container govuk-width-container">
- 	<div class="pdp-service-name govuk-heading-l">
-	    {{serviceName}}
+ 	<div class="pdp-service-name">
+		<a href="/" class="govuk-header__link govuk-header__link--service-name">
+		  {{ serviceName }}
+		</a>
 	</div>
 </div>
 {% endblock %}

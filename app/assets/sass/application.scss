@@ -36,6 +36,11 @@ $govuk-assets-path: '/govuk/assets/';
 	color: white;
 }
 // heading service name
+// header service name font size bigger
+.govuk-header__link--service-name {
+  font-size: 32px;
+}
+
 .pdp-service-name, 
 .pdp-service-name:hover,
 .pdp-service-name:visited,
@@ -178,4 +183,11 @@ $govuk-assets-path: '/govuk/assets/';
 	text-align: center;
 	color: grey;
 	padding-top:20px
+}
+
+//
+// Pension box formatting
+//
+.pdp-pension-box {
+	border: 5px solid;
 }

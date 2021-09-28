@@ -2,7 +2,7 @@
 {% extends "layout_unbranded.html" %}
 
 {% block pageTitle %}
-  View my pensions - pension details
+  View my pensions - Pension detail
 {% endblock %}
 
 {% block content %}
@@ -33,6 +33,18 @@
           </dd>
         </div>
       </dl>
+      <dl class="govuk-summary-list">
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            Reference number
+          </dt>
+          <dd class="govuk-summary-list__value">
+            {{pensionDetails.pensionReference}}
+          </dd>
+        </div>
+      </dl>   
+      {%if pensionProvider.employer %}
+   
       <dl class="govuk-summary-list">
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">
