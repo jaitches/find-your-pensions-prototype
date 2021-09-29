@@ -68,6 +68,7 @@
           </dd>
         </div>
       </dl>
+      {% endif %}
       {%if pensionProvider.administratorContactPreference %}
       <dl class="govuk-summary-list">
         <div class="govuk-summary-list__row">
@@ -87,7 +88,7 @@
             Website
           </dt>
           <dd class="govuk-summary-list__value"><a href={{pensionProvider.administratorURL}}>
-            {{pensionProvider.administratorShortURL}} {{pensionProvider.administratorURL}}</a>
+            {{pensionProvider.administratorShortURL}}</a>
           </dd>
         </div>
       </dl>
@@ -200,5 +201,4 @@
       {% endif %}
     </div>
   </div>
-
 {% endblock %}

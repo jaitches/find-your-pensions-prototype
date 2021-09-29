@@ -9,8 +9,8 @@ const formatDate = require('./formatDate.js')
 const getPrototypeDetails = require('./getPrototypeDetails.js')
 // Use these arrays to store the options for the select element when updating the pensions
 const penTypes = [
-    {type: "DC", text: "DC pension", selected : ""},
-    {type: "DB", text: "DB pension", selected : ""},
+    {type: "DC", text: "Defined Contribution pension", selected : ""},
+    {type: "DB", text: "Defined Benefit pension", selected : ""},
     {type: "ST", text: "State Pension", selected : ""},
     {type: "AVC", text: "AVC pension", selected : ""},
     {type: "HYB", text: "Hybrid pension", selected : ""}
@@ -117,12 +117,9 @@ router.post('/select-prototype', function (req, res) {
 // enter your details
 router.post('/enter-your-details*', function (req, res) {
     const pensionOwnerName = req.session.data['full-name']
-    console.log('req.query.ptype enter your details ' + req.query.ptype)
-
     let ptypeNumber = req.query.ptype
     // redirect to the correct display-pensions page for the prototype
     ptypeDetails = getPrototypeDetails(ptypeNumber)
-    console.log('ptypeNumber enter your details' + ptypeNumber)
     res.redirect(ptypeDetails.displayUrl + '?ptype=' + ptypeNumber + '&owner=' + pensionOwnerName)
 })
 
@@ -180,7 +177,16 @@ router.get('/*-display-pensions*', function (req, res) {
 //                console.log('pensionDetailsAll[i].pensionRetirementDate ' + pensionDetailsAll[i].pensionRetirementDate)
 
                 let pensionRetirementDateString = await formatDate(pensionDetailsAll[i].pensionRetirementDate)
+                let ERICalculationDateString = await formatDate(pensionDetailsAll[i].ERICalculationDate)
+                let accruedCalculationDateString = await formatDate(pensionDetailsAll[i].accruedCalculationDate)
+                let employmentStartDateString = await formatDate(pensionDetailsAll[i].employmentStartDate)
+                let employmentEndDateString = await formatDate(pensionDetailsAll[i].employmentEndDate)
+
                 pensionDetailsAll[i].pensionRetirementDateString = pensionRetirementDateString
+                pensionDetailsAll[i].ERICalculationDateString = ERICalculationDateString
+                pensionDetailsAll[i].accruedCalculationDateString = accruedCalculationDateString
+                pensionDetailsAll[i].employmentStartDateString = employmentStartDateString
+                pensionDetailsAll[i].employmentEndDateString = employmentEndDateString
 
                 let ERIAnnualAmountSterling = Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(pensionDetailsAll[i].ERIAnnualAmount)
                 let ERIPotSterling = Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(pensionDetailsAll[i].ERIPot)
@@ -190,7 +196,12 @@ router.get('/*-display-pensions*', function (req, res) {
                 pensionDetailsAll[i].ERIPotSterling = ERIPotSterling
                 pensionDetailsAll[i].accruedAmountSterling = accruedAmountSterling
 
-
+                // find pension type text
+                for (j=0; j < penTypes.length; j++) {
+                    if (pensionDetailsAll[i].pensionType == penTypes[j].type) {
+                        pensionDetailsAll[i].penTypeDescription = penTypes[j].text
+                    }
+                } 
                 if (pensionDetailsAll[i].pensionOrigin == "W") {
 //                            console.log('pensionDetailsAll[i].pensionOrigin W ' + pensionDetailsAll[i].pensionReference)
                     req.app.locals.workplaceFlag = true
@@ -231,13 +242,8 @@ router.get('/*-display-pensions*', function (req, res) {
             // Close the connection to the MongoDB cluster
             await client.close()
             let ptypeNumber = req.query.ptype
-            console.log('req.query.ptype ' + req.query.ptype)
-            console.log('ptypeNumber ' + ptypeNumber)
-
             // render the correct display-pensions page for the prototype
             ptypeDetails = getPrototypeDetails(ptypeNumber)
-            console.log('ptypeDetails ' + JSON.stringify(ptypeDetails))
-
             res.render(ptypeDetails.displayUrl)
         }
     }
@@ -245,7 +251,6 @@ router.get('/*-display-pensions*', function (req, res) {
     findPensionsByOwner().catch(console.error)
    
     async function getAllPensions(client) {
-        console.log('dataBaseName ' + dataBaseName)
         const results = await client.db(dataBaseName).collection("pensionDetails")
         // find all documents
         .find({pensionOwnerType: "M"})
@@ -257,9 +262,6 @@ router.get('/*-display-pensions*', function (req, res) {
     }
 
     async function getPensionsByOwner(client, ownerName) {
-        console.log('dataBaseName ' + dataBaseName)
-        console.log('ownerName ' + ownerName)
-
         const results = await client.db(dataBaseName).collection("pensionDetails")
         // find all documents
         .find({pensionOwnerType: "M", pensionOwner :  ownerName})
@@ -332,7 +334,6 @@ router.get('/*-pension-details*', function (req, res) {
         const results = await client.db(dataBaseName).collection("pensionProvider")
         // find all documents
         .findOne({ _id : ObjectId(providerId)})
-        console.log('results providers' + JSON.stringify(results))
         return results
     }
 })
@@ -387,7 +388,6 @@ router.get('/pensions-list*', function (req, res) {
             await client.connect()
             // populate filter list
             req.app.locals.pensionOwners = await getOwners(client)
-            console.log('req.app.locals.pensionOwners ' + JSON.stringify(req.app.locals.pensionOwners))
 
             let allPensionDetails = await getAllPensions(client)
             let manualPensionDetails = []
@@ -441,7 +441,6 @@ router.get('/pensions-list*', function (req, res) {
 router.post('/filter-pensions', function (req, res) {
     // reload the pensions-list page with the filter
     pensionOwnerSelected = req.session.data['ownerName']
-    console.log('pensionOwnerSelected ' + pensionOwnerSelected)
     res.redirect('pensions-list?owner=' + pensionOwnerSelected)
 })
 
@@ -751,7 +750,6 @@ router.post('/update-pension-details', function (req, res) {
     async function updatePension() {
     // create an instance of the client
         const client = new MongoClient(uri);        
-        console.log('req.app.locals.pensionId ' + req.app.locals.pensionId)
         let pensionId = req.app.locals.pensionId
        
         // format date
@@ -856,8 +854,6 @@ router.post('/update-pension-details', function (req, res) {
 
     // Add functions that make DB calls here
     async function updatePensionDetails(client, pensionId, updatePension){
-        console.log('updatePension ' + JSON.stringify(updatePension))
-        console.log('pensionId ' + pensionId)
         const result = await client.db(dataBaseName).collection("pensionDetails")
             .updateOne({ _id : ObjectId(pensionId)}, {$set: updatePension});
         console.log(`${result.modifiedCount} document was updated.`)
@@ -990,7 +986,6 @@ router.post('/copy-pension/:id', function (req, res) {
         return results
     }
     async function createPension(client, newPension){
-        console.log('create pension in copy')
         const result = await client.db(dataBaseName).collection("pensionDetails").insertOne(newPension);
         console.log(`New Pension created with the following id: ${result.insertedId}`)
     } 
@@ -1221,8 +1216,6 @@ router.post('/delete-provider/:id', function (req, res) {
     async function deleteProviderById(client, providerId) {
         const result = await client.db(dataBaseName).collection("pensionProvider")
             .deleteOne({_id: ObjectId(providerId)})
-            console.log('providerId' + providerId)
-            console.log('result ' + JSON.stringify(result))
         console.log(`${result.deletedCount} document(s) was/were deleted.`)
     }
 
