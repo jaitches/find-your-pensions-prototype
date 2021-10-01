@@ -9,7 +9,8 @@
   <div class="govuk-breadcrumbs">
     <ol class="govuk-breadcrumbs__list">
       <li class="govuk-breadcrumbs__list-item">
-        <a class="govuk-breadcrumbs__link" href="05-display-pensions?ptype=5&owner={{pensionOwnerName}}">Back to pension list</a>
+        <p>{{ptypeDisplayURL}}</p>
+        <a class="govuk-breadcrumbs__link" href="{{ptypeDisplayUrl}}?ptype={{ptypeNumber}}&owner={{pensionOwnerName}}">Back to pension list</a>
       </li> 
     </ol>
   </div>
@@ -53,7 +54,7 @@
             </dd>
           </div>
         </dl>
-        {% if pensionDetails.pensionStatus == "A" %}
+        {% if pensionDetails.pensionStatus == "A" and (ptypeNumber == 4 or ptypeNumber == 5 )%}
         <dl class="govuk-summary-list">
           <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">
@@ -78,29 +79,31 @@
             </dd>
           </div>
         </dl>
-        <dl class="govuk-summary-list">
-          <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">
-              What your pension could be worth at retirement
-            </dt>
-            <dd class="govuk-summary-list__value">
-              {{pensionDetails.ERIPotSterling}}
-            </dd>
-          </div>
-        </dl>        
-        <dl class="govuk-summary-list">
-          <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">
-              What your pension income could be worth at retirement each year
-            </dt>
-            <dd class="govuk-summary-list__value">
-              {{pensionDetails.ERIAnnualAmountSterling}}
-              <p class="govuk-body-s">
-                We’re showing you what you might get if you turned your pension into an income for life – an annuity
-              </p>            
-           </dd>
-          </div>
-        </dl>
+        {% if ptypeNumber == 4 or ptypeNumber == 5 %}
+          <dl class="govuk-summary-list">
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                What your pension could be worth at retirement
+              </dt>
+              <dd class="govuk-summary-list__value">
+                {{pensionDetails.ERIPotSterling}}
+              </dd>
+            </div>
+          </dl>        
+          <dl class="govuk-summary-list">
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                What your pension income could be worth at retirement each year
+              </dt>
+              <dd class="govuk-summary-list__value">
+                {{pensionDetails.ERIAnnualAmountSterling}}
+                <p class="govuk-body-s">
+                  We’re showing you what you might get if you turned your pension into an income for life – an annuity
+                </p>            
+             </dd>
+            </div>
+          </dl>       
+        {% endif %}
       {% endif %}
 
       {%if pensionDetails.employerName %} 

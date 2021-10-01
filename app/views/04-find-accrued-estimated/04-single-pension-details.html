@@ -31,17 +31,18 @@
         This is a <strong>defined contribution pension</strong>. You can find out more about this type of pension at the <a href="https://www.moneyhelper.org.uk/en/pensions-and-retirement/pensions-basics/defined-contribution-pension-schemes">MoneyHelper website.</a>
       </p>
       {% endif %}
+      <dl class="govuk-summary-list">
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            Date your pension is payable
+          </dt>
+          <dd class="govuk-summary-list__value">
+            {{pensionDetails.pensionRetirementDateString}}
+          </dd>
+        </div>
+      </dl>      
+
       {% if pensionDetails.pensionType == "ST" or pensionDetails.pensionType == "DB" %}
-        <dl class="govuk-summary-list">
-          <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">
-              Date your pension is payable
-            </dt>
-            <dd class="govuk-summary-list__value">
-              {{pensionDetails.pensionRetirementDateString}}
-            </dd>
-          </div>
-        </dl>
         <dl class="govuk-summary-list">
           <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">
@@ -56,7 +57,7 @@
         <dl class="govuk-summary-list">
           <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">
-              What your pension could be worth at retirement each year
+              What your pension income could be worth at retirement each year
             </dt>
             <dd class="govuk-summary-list__value">
               {{pensionDetails.ERIAnnualAmountSterling}}
@@ -65,18 +66,41 @@
         </dl>
         {% endif %}
       {% endif %}
+
       {% if pensionDetails.pensionType == "DC" %}
-        <dl class="govuk-summary-list govuk-summary-list--no-border">
+        <dl class="govuk-summary-list">
           <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">
-              Date your pension is payable
+              Amount you have saved into your pension
             </dt>
             <dd class="govuk-summary-list__value">
-              {{pensionDetails.pensionRetirementDateString}}
+              {{pensionDetails.accruedAmountSterling}}
             </dd>
           </div>
         </dl>
-
+        <dl class="govuk-summary-list">
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              What your pension could be worth at retirement
+            </dt>
+            <dd class="govuk-summary-list__value">
+              {{pensionDetails.ERIPotSterling}}
+            </dd>
+          </div>
+        </dl>        
+        <dl class="govuk-summary-list">
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              What your pension income could be worth at retirement each year
+            </dt>
+            <dd class="govuk-summary-list__value">
+              {{pensionDetails.ERIAnnualAmountSterling}}
+              <p class="govuk-body-s">
+                We’re showing you what you might get if you turned your pension into an income for life – an annuity
+              </p>            
+           </dd>
+          </div>
+        </dl>
       {% endif %}
 
       {%if pensionDetails.employerName %} 

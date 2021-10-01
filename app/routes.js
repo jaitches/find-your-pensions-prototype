@@ -123,7 +123,6 @@ router.post('/enter-your-details*', function (req, res) {
     res.redirect(ptypeDetails.displayUrl + '?ptype=' + ptypeNumber + '&owner=' + pensionOwnerName)
 })
 
-// Get the documents from MongoDB to display for all prototypes
 // the * is a wildcard for the prototype number in this get
 router.get('/*-display-pensions*', function (req, res) {
     async function findPensionsByOwner() {
@@ -369,8 +368,8 @@ router.get('/*-single-pension-details*', function (req, res) {
             let ptypeNumber = req.query.ptype
             // render the correct display-pensions page for the prototype
             ptypeDetails = getPrototypeDetails(ptypeNumber)
-
-            res.render(ptypeDetails.urlPath + '/0' + ptypeNumber + '-single-pension-details')
+            req.app.locals.ptypeDisplayUrl = ptypeDetails.displayUrl
+            res.render('./00-single-pension-details')
         }
     }
 

@@ -77,20 +77,20 @@ $govuk-assets-path: '/govuk/assets/';
 
 .pdp-pension-box-border {
 	border-style: solid;
-	border-width: 5px;
+	border-width: 8px;
 	border-color: #b1b4b6;
 	padding: 5px;
 }
 
-.pdp-pension-box-border-bottom {
-	border-bottom: 1px solid #b1b4b6;
-	padding: 0px 5px
+//.pdp-pension-box-border-bottom {
+//	border-bottom: 1px solid #b1b4b6;
+//	padding: 0px 5px
+//}
+
+.govuk-grid-row {
+  display: flex;
 }
 
-.pdp-hr {
-	border-width: 1px;
-	color: #b1b4b6;
-}
 .pdp-details-link {
 	text-align: right;
 }
@@ -120,7 +120,6 @@ $govuk-assets-path: '/govuk/assets/';
 .pdp-box-border-bottom {
 	border-bottom: 1px solid #b1b4b6;
 }
-
 
 .pdp-box-border-no-top {
 	border-top: none !important;
@@ -231,10 +230,10 @@ $govuk-assets-path: '/govuk/assets/';
 // Pension box formatting
 //
 .pdp-pension-box {
-	border: 5px solid;
+	border: 8px solid;
 }
 
-// individual pension detail page
+// when the caption is underneath e.g. pension reference reduce the padding of the heading it's under
 .pdp-heading-with-caption {
   margin-bottom: 10px;
 }
