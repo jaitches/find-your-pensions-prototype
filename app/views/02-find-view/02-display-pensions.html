@@ -29,7 +29,7 @@
                 <td class="govuk-table__cell">{{statePensionDetails.administratorName}}</td>
                 <td class="govuk-table__cell">{{statePensionDetails.pensionReference}}</td>
                 <td class="govuk-table__cell">{{statePensionDetails.pensionRetirementDate}}</td>
-                <td class="govuk-table__cell"><a href="03-pension-details?ptype=2&pensionId={{statePensionDetails._id}}&providerId={{statePensionDetails.administratorReference}}">More details</a></td>
+                <td class="govuk-table__cell"><a href="02-single-pension-details?ptype=2&pensionId={{statePensionDetails._id}}&providerId={{statePensionDetails.administratorReference}}">More details</a></td>
              </tr>
             </tbody>
           </table>
@@ -59,7 +59,7 @@
                       <td class="govuk-table__cell pdp-word-break">{{details.administratorName}}</td>
                       <td class="govuk-table__cell pdp-word-break">{{details.pensionReference}}</td>
                       <td class="govuk-table__cell">{{details.pensionRetirementDateString}}</td>
-                      <td class="govuk-table__cell pdp-align-center"><a href="03-pension-details?ptype=2&pensionId={{details._id}}&providerId={{details.administratorReference}}">more details</a></td>       
+                      <td class="govuk-table__cell pdp-align-center"><a href="02-single-pension-details?ptype=2&pensionId={{details._id}}&providerId={{details.administratorReference}}">more details</a></td>       
                     </tr>
                   </tbody>
                 {% endfor %} <!-- Workplace loop -->
@@ -84,7 +84,7 @@
                         <td class="govuk-table__cell pdp-word-break">{{details.administratorName}}</td>
                         <td class="govuk-table__cell pdp-word-break">{{details.pensionReference}}</td>
                         <td class="govuk-table__cell">{{details.pensionRetirementDateString}}</td>
-                        <td class="govuk-table__cell pdp-align-center"><a href="03-pension-details?ptype=2&pensionId={{details._id}}&providerId={{details.administratorReference}}">more details</a></td>       
+                        <td class="govuk-table__cell pdp-align-center"><a href="02-single-pension-details?ptype=2&pensionId={{details._id}}&providerId={{details.administratorReference}}">more details</a></td>       
                       </tr>
                     </tbody>
                   {% endfor %} <!-- Workplace loop -->
@@ -112,7 +112,7 @@
                   <td class="govuk-table__cell pdp-word-break">{{details.administratorName}}</td>
                   <td class="govuk-table__cell pdp-word-break">{{details.pensionReference}}</td>
                   <td class="govuk-table__cell">{{details.pensionRetirementDateString}}</td>
-                  <td class="govuk-table__cell pdp-align-center"><a href="03-pension-details?ptype=2&pensionId={{details._id}}&providerId={{details.administratorReference}}">more details</a></td>       
+                  <td class="govuk-table__cell pdp-align-center"><a href="02-single-pension-details?ptype=2&pensionId={{details._id}}&providerId={{details.administratorReference}}">more details</a></td>       
                 </tr>
               </tbody>
             {% endfor %} <!-- Workplace loop -->

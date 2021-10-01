@@ -9,7 +9,7 @@
   <div class="govuk-breadcrumbs">
     <ol class="govuk-breadcrumbs__list">
       <li class="govuk-breadcrumbs__list-item">
-        <a class="govuk-breadcrumbs__link" href="02-display-pensions?owner={{pensionOwner}}">Back to pension list</a>
+        <a class="govuk-breadcrumbs__link" href="02-display-pensions?ptype=2&owner={{pensionDetails.pensionOwner}}">Back to pension list</a>
       </li> 
     </ol>
   </div>
@@ -75,7 +75,7 @@
             Website
           </dt>
           <dd class="govuk-summary-list__value"><a href={{pensionProvider.administratorURL}}>
-            {{pensionProvider.administratorShortURL}}</a>
+            {{pensionProvider.administratorShortURL}} {{pensionProvider.administratorURL}}</a>
           </dd>
         </div>
       </dl>
@@ -105,7 +105,6 @@
               <br>
               ({{pensionProvider.administratorPhoneNumberType}})
             {% endif %}
-
           </a>
           </dd>
         </div>
@@ -140,7 +139,7 @@
           <dt class="govuk-summary-list__key">
             Annual report
           </dt>
-          <dd class="govuk-summary-list__value"><a href="mailto:pensionProvider.administratorAnnualReportURL">
+          <dd class="govuk-summary-list__value"><a href="{{pensionProvider.administratorAnnualReportURL}}">
             {{pensionProvider.administratorAnnualReportShortURL}}
           </a>
           </dd>
@@ -153,7 +152,7 @@
           <dt class="govuk-summary-list__key">
             Costs and charges website
           </dt>
-          <dd class="govuk-summary-list__value"><a href="mailto:pensionProvider.administratorCostsChargesURL">
+          <dd class="govuk-summary-list__value"><a href="pensionProvider.administratorCostsChargesURL">
             {{pensionProvider.administratorCostsChargesShortURL}}
           </a>
           </dd>
@@ -166,7 +165,7 @@
           <dt class="govuk-summary-list__key">
             Implementation statement website
           </dt>
-          <dd class="govuk-summary-list__value"><a href="mailto:pensionProvider.administratorImplementationURL">
+          <dd class="govuk-summary-list__value"><a href="pensionProvider.administratorImplementationURL">
             {{pensionProvider.administratorImplementationShortURL}}
           </a>
           </dd>
@@ -179,7 +178,7 @@
           <dt class="govuk-summary-list__key">
             Statement of investment principles website
           </dt>
-          <dd class="govuk-summary-list__value"><a href="mailto:pensionProvider.administratorHTTPSIPURL">
+          <dd class="govuk-summary-list__value"><a href="pensionProvider.administratorSIPURL">
             {{pensionProvider.administratorSIPShortURL}}
           </a>
           </dd>

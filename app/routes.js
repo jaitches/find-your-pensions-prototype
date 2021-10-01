@@ -9,7 +9,7 @@ const formatDate = require('./formatDate.js')
 const getPrototypeDetails = require('./getPrototypeDetails.js')
 // Use these arrays to store the options for the select element when updating the pensions
 const penTypes = [
-    {type: "DC", text: "Defined Contribution pension", selected : ""},
+    {type: "DC", text: "Defined Contribution pension", selected : "", description: ""},
     {type: "DB", text: "Defined Benefit pension", selected : ""},
     {type: "ST", text: "State Pension", selected : ""},
     {type: "AVC", text: "AVC pension", selected : ""},
@@ -126,11 +126,13 @@ router.post('/enter-your-details*', function (req, res) {
 // Get the documents from MongoDB to display for all prototypes
 // the * is a wildcard for the prototype number in this get
 router.get('/*-display-pensions*', function (req, res) {
-
     async function findPensionsByOwner() {
-        let pensionOwnerName = req.query.owner
+        let pensionOwnerName = ""
+        if (req.query.owner) {
+            pensionOwnerName = req.query.owner
+        }
         let pensionDetailsAll = []
-        req.app.locals.pensionOwner = pensionOwnerName
+        req.app.locals.pensionOwnerName = pensionOwnerName
         // set the local variables to false so that the elements are not displayed in the html unless they exist
         req.app.locals.workplaceFlag = false
             req.app.locals.workplaceDBFlag = false
@@ -140,9 +142,8 @@ router.get('/*-display-pensions*', function (req, res) {
             req.app.locals.privateDCFlag = false
             req.app.locals.privateOtherFlag = false
         req.app.locals.stateFlag = false
-//        req.app.locals.allFlag = false
 
-
+        // initialise the arrays
         req.app.locals.workplacePensionDetails = []
             req.app.locals.workplaceDBPensionDetails = []
             req.app.locals.workplaceDCPensionDetails = []
@@ -154,9 +155,14 @@ router.get('/*-display-pensions*', function (req, res) {
 
         req.app.locals.statePensionDetails = []
 
+        let employmentStartDateString = ""
+        let employmentEndDateString = "N/A"
+        let accruedCalculationDateString = ""
+        let ERICalculationDateString = ""
+        let pensionRetirementDateString = ""
+
 
         const client = new MongoClient(uri)
-
         try {
             // Connect to the MongoDB cluster
             await client.connect()
@@ -166,33 +172,45 @@ router.get('/*-display-pensions*', function (req, res) {
             }
             else {
                 pensionDetailsAll = await getAllPensions(client)     
-            }
-   
-
-            // split into workplace, private and state pensions if prototypeOptionOrigin selected
+            }   
+            // split into workplace, private and state pensions
 
             for (i=0; i < pensionDetailsAll.length; i++) {
             // convert dates to string and display as dd mon yyyy
-//                console.log('pensionDetailsAll[i] ' +JSON.stringify(pensionDetailsAll[i]))
-//                console.log('pensionDetailsAll[i].pensionRetirementDate ' + pensionDetailsAll[i].pensionRetirementDate)
-
-                let pensionRetirementDateString = await formatDate(pensionDetailsAll[i].pensionRetirementDate)
-                let ERICalculationDateString = await formatDate(pensionDetailsAll[i].ERICalculationDate)
-                let accruedCalculationDateString = await formatDate(pensionDetailsAll[i].accruedCalculationDate)
-                let employmentStartDateString = await formatDate(pensionDetailsAll[i].employmentStartDate)
-                let employmentEndDateString = await formatDate(pensionDetailsAll[i].employmentEndDate)
-
+                
+                if (pensionDetailsAll[i].pensionRetirementDate.includes("-")) {
+                    pensionRetirementDateString = await formatDate(pensionDetailsAll[i].pensionRetirementDate)
+                }
+                if (pensionDetailsAll[i].ERICalculationDate.includes("-")) {
+                    ERICalculationDateString = await formatDate(pensionDetailsAll[i].ERICalculationDate)
+                }                
+                if (pensionDetailsAll[i].accruedCalculationDate.includes("-")) {
+                    accruedCalculationDateString = await formatDate(pensionDetailsAll[i].accruedCalculationDate)
+                }
+                if (pensionDetailsAll[i].employmentStartDate.includes("-")) {
+                    employmentStartDateString = await formatDate(pensionDetailsAll[i].employmentStartDate)
+                }
+                if (pensionDetailsAll[i].employmentEndDate.includes("-")) {                    
+                    employmentEndDateString = await formatDate(pensionDetailsAll[i].employmentEndDate)
+                }
+            // copy the date strings values to the array to display on the prototype
                 pensionDetailsAll[i].pensionRetirementDateString = pensionRetirementDateString
                 pensionDetailsAll[i].ERICalculationDateString = ERICalculationDateString
                 pensionDetailsAll[i].accruedCalculationDateString = accruedCalculationDateString
                 pensionDetailsAll[i].employmentStartDateString = employmentStartDateString
                 pensionDetailsAll[i].employmentEndDateString = employmentEndDateString
-
+            // convert the vlaues to sterling
                 let ERIAnnualAmountSterling = Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(pensionDetailsAll[i].ERIAnnualAmount)
                 let ERIPotSterling = Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(pensionDetailsAll[i].ERIPot)
                 let accruedAmountSterling = Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(pensionDetailsAll[i].accruedAmount)
-//                console.log('ERIAnnualAmountSterling ' + ERIAnnualAmountSterling) 
-                pensionDetailsAll[i].ERIAnnualAmountSterling = ERIAnnualAmountSterling
+            // copy the sterling values to the array to display on the prototype
+                // display "N/A" for estimated income for inactive DB pensions
+                if (pensionDetailsAll[i].pensionType === "DB" && pensionDetailsAll[i].pensionStatus == "I") {
+                    pensionDetailsAll[i].ERIAnnualAmountSterling = "N/A"
+                }
+                else{
+                    pensionDetailsAll[i].ERIAnnualAmountSterling = ERIAnnualAmountSterling
+                }
                 pensionDetailsAll[i].ERIPotSterling = ERIPotSterling
                 pensionDetailsAll[i].accruedAmountSterling = accruedAmountSterling
 
@@ -274,16 +292,24 @@ router.get('/*-display-pensions*', function (req, res) {
 }) 
 
 
-// 01 additional page of pension details 
-router.get('/*-pension-details*', function (req, res) {
+// additional page of pension details 
+router.get('/*-single-pension-details*', function (req, res) {
 
     async function findPensionDetails() {
+
         req.app.locals.pensionDetails = []
         req.app.locals.pensionProvider = []
 
         let pensionId = req.query.pensionId
         let providerId = req.query.providerId
-        // let pensionOwnerName = req.app.locals.pensionOwner
+        req.app.locals.ptypeNumber = req.query.ptype
+
+        let employmentStartDateString = ""
+        let employmentEndDateString = ""
+        let ERICalculationDateString = ""  
+        let accruedCalculationDateString = ""
+        let pensionRetirementDateString =""
+
 
         const client = new MongoClient(uri);
 
@@ -309,6 +335,34 @@ router.get('/*-pension-details*', function (req, res) {
                 req.app.locals.pensionProvider.administratorSIPShortURL = req.app.locals.pensionProvider.administratorSIPURL.replace(/^https?\:\/\//i, "")
             }
 
+            if (req.app.locals.pensionDetails.ERICalculationDate.includes("-")) {
+                ERICalculationDateString = await formatDate(req.app.locals.pensionDetails.ERICalculationDate)
+            }         
+            
+            if (req.app.locals.pensionDetails.accruedCalculationDate.includes("-")) {
+                accruedCalculationDateString = await formatDate(req.app.locals.pensionDetails.accruedCalculationDate)
+            }            
+
+            if (req.app.locals.pensionDetails.pensionRetirementDate.includes("-")) {
+                pensionRetirementDateString = await formatDate(req.app.locals.pensionDetails.pensionRetirementDate)
+            }
+
+            if (req.app.locals.pensionDetails.employmentStartDate.includes("-")) {
+                employmentStartDateString = await formatDate(req.app.locals.pensionDetails.employmentStartDate)
+            }
+            if (req.app.locals.pensionDetails.employmentEndDate.includes("-")) {
+                employmentEndDateString = await formatDate(req.app.locals.pensionDetails.employmentEndDate)
+            }
+
+            req.app.locals.pensionDetails.employmentStartDateString = employmentStartDateString
+            req.app.locals.pensionDetails.employmentEndDateString = employmentEndDateString
+            req.app.locals.pensionDetails.ERICalculationDateString = ERICalculationDateString
+            req.app.locals.pensionDetails.accruedCalculationDateString = accruedCalculationDateString
+            req.app.locals.pensionDetails.pensionRetirementDateString = pensionRetirementDateString
+            req.app.locals.pensionDetails.ERIAnnualAmountSterling = Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(req.app.locals.pensionDetails.ERIAnnualAmount)
+            req.app.locals.pensionDetails.ERIPotSterling = Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(req.app.locals.pensionDetails.ERIPot)
+            req.app.locals.pensionDetails.accruedAmountSterling = Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(req.app.locals.pensionDetails.accruedAmount)
+
         } finally {
             // Close the connection to the MongoDB cluster
             await client.close();    
@@ -316,7 +370,7 @@ router.get('/*-pension-details*', function (req, res) {
             // render the correct display-pensions page for the prototype
             ptypeDetails = getPrototypeDetails(ptypeNumber)
 
-            res.render(ptypeDetails.urlPath + '/0' + ptypeNumber + '-pension-details')
+            res.render(ptypeDetails.urlPath + '/0' + ptypeNumber + '-single-pension-details')
         }
     }
 

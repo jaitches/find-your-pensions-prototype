@@ -13,7 +13,7 @@
       </h1>
       {% if stateFlag %}
       <div class="pdp-pension-box-border">
-        <div>
+        <div> <!--  pension details -->
           <h2 class="govuk-heading-l">
             State Pension
           </h2>
@@ -47,7 +47,9 @@
               </dd>
             </div>
           </dl>
-          <a class="pdp-details-link" href="04-pension-details?ptype=4&pensionId={{details._id}}&providerId={{details.administratorReference}}">
+        </div>
+        <div class="pdp-details-link">
+          <a href="05-single-pension-details?ptype=5&pensionId={{details._id}}&providerId={{details.administratorReference}}">
             more details
           </a>
         </div>
@@ -168,12 +170,17 @@
                   Employment end date
                 </dt>
                 <dd class="govuk-summary-list__value pdp-width-50">
-                  {{details.details.employmentEndDateString}}
+                  {{details.employmentEndDateString}}
                 </dd>
               </div>
             </dl>
             {% endif %}
-          </div>  
+          </div> 
+        </div>
+        <div class="pdp-details-link">
+          <a href="05-single-pension-details?ptype=5&pensionId={{details._id}}&providerId={{details.administratorReference}}">
+            more details
+          </a>
         </div>
         <hr class="pdp-hr">
 
@@ -298,6 +305,11 @@
             {% endif %}
           </div>  
         </div>
+        <div class="pdp-details-link">
+          <a href="05-single-pension-details?ptype=5&pensionId={{details._id}}&providerId={{details.administratorReference}}">
+            more details
+          </a>
+        </div>
         <hr class="pdp-hr">
 
         <div class="govuk-grid-row">
@@ -358,46 +370,51 @@
         <h2 class="govuk-heading-l">
           {{details.pensionName}}
         </h2>
-            <dl class="govuk-summary-list">
-              <div class="govuk-summary-list__row govuk-summary-list--no-border">
-                <dt class="govuk-summary-list__key">
-                  Pension provider
-                </dt>
-                <dd class="govuk-summary-list__value">
-                  {{details.administratorName}}
-                </dd>
-              </div>
-            </dl>
-            <dl class="govuk-summary-list">
-              <div class="govuk-summary-list__row govuk-summary-list--no-border">
-                <dt class="govuk-summary-list__key">
-                  Pension scheme or plan name
-                </dt>
-                <dd class="govuk-summary-list__value">
-                  {{details.pensionName}}
-                </dd>
-              </div>
-            </dl>        
-            <dl class="govuk-summary-list govuk-summary-list--no-border">
-              <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                  Your pension reference
-                </dt>
-                <dd class="govuk-summary-list__value">
-                  {{details.pensionReference}}
-                </dd>
-              </div>
-            </dl>        
-            <dl class="govuk-summary-list govuk-summary-list--no-border">
-              <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                  Date your pension is payable
-                </dt>
-                <dd class="govuk-summary-list__value">
-                  {{details.pensionRetirementDateString}}
-                </dd>
-              </div>
-            </dl>
+        <dl class="govuk-summary-list">
+          <div class="govuk-summary-list__row govuk-summary-list--no-border">
+            <dt class="govuk-summary-list__key">
+              Pension provider
+            </dt>
+            <dd class="govuk-summary-list__value">
+              {{details.administratorName}}
+            </dd>
+          </div>
+        </dl>
+        <dl class="govuk-summary-list">
+          <div class="govuk-summary-list__row govuk-summary-list--no-border">
+            <dt class="govuk-summary-list__key">
+              Pension scheme or plan name
+            </dt>
+            <dd class="govuk-summary-list__value">
+              {{details.pensionName}}
+            </dd>
+          </div>
+        </dl>        
+        <dl class="govuk-summary-list govuk-summary-list--no-border">
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Your pension reference
+            </dt>
+            <dd class="govuk-summary-list__value">
+              {{details.pensionReference}}
+            </dd>
+          </div>
+        </dl>        
+        <dl class="govuk-summary-list govuk-summary-list--no-border">
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Date your pension is payable
+            </dt>
+            <dd class="govuk-summary-list__value">
+              {{details.pensionRetirementDateString}}
+            </dd>
+          </div>
+        </dl>
+        <div class="pdp-details-link">
+          <a href="05-single-pension-details?ptype=5&pensionId={{details._id}}&providerId={{details.administratorReference}}">
+            more details
+          </a>
+        </div>
         <hr class="pdp-hr">
         <div class="govuk-grid-row">
           <div class="govuk-grid-column-one-half">

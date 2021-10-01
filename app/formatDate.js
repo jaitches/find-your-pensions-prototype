@@ -1,6 +1,6 @@
 const monthNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
 const formatDate = function(inputDate) {
-	if (inputDate === null) {
+	if (!inputDate) {
 		return null
 	}
 	else {

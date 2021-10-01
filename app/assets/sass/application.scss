@@ -92,7 +92,7 @@ $govuk-assets-path: '/govuk/assets/';
 	color: #b1b4b6;
 }
 .pdp-details-link {
-	float: right;
+	text-align: right;
 }
 // override summary margin size from 30 to 10
 .govuk-summary-list {
@@ -232,4 +232,9 @@ $govuk-assets-path: '/govuk/assets/';
 //
 .pdp-pension-box {
 	border: 5px solid;
+}
+
+// individual pension detail page
+.pdp-heading-with-caption {
+  margin-bottom: 10px;
 }
