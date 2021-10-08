@@ -156,7 +156,7 @@ router.get('/*-display-pensions*', function (req, res) {
         req.app.locals.statePensionDetails = []
 
         let employmentStartDateString = ""
-        let employmentEndDateString = "N/A"
+        let employmentEndDateString = ""
         let accruedCalculationDateString = ""
         let ERICalculationDateString = ""
         let pensionRetirementDateString = ""
@@ -835,6 +835,8 @@ router.post('/update-pension-details', function (req, res) {
     // create an instance of the client
         const client = new MongoClient(uri);        
         let pensionId = req.app.locals.pensionId
+        let pension_Participant = process.env.PARTICIPANT_NUMBER
+
        
         // format date
         let today_timestamp = new Date().toLocaleString()
@@ -894,6 +896,7 @@ router.post('/update-pension-details', function (req, res) {
 
             await updatePensionDetails(client, pensionId, {
 
+                pensionParticipant : pension_Participant,
                 pensionOwner : pension_Owner,
                 pensionDescription: pension_Description,
                 pensionReference : pension_Reference,
