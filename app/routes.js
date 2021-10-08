@@ -130,6 +130,7 @@ router.get('/*-display-pensions*', function (req, res) {
         if (req.query.owner) {
             pensionOwnerName = req.query.owner
         }
+        let participantNumber = process.env.PARTICIPANT_NUMBER
         let pensionDetailsAll = []
         req.app.locals.pensionOwnerName = pensionOwnerName
         // set the local variables to false so that the elements are not displayed in the html unless they exist
@@ -169,23 +170,36 @@ router.get('/*-display-pensions*', function (req, res) {
             if (pensionOwnerName && process.env.PENSIONS_DB == "pdp-test") {
                 pensionDetailsAll = await getPensionsByOwner(client, pensionOwnerName)
             }
+            else if (participantNumber == 0) {
+                pensionDetailsAll = await getAllPensions(client, participantNumber)
+            }
             else {
-                pensionDetailsAll = await getAllPensions(client)     
+                pensionDetailsAll = await getPensionsByParticipant(client, participantNumber)
             }   
             // split into workplace, private and state pensions
 
             for (i=0; i < pensionDetailsAll.length; i++) {
             // convert dates to string and display as dd mon yyyy
+
+                let employmentStartDateString = ""
+                let employmentEndDateString = ""
+                let accruedCalculationDateString = ""
+                let ERICalculationDateString = ""
+                let pensionRetirementDateString = ""
                 
                 if (pensionDetailsAll[i].pensionRetirementDate.includes("-")) {
                     pensionRetirementDateString = await formatDate(pensionDetailsAll[i].pensionRetirementDate)
                 }
+                /*
                 if (pensionDetailsAll[i].ERICalculationDate.includes("-")) {
                     ERICalculationDateString = await formatDate(pensionDetailsAll[i].ERICalculationDate)
-                }                
+                }
+                */
                 if (pensionDetailsAll[i].accruedCalculationDate.includes("-")) {
                     accruedCalculationDateString = await formatDate(pensionDetailsAll[i].accruedCalculationDate)
                 }
+                console.log('pensionDetailsAll[i].accruedCalculationDate ' + pensionDetailsAll[i].accruedCalculationDate + ' ' + pensionDetailsAll[i].pensionName)                
+                console.log('accruedCalculationDateString ' + accruedCalculationDateString)                
                 if (pensionDetailsAll[i].employmentStartDate.includes("-")) {
                     employmentStartDateString = await formatDate(pensionDetailsAll[i].employmentStartDate)
                 }
@@ -288,6 +302,17 @@ router.get('/*-display-pensions*', function (req, res) {
 //        console.log('results ' + JSON.stringify(results))
         return results
     }
+    async function getPensionsByParticipant(client, pptNumber) {
+        const results = await client.db(dataBaseName).collection("pensionDetails")
+        // find all documents
+        .find({pensionOwnerType: "M", pensionParticipant :  pptNumber})
+        // save them to an array
+        .sort({pensionOrigin: 1, pensionType: 1, pensionRetirementDate: -1, pensionName: 1})        
+        .toArray()
+//        console.log('results ' + JSON.stringify(results))
+        return results
+    }
+
 }) 
 
 
@@ -333,10 +358,11 @@ router.get('/*-single-pension-details*', function (req, res) {
             if (req.app.locals.pensionProvider.administratorSIPURL) {  
                 req.app.locals.pensionProvider.administratorSIPShortURL = req.app.locals.pensionProvider.administratorSIPURL.replace(/^https?\:\/\//i, "")
             }
-
+            /*
             if (req.app.locals.pensionDetails.ERICalculationDate.includes("-")) {
                 ERICalculationDateString = await formatDate(req.app.locals.pensionDetails.ERICalculationDate)
-            }         
+            } 
+            */        
             
             if (req.app.locals.pensionDetails.accruedCalculationDate.includes("-")) {
                 accruedCalculationDateString = await formatDate(req.app.locals.pensionDetails.accruedCalculationDate)
@@ -538,6 +564,8 @@ router.post('/add-pension-details', function (req, res) {
     let today_timestamp = new Date().toLocaleString()
     // get the inputted pension data 
 
+    let pension_Participant = process.env.PARTICIPANT_NUMBER
+
     let pension_Start_Date = new Date()
     let pension_Retirement_Date = new Date()
     let employment_Start_Date = new Date()
@@ -596,6 +624,7 @@ router.post('/add-pension-details', function (req, res) {
             // Make the appropriate DB calls
             await createPension(client, {
 
+                pensionParticipant : pension_Participant,
                 pensionOwnerType : pension_Owner_Type,
                 pensionOwner : pension_Owner,
                 pensionDescription: pension_Description,
@@ -747,6 +776,8 @@ router.get('/update-pension', function (req, res) {
                  req.app.locals.pensionDetails.pensionAccruedAmtTypeArr[i].selected = 'selected'   
                 }
             }
+            console.log('req.app.locals.pensionDetails.accruedCalculationDateString ' + req.app.locals.pensionDetails.accruedCalculationDateString )
+            console.log('req.app.locals.pensionDetails.accruedCalculationDate ' + req.app.locals.pensionDetails.accruedCalculationDate )
 
         } finally {
             // Close the connection to the MongoDB cluster

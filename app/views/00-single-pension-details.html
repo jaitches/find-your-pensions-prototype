@@ -43,7 +43,7 @@
         </div>
       </dl>      
 
-      {% if pensionDetails.pensionType == "ST" or pensionDetails.pensionType == "DB" %}
+      {% if pensionDetails.pensionType == "ST" or pensionDetails.pensionType == "DB" and (ptypeNumber == 3 or ptypeNumber == 4 or ptypeNumber == 5 ) %}
         <dl class="govuk-summary-list">
           <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">
@@ -72,7 +72,7 @@
         <dl class="govuk-summary-list">
           <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">
-              Amount you have saved into your pension
+              Amount you have saved into your pension pot
             </dt>
             <dd class="govuk-summary-list__value">
               {{pensionDetails.accruedAmountSterling}}
@@ -83,7 +83,7 @@
           <dl class="govuk-summary-list">
             <div class="govuk-summary-list__row">
               <dt class="govuk-summary-list__key">
-                What your pension could be worth at retirement
+                What your pension pot could be worth at retirement
               </dt>
               <dd class="govuk-summary-list__value">
                 {{pensionDetails.ERIPotSterling}}
@@ -129,7 +129,8 @@
             {{pensionDetails.employmentStartDateString}}
           </dd>
         </div>
-      </dl>      
+      </dl> 
+      {% if pensionDetails.employmentEndDateString %}     
       <dl class="govuk-summary-list">
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">
@@ -140,6 +141,7 @@
           </dd>
         </div>
       </dl>
+      {% endif %}
       {% endif %}
 
       <h3 class="govuk-heading-l">

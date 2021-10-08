@@ -11,6 +11,11 @@
       <h1 class="govuk-heading-xl">
         Your pensions
       </h1>
+      {% if not stateFlag and not workplaceFlag and not privateFlag %}
+      <p class="govuk-body-l">
+        We did not find any pensions for {{pensionOwner}}
+      </p>
+      {% endif %}
       {% if stateFlag %}
         <div id="state-pension" >    
           <table class="govuk-table">
@@ -29,7 +34,9 @@
                 <td class="govuk-table__cell pdp-word-break">{{statePensionDetails.administratorName}}</td>
                 <td class="govuk-table__cell pdp-word-break">{{statePensionDetails.pensionReference}}</td>
                 <td class="govuk-table__cell">{{statePensionDetails.pensionRetirementDateString}}</td>
-                <td class="govuk-table__cell pdp-align-right">{{statePensionDetails.accruedAmountSterling}}</td>
+                <td class="govuk-table__cell pdp-align-right">{{statePensionDetails.accruedAmountSterling}}
+                  {% if statePensionDetails.accruedCalculationDateString %}<br>(as at {{statePensionDetails.accruedCalculationDateString}})
+                  {% endif %}</td>
                 <td class="govuk-table__cell pdp-align-center"><a href="../00-single-pension-details?ptype=3&pensionId={{statePensionDetails._id}}&providerId={{statePensionDetails.administratorReference}}">
             more details
           </a></td>
@@ -62,7 +69,10 @@
                       <td class="govuk-table__cell pdp-word-break">{{details.administratorName}}</td>
                       <td class="govuk-table__cell pdp-word-break">{{details.pensionReference}}</td>
                       <td class="govuk-table__cell">{{details.pensionRetirementDateString}}</td>
-                      <td class="govuk-table__cell pdp-align-right">{{details.accruedAmountSterling}}</td>
+                      <td class="govuk-table__cell pdp-align-right">{{details.accruedAmountSterling}}
+                        {% if details.accruedCalculationDateString %}<br>(as at {{details.accruedCalculationDateString}})
+                        {% endif %}
+                      </td>
                       <td class="govuk-table__cell pdp-align-center"><a href="../00-single-pension-details?ptype=3&pensionId={{details._id}}&providerId={{details.administratorReference}}">more details</a></td>       
                     </tr>
                   </tbody>
@@ -89,7 +99,10 @@
                         <td class="govuk-table__cell pdp-word-break">{{details.administratorName}}</td>
                         <td class="govuk-table__cell pdp-word-break">{{details.pensionReference}}</td>
                         <td class="govuk-table__cell">{{details.pensionRetirementDateString}}</td>
-                        <td class="govuk-table__cell pdp-align-right">{{details.accruedAmountSterling}}</td>
+                        <td class="govuk-table__cell pdp-align-right">{{details.accruedAmountSterling}}
+                          {% if details.accruedCalculationDateString %}<br>(as at {{details.accruedCalculationDateString}})
+                          {% endif %}
+                        </td>
                         <td class="govuk-table__cell pdp-align-center"><a href="../00-single-pension-details?ptype=3&pensionId={{details._id}}&providerId={{details.administratorReference}}">more details</a></td>        
                       </tr>
                     </tbody>
@@ -120,7 +133,10 @@
                   <td class="govuk-table__cell pdp-word-break">{{details.administratorName}}</td>
                   <td class="govuk-table__cell pdp-word-break">{{details.pensionReference}}</td>
                   <td class="govuk-table__cell">{{details.pensionRetirementDateString}}</td>
-                  <td class="govuk-table__cell pdp-align-right">{{details.accruedAmountSterling}}</td>
+                  <td class="govuk-table__cell pdp-align-right">{{details.accruedAmountSterling}}
+                    {% if details.accruedCalculationDateString %}<br>(as at {{details.accruedCalculationDateString}})
+                    {% endif %}
+                  </td>
                   <td class="govuk-table__cell pdp-align-center"><a href="../00-single-pension-details?ptype=3&pensionId={{details._id}}&providerId={{details.administratorReference}}">more details</a></td>        
                  </tr>
               </tbody>

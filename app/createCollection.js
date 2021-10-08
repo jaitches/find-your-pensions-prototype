@@ -14,3 +14,5 @@ try {
 	         bsonType: "object",
 	         required: [ "name", "year", "major", "address" ],
 	         properties: {
+	         }
+	         

@@ -68,6 +68,18 @@
 
           {{ govukInput({
             label: {
+              html: 'Enter a brief description of the pension'
+            },
+            classes: "govuk-!-width-two-thirds",  
+            hint: {
+              text: "e.g. DC workplace active"
+            },
+            id: "pensionDescription",
+            name: "pensionDescription"
+          }) }}
+
+          {{ govukInput({
+            label: {
               html: 'Pension reference'
             },
             classes: "govuk-!-width-two-thirds",
@@ -212,6 +224,86 @@
           }
         }) %}
 
+          {{ govukSelect({
+            id: "ERIType",
+            name: "ERIType",
+            label: {
+              text: "ERI type"
+            },
+            items: [
+              {
+                value: "N/A",
+                text: "N/A"
+              },
+              {
+                value: "DC",
+                text: "Defined contribution"
+              },              
+              {
+                value: "DB",
+                text: "Defined benefit"
+              },           
+              {
+                value: "DBL",
+                text: "A separately accrued lump sum (not commutation)"
+              },              
+              {
+                value: "AVC",
+                text: "Additional voluntary contribution"
+              },              
+              {
+                value: "CDI",
+                text: "Collective DC (CC) benefits expressed as regular income"
+              },           
+              {
+                value: "CDL",
+                text: "Collective DC (CC) benefits expressed as lump sum"
+              },              
+              {
+                value: "CBS",
+                text: "Cash balance scheme"
+              }
+            ]
+          }) }}
+
+          {{ govukSelect({
+            id: "ERIBasis",
+            name: "ERIBasis",
+            label: {
+              text: "How ERI calculated"
+            },
+            items: [
+              {
+                value: "N/A",
+                text: "N/A"
+              },
+              {
+                value: "SMPI",
+                text: "SMPI - statutory money purchase illustration"
+              },              
+              {
+                value: "COBS",
+                text: "COBS - Income illustration FCA COBS rules"
+              },             
+              {
+                value: "BS",
+                text: "BS - Benefit specific method no allowance of future build-up of benefits"
+              },              
+              {
+                value: "BSF",
+                text: "BSF - Benefit specific method including future build-up of benefits"
+              }
+            ]
+          }) }}
+
+          <div class="govuk-form-group">
+
+            <label for="ERICalculationDate" class="govuk-body">Date of ERI calculation</label>
+            <p>
+              <input type="date" id="ERICalculationDate" name="ERICalculationDate" class="govuk-body">
+            </p>
+          </div>
+
           {{ govukInput({
             id: "ERIAnnualAmount",
             name: "ERIAnnualAmount",
@@ -241,7 +333,51 @@
               text: "For example £104.45"
             }
           }) }}
-
+<!--
+          {{ govukSelect({
+            id: "ERISafeguardedBenefits",
+            name: "ERISafeguardedBenefits",
+            label: {
+              text: "ERI safeguarded benefits for this pension?"
+            },
+            items: [           
+              {
+                value: "eri-safeguarded-no",
+                text: "No"
+              },
+              {
+                value: "eri-safeguarded-yes",
+                text: "Yes"
+              }
+            ]
+          }) }}
+ 
+          {{ govukSelect({
+            id: "ERIUnavailable",
+            name: "ERIUnavailable",
+            label: {
+              text: "Reason ERI calculation not available"
+            },
+            items: [
+              {
+                value: "",
+                text: "N/A"
+              },            
+              {
+                value: "ERR",
+                text: "System error code"
+              },  
+              {
+                value: "TRN",
+                text: "Transaction oustanding that affects the value"
+              },              
+              {
+                value: "MAN",
+                text: "Estimated income not currently availabel online"
+              }
+            ]
+          }) }}
+       -->
         {% endcall %}
 
 
@@ -253,13 +389,101 @@
           }
         }) %}
 
+         {{ govukSelect({
+            id: "accruedType",
+            name: "accruedType",
+            label: {
+              text: "Accrued type"
+            },
+            items: [
+              {
+                value: "N/A",
+                text: "N/A"
+              },
+              {
+                value: "DC",
+                text: "Defined contribution"
+              },              
+              {
+                value: "DB",
+                text: "Defined benefit"
+              },           
+              {
+                value: "DBL",
+                text: "A separately accrued lump sum (not commutation)"
+              },              
+              {
+                value: "AVC",
+                text: "Additional voluntary contribution"
+              },              
+              {
+                value: "CDI",
+                text: "Collective DC (CC) benefits expressed as regular income"
+              },           
+              {
+                value: "CDL",
+                text: "Collective DC (CC) benefits expressed as lump sum"
+              },              
+              {
+                value: "CBS",
+                text: "Cash balance scheme"
+              }
+            ]
+          }) }}
+
+          {{ govukSelect({
+            id: "accruedAmountType",
+            name: "accruedAmountType",
+            label: {
+              text: "Accrued amount type"
+            },
+            items: [
+              {
+                value: "N/A",
+                text: "N/A"
+              },
+              {
+                value: "POT",
+                text: "Valuation of a DC pension pot"
+              },              
+              {
+                value: "INC",
+                text: "Calculation of an accrued recurring income"
+              },              
+              {
+                value: "LS",
+                text: "Calculation of the accrued value of DBLS/CDCLS type"
+              }
+            ]
+          }) }}
+
           <div class="govuk-form-group">
             <label for="accruedCalculationDate" class="govuk-body">Date accrued amount calculated</label>
             <p>
               <input type="date" id="accruedCalculationDate" name="accruedCalculationDate" class="govuk-body">
             </p>
           </div>
+  <!--
+          {{ govukDateInput({
+            id: "accruedCalculationDate",
+            namePrefix: "accruedCalculationDate",
+            fieldset: {
+              legend: {
+                text: "Date accrued amount calculated"
+              }
+            }
+          }) }}
 
+          {{ govukDateInput({
+            id: "accruedPayableDate",
+            namePrefix: "accruedPayableDate",
+            fieldset: {
+              legend: {
+                text: "Date accrued amount payable"
+              }
+            }
+          }) }}
+-->
           {{ govukInput({
             id: "accruedAmount",
             name: "accruedAmount",
@@ -274,6 +498,53 @@
               text: "For example £104.45"
             }
           }) }}
+<!--
+          {{ govukSelect({
+            id: "accruedSafeguardedBenefits",
+            name: "accruedSafeguardedBenefits",
+            label: {
+              text: "Accrued safeguarded benefits for this pension?"
+            },
+            items: [
+              {
+                value: "no",
+                text: "No"
+              },
+              {
+                value: "yes",
+                text: "Yes"
+              }            
+
+            ]
+          }) }}
+
+          {{ govukSelect({
+            id: "accruedUnavailable",
+            name: "accruedUnavailable",
+            label: {
+              text: "Reason accrued amount calculation not available"
+            },
+            items: [
+              {
+                value: "",
+                text: "N/A"
+              },  
+              {
+                value: "ERR",
+                text: "System error code"
+              },  
+              {
+                value: "TRN",
+                text: "Transaction oustanding that affects the value"
+              },              
+              {
+                value: "MAN",
+                text: "Estimated income not currently availabel online"
+              }
+            ]
+          }) }}
+
+-->
           {% endcall %}
 
         <div class="govuk-button-group">

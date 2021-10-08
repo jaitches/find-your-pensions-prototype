@@ -55,12 +55,12 @@
             <th scope="col" class="govuk-table__header">Pension type</th>
             <th scope="col" class="govuk-table__header">Pension name</th>
             <th scope="col" class="govuk-table__header">Provider</th>
-            <th scope="col" class="govuk-table__header">Ref</th>
+            <th scope="col" class="govuk-table__header">Reference</th>
             <th scope="col" class="govuk-table__header">Employer</th>
             <th scope="col" class="govuk-table__header">Accrued Income</th>
             <th scope="col" class="govuk-table__header">ERI Pot</th>
             <th scope="col" class="govuk-table__header">ERI Income</th>
-            <th scope="col" class="govuk-table__header">Date payable</th>
+            <th scope="col" class="govuk-table__header">Accrued Calc</th>
             <th scope="col" class="govuk-table__header">            
               <form action="/delete-all-pensions" method="post" class="form">
                 <td class="govuk-table__cell" onclick="deleteAllPensions()"><button class="govuk-button govuk-button--warning" data-module="govuk-button">Delete All</button></td>
@@ -72,16 +72,16 @@
         <tbody class="govuk-table__body govuk-body-xs">
           <tr class="govuk-table__row">
             <td class="govuk-table__cell">{{details.pensionOwner}}</td>
-            <td class="govuk-table__cell">{{details.pensionDescription}}</td>
+            <td class="govuk-table__cell pdp-word-break">{{details.pensionDescription}}</td>
             <td class="govuk-table__cell">{{details.pensionType}}</td>
             <td class="govuk-table__cell">{{details.pensionName}}</td>
             <td class="govuk-table__cell">{{details.administratorName}}</td>
-            <td class="govuk-table__cell">{{details.pensionReference}}</td>
+            <td class="govuk-table__cell pdp-word-break">{{details.pensionReference}}</td>
             <td class="govuk-table__cell">{{details.employerName}}</td>
-            <td class="govuk-table__cell">£{{details.accruedAnnualIncome}}</td>
+            <td class="govuk-table__cell">£{{details.accruedAmount}}</td>
             <td class="govuk-table__cell">£{{details.ERIPot}}</td>
             <td class="govuk-table__cell">£{{details.ERIAnnualAmount}}</td>
-            <td class="govuk-table__cell">{{details.ERIPayableDate}}</td>
+            <td class="govuk-table__cell">{{details.accruedCalculationDate}}</td>
             <td class="govuk-table__cell" ><a href="update-pension?pensionId={{details._id}}" class="govuk-link">Edit</button></a></td>
             <form action="/delete-pension/{{details._id}}" method="post" class="form">
               <td class="govuk-table__cell" onclick="deleteRow()"><button class="govuk-button govuk-button--warning" data-module="govuk-button">Delete</button></td>
