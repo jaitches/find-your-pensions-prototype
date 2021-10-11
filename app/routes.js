@@ -445,6 +445,8 @@ router.post('/manage-pensions', function (req, res) {
 // Display pensions
 router.get('/pensions-list*', function (req, res) {
     let pensionOwnerSelected = ""
+    let participantNumber = process.env.PARTICIPANT_NUMBER
+
 // connect to MongoDB to add the doc (record) to the collection (table)
     if (process.env.PENSIONS_DB == "pdp-test") {
         req.app.locals.testEnv = true
@@ -473,7 +475,7 @@ router.get('/pensions-list*', function (req, res) {
             let examplePensionDetails = []
 
             for (i=0; i < allPensionDetails.length; i++){
-                if (allPensionDetails[i].pensionOwnerType == "M") {
+                if (allPensionDetails[i].pensionOwnerType == "M" && allPensionDetails[i].pensionParticipant == participantNumber && participantNumber !== 0) {
                     if (pensionOwnerSelected == "All" || pensionOwnerSelected == null) {
                         manualPensionDetails.push(allPensionDetails[i])
                     }
