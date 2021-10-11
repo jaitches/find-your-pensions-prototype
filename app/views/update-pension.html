@@ -22,7 +22,6 @@
     ]
   }) }}
 <!-- for testing -->
-  {% set testEnv = true %}
   
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
@@ -73,6 +72,7 @@
             value: pensionDetails.pensionOwner
 
           }) }} 
+<!--
         {% endif %}
 
           {{ govukInput({
@@ -88,7 +88,7 @@
             value: pensionDetails.pensionDescription
 
           }) }}
-
+-->
       {{ govukInput({
             label: {
               html: 'Pension reference'
@@ -199,6 +199,7 @@
             isPageHeading: true
           }
         }) %}
+        <!--
           <div class="govuk-form-group">
             <label class="govuk-label" for="ERIType">
               ERI type
@@ -227,7 +228,7 @@
               <input type="date" id="ERICalculationDate" name="ERICalculationDate" class="govuk-body" value={{pensionDetails.ERICalculationDate}}>
             </p>
           </div>
-
+-->
           {{ govukInput({
             id: "ERIAnnualAmount",
             name: "ERIAnnualAmount",
@@ -270,6 +271,7 @@
             isPageHeading: true
           }
         }) %}
+        <!--
           <div class="govuk-form-group">
             <label class="govuk-label" for="accruedType">
               Accrued type
@@ -291,7 +293,7 @@
             {% endfor %}  
             </select>
           </div>
-
+-->
           <div class="govuk-form-group">
             <label for="accruedCalculationDate" class="govuk-body">Date accrued amount calculated</label>
             <p>
