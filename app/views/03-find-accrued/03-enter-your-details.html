@@ -27,8 +27,9 @@
               },
               id: "full-name",
               name: "full-name",
-              autocomplete: "name",
-              spellcheck: false
+              spellcheck: false,           
+              autocomplete: "off"
+
             }) }}
 
             {{ govukInput({
@@ -41,7 +42,8 @@
               classes: "govuk-input--width-10",
               id: "national-insurance-number",
               name: "national-insurance-number",
-              spellcheck: false
+              spellcheck: false,           
+              autocomplete: "off"
             }) }}
             <br>
             {% call govukFieldset({
@@ -57,8 +59,8 @@
                   html: 'Building and street <span class="govuk-visually-hidden">line 1 of 2</span>'
                 },
                 id: "address-line-1",
-                name: "address-line-1",
-                autocomplete: "address-line1"
+                name: "address-line-1",           
+                autocomplete: "off"
               }) }}
 
               {{ govukInput({
@@ -66,8 +68,8 @@
                   html: '<span class="govuk-visually-hidden">Building and street line 2 of 2</span>'
                 },
                 id: "address-line-2",
-                name: "address-line-2",
-                autocomplete: "address-line2"
+                name: "address-line-2",           
+                autocomplete: "off"
               }) }}
 
               {{ govukInput({
@@ -76,8 +78,8 @@
                 },
                 classes: "govuk-!-width-two-thirds",
                 id: "address-town",
-                name: "address-town",
-                autocomplete: "address-level2"
+                name: "address-town",           
+                autocomplete: "off"
               }) }}
 
               {{ govukInput({
@@ -86,7 +88,8 @@
                 },
                 classes: "govuk-!-width-two-thirds",
                 id: "address-county",
-                name: "address-county"
+                name: "address-county",           
+                autocomplete: "off"
               }) }}
 
               {{ govukInput({
@@ -95,8 +98,8 @@
                 },
                 classes: "govuk-input--width-10",
                 id: "address-postcode",
-                name: "address-postcode",
-                autocomplete: "postal-code"
+                name: "address-postcode",           
+                autocomplete: "off"
               }) }}
 
             {% endcall %}
