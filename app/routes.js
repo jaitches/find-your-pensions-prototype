@@ -507,7 +507,7 @@ router.get('/pensions-list*', function (req, res) {
                     }
                 }
                 */
-                if (allPensionDetails[i].pensionOwnerType == "M") {
+                if (allPensionDetails[i].pensionOwnerType == "M" && allPensionDetails[i].pensionParticipant == participantNumber) {
                     manualPensionDetails.push(allPensionDetails[i])
                 }
                 else if (allPensionDetails[i].pensionOwnerType == "E") {
