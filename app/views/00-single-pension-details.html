@@ -22,23 +22,26 @@
       </h1>
       <p class="govuk-caption-m">{{pensionDetails.pensionReference}}</p>
 
-      {% if pensionDetails.pensionType == "DB" %}
-      <p>
-        This is a <strong>defined benefit pension</strong>. You can find out more about this type of pension at the <a href="https://www.moneyhelper.org.uk/en/pensions-and-retirement/pensions-basics/defined-benefit-or-final-salary-pensions-schemes-explained">MoneyHelper website.</a>
-      </p>
-      {% endif %}      
-      {% if pensionDetails.pensionType == "DC" %}
-      <p>
-        This is a <strong>defined contribution pension</strong>. You can find out more about this type of pension at the <a href="https://www.moneyhelper.org.uk/en/pensions-and-retirement/pensions-basics/defined-contribution-pension-schemes">MoneyHelper website.</a>
-      </p>
-      {% endif %}
       <dl class="govuk-summary-list">
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">
-            Date your pension is payable
+            Pension type
           </dt>
           <dd class="govuk-summary-list__value">
-            {{pensionDetails.pensionRetirementDateString}}
+            {{pensionDetails.pensionTypeName}}<br>
+            <p class="govuk-body-s">
+              {{pensionDetails.pensionTypeDescription}}
+            </p>
+          </dd>
+        </div>
+      </dl>
+      <dl class="govuk-summary-list">
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            Age your pension is payable
+          </dt>
+          <dd class="govuk-summary-list__value">
+            {{pensionDetails.pensionRetirementAge}}
           </dd>
         </div>
       </dl>      
@@ -47,21 +50,29 @@
         <dl class="govuk-summary-list">
           <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">
-              Income each year
+              Pension payable each year
             </dt>
             <dd class="govuk-summary-list__value">
-              {{pensionDetails.accruedAmountSterling}}<br>(as at {{pensionDetails.accruedCalculationDateString}})
+              {{pensionDetails.accruedAmountSterling}}<br>
+              <p class="govuk-body-s">
+                calculated on {{pensionDetails.accruedCalculationDateString}}.
+              </p>
             </dd>
           </div>
         </dl>
-        {% if pensionDetails.pensionStatus == "A" and (ptypeNumber == 4 or ptypeNumber == 5 )%}
+        {% if ptypeNumber == 4 or ptypeNumber == 5 %}
         <dl class="govuk-summary-list">
           <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">
               What your pension income could be worth at retirement each year
             </dt>
             <dd class="govuk-summary-list__value">
-              {{pensionDetails.ERIAnnualAmountSterling}}
+              {{pensionDetails.ERIAnnualAmountSterling}}<br>
+              {% if pensionDetails.pensionStatus == "A" %}
+                <p class="govuk-body-s">
+                  If you continue saving at the same rate.
+                </p>
+              {% endif %}
             </dd>
           </div>
         </dl>
@@ -75,7 +86,14 @@
               Amount you have saved into your pension pot
             </dt>
             <dd class="govuk-summary-list__value">
-              {{pensionDetails.accruedAmountSterling}}<br>(as at {{pensionDetails.accruedCalculationDateString}})
+              {{pensionDetails.accruedAmountSterling}}<br>              
+              <p class="govuk-body-s">
+                calculated on {{pensionDetails.accruedCalculationDateString}}.
+                {% if pensionDetails.pensionOrigin == "W" %}
+                <br>
+                This is the amount that you and your employer have contributed, as well as tax relief from the government.
+                {% endif %}
+              </p>
             </dd>
           </div>
         </dl>

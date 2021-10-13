@@ -9,9 +9,9 @@ const formatDate = require('./formatDate.js')
 const getPrototypeDetails = require('./getPrototypeDetails.js')
 // Use these arrays to store the options for the select element when updating the pensions
 const penTypes = [
-    {type: "DC", text: "Defined Contribution pension", selected : "", description: ""},
-    {type: "DB", text: "Defined Benefit pension", selected : ""},
-    {type: "ST", text: "State Pension", selected : ""},
+    {type: "DC", text: "Defined Contribution pension", selected : "", description: "A pension scheme which builds up a pension pot to pay you a retirement income based on how much you and/or your employer contribute and how much this grows."},
+    {type: "DB", text: "Defined Benefit pension", selected : "", description: "A pension scheme which pays a retirement income based on your salary and how long you have worked for your employer."},
+    {type: "ST", text: "State Pension", selected : "", description : "A regular payment from government that you qualify for when you reach State Pension age. The amount you get depends on your National Insurance record."},
     {type: "AVC", text: "AVC pension", selected : ""},
     {type: "HYB", text: "Hybrid pension", selected : ""}
 ]
@@ -176,7 +176,6 @@ router.get('/*-display-pensions*', function (req, res) {
             }
             else {
                 pensionDetailsAll = await getPensionsByParticipant(client, participantNumber)
-                console.log('pensionDetailsAll ' + JSON.stringify(pensionDetailsAll))
             }   
             // split into workplace, private and state pensions
 
@@ -398,6 +397,14 @@ router.get('/*-single-pension-details*', function (req, res) {
             req.app.locals.pensionDetails.ERIPotSterling = Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(req.app.locals.pensionDetails.ERIPot)
             req.app.locals.pensionDetails.accruedAmountSterling = Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(req.app.locals.pensionDetails.accruedAmount)
 
+            for (i=0; i < penTypes.length; i++) {
+                if (req.app.locals.pensionDetails.pensionType == penTypes[i].type) {
+                    console.log('req.app.locals.pensionDetails.pensionType ' + req.app.locals.pensionDetails.pensionType)
+                 req.app.locals.pensionDetails.pensionTypeName = penTypes[i].text
+                 req.app.locals.pensionDetails.pensionTypeDescription = penTypes[i].description
+
+                }
+            } 
         } finally {
             // Close the connection to the MongoDB cluster
             await client.close();    

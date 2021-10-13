@@ -127,6 +127,10 @@ $govuk-assets-path: '/govuk/assets/';
 .pdp-box-border-no-bottom {
 	border-bottom: none !important;
 }
+.pdp-width-5 {
+	width: 5% !important;
+	box-sizing: border-box;
+}
 .pdp-width-10 {
 	width: 10% !important;
 	box-sizing: border-box;
@@ -236,4 +240,16 @@ $govuk-assets-path: '/govuk/assets/';
 // when the caption is underneath e.g. pension reference reduce the padding of the heading it's under
 .pdp-heading-with-caption {
   margin-bottom: 10px;
+}
+
+.pdp-caption-m {
+  font-family: "GDS Transport", arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-weight: 400;
+  font-size: 14px;
+  font-size: 1rem;
+  line-height: 1.25;
+  display: block;
+  color: #505a5f;
 }
