@@ -65,6 +65,17 @@
             name: "pensionOwner"
           }) }} 
         {% endif %}
+          {{ govukInput({
+            label: {
+              html: 'Enter a brief description of the pension'
+            },
+            classes: "govuk-!-width-two-thirds",  
+            hint: {
+              text: "employer name for workplace pension or provider name"
+            },
+            id: "pensionDescription",
+            name: "pensionDescription"
+          }) }}
 
           {{ govukInput({
             label: {
@@ -155,6 +166,14 @@
               }
             ]
    
+          }) }}
+          {{ govukInput({
+            label: {
+              html: 'Retirement age'
+            },
+            classes: "govuk-!-width-two-thirds",
+            id: "pensionRetirementAge",
+            name: "pensionRetirementAge"
           }) }}
 
           <div class="govuk-form-group">

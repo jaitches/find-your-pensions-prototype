@@ -167,14 +167,16 @@ router.get('/*-display-pensions*', function (req, res) {
             // Connect to the MongoDB cluster
             await client.connect()
 
-            if (pensionOwnerName && process.env.PENSIONS_DB == "pdp-test") {
+/*            if (pensionOwnerName && process.env.PENSIONS_DB == "pdp-test") {
                 pensionDetailsAll = await getPensionsByOwner(client, pensionOwnerName)
             }
-            else if (participantNumber == 0) {
+            */
+            if (participantNumber == 0) {
                 pensionDetailsAll = await getAllPensions(client, participantNumber)
             }
             else {
                 pensionDetailsAll = await getPensionsByParticipant(client, participantNumber)
+                console.log('pensionDetailsAll ' + JSON.stringify(pensionDetailsAll))
             }   
             // split into workplace, private and state pensions
 
@@ -198,8 +200,8 @@ router.get('/*-display-pensions*', function (req, res) {
                 if (pensionDetailsAll[i].accruedCalculationDate.includes("-")) {
                     accruedCalculationDateString = await formatDate(pensionDetailsAll[i].accruedCalculationDate)
                 }
-                console.log('pensionDetailsAll[i].accruedCalculationDate ' + pensionDetailsAll[i].accruedCalculationDate + ' ' + pensionDetailsAll[i].pensionName)                
-                console.log('accruedCalculationDateString ' + accruedCalculationDateString)                
+//                console.log('pensionDetailsAll[i].accruedCalculationDate ' + pensionDetailsAll[i].accruedCalculationDate + ' ' + pensionDetailsAll[i].pensionName)                
+//                console.log('accruedCalculationDateString ' + accruedCalculationDateString)                
                 if (pensionDetailsAll[i].employmentStartDate.includes("-")) {
                     employmentStartDateString = await formatDate(pensionDetailsAll[i].employmentStartDate)
                 }
@@ -218,12 +220,20 @@ router.get('/*-display-pensions*', function (req, res) {
                 let accruedAmountSterling = Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(pensionDetailsAll[i].accruedAmount)
             // copy the sterling values to the array to display on the prototype
                 // display "N/A" for estimated income for inactive DB pensions
-                if (pensionDetailsAll[i].pensionType === "DB" && pensionDetailsAll[i].pensionStatus == "I") {
+/*                if (pensionDetailsAll[i].pensionType === "DB" && pensionDetailsAll[i].pensionStatus == "I") {
                     pensionDetailsAll[i].ERIAnnualAmountSterling = "N/A"
                 }
                 else{
-                    pensionDetailsAll[i].ERIAnnualAmountSterling = ERIAnnualAmountSterling
                 }
+*/                 
+                if (pensionDetailsAll[i].pensionStatus == "I") {
+                    pensionDetailsAll[i].pensionStatusYN = "No"
+                }
+                else {
+                    pensionDetailsAll[i].pensionStatusYN = "Yes"
+                }
+
+                pensionDetailsAll[i].ERIAnnualAmountSterling = ERIAnnualAmountSterling
                 pensionDetailsAll[i].ERIPotSterling = ERIPotSterling
                 pensionDetailsAll[i].accruedAmountSterling = accruedAmountSterling
 
@@ -475,13 +485,17 @@ router.get('/pensions-list*', function (req, res) {
             let examplePensionDetails = []
 
             for (i=0; i < allPensionDetails.length; i++){
-                if (allPensionDetails[i].pensionOwnerType == "M" && allPensionDetails[i].pensionParticipant == participantNumber && participantNumber !== 0) {
+/*                if (allPensionDetails[i].pensionOwnerType == "M" && allPensionDetails[i].pensionParticipant == participantNumber && participantNumber !== 0) {
                     if (pensionOwnerSelected == "All" || pensionOwnerSelected == null) {
                         manualPensionDetails.push(allPensionDetails[i])
                     }
                     else if (pensionOwnerSelected == allPensionDetails[i].pensionOwner) {
                         manualPensionDetails.push(allPensionDetails[i])
                     }
+                }
+                */
+                if (allPensionDetails[i].pensionOwnerType == "M") {
+                    manualPensionDetails.push(allPensionDetails[i])
                 }
                 else if (allPensionDetails[i].pensionOwnerType == "E") {
                     examplePensionDetails.push(allPensionDetails[i])
@@ -586,6 +600,7 @@ router.post('/add-pension-details', function (req, res) {
     let pension_Status = req.session.data['pensionStatus']
     pension_Start_Date = req.session.data['pensionStartDate']
     pension_Retirement_Date = req.session.data['pensionRetirementDate']
+    let pension_Retirement_Age = req.session.data['pensionRetirementAge']
     let pension_Link = ""
 
 // the administratorDetails passed from the form includes the administrator _id and the name
@@ -637,6 +652,7 @@ router.post('/add-pension-details', function (req, res) {
                 pensionStatus : pension_Status,
                 pensionStartDate : pension_Start_Date,
                 pensionRetirementDate : pension_Retirement_Date,
+                pensionRetirementAge : pension_Retirement_Age,
                 pensionLink : pension_Link,
                 administratorReference : administrator_Reference,
                 administratorName : administrator_Name,
@@ -863,6 +879,7 @@ router.post('/update-pension-details', function (req, res) {
         let pension_Status = req.session.data['pensionStatus']
         pension_Start_Date = req.session.data['pensionStartDate']
         pension_Retirement_Date = req.session.data['pensionRetirementDate']
+        let pension_Retirement_Age = req.session.data['pensionRetirementAge']
  
         let pension_Link = req.session.data['pensionLink']
 
@@ -907,6 +924,7 @@ router.post('/update-pension-details', function (req, res) {
                 pensionOrigin : pension_Origin,
                 pensionStatus : pension_Status,
                 pensionStartDate : pension_Start_Date,
+                pensionRetirementAge : pension_Retirement_Age,
                 pensionRetirementDate : pension_Retirement_Date,
                 pensionLink : pension_Link,
                 administratorReference : administrator_Reference,

@@ -74,21 +74,21 @@
           }) }} 
 
         {% endif %}
-<!--
+
           {{ govukInput({
             label: {
               html: 'Enter a brief description of the pension'
             },
             classes: "govuk-!-width-two-thirds",  
             hint: {
-              text: "e.g. DC workplace active"
+              text: "employer name for workplace pension or provider name"
             },
             id: "pensionDescription",
             name: "pensionDescription",
             value: pensionDetails.pensionDescription
 
           }) }}
--->
+
       {{ govukInput({
             label: {
               html: 'Pension reference'
@@ -101,7 +101,7 @@
 
           {{ govukInput({
             label: {
-              html: 'Pension name'
+              html: 'Pension scheme name'
             },
             classes: "govuk-!-width-two-thirds",
             id: "pensionName",
@@ -148,6 +148,17 @@
               <input type="date" id="pensionStartDate" name="pensionStartDate" class="govuk-body" value={{pensionDetails.pensionStartDate}}>
             </p>
           </div>
+
+          {{ govukInput({
+            label: {
+              html: 'Retirement age'
+            },
+            classes: "govuk-!-width-one-third",
+            id: "pensionRetirementAge",
+            name: "pensionRetirementAge",            
+            value: pensionDetails.pensionRetirementAge
+
+          }) }}
 
           <div class="govuk-form-group">
             <label for="pensionRetirementDate" class="govuk-body">Pension retirement date</label>
