@@ -9,7 +9,9 @@ const formatDate = require('./formatDate.js')
 const getPrototypeDetails = require('./getPrototypeDetails.js')
 // Use these arrays to store the options for the select element when updating the pensions
 const penTypes = [
-    {type: "DC", text: "Defined Contribution pension", selected : "", description: "A pension scheme which builds up a pension pot to pay you a retirement income based on how much you and/or your employer contribute and how much this grows."},
+    {type: "DC", text: "Defined Contribution pension", selected : "", 
+    description: "A pension scheme which builds up a pension pot to pay you a retirement income based on how much you and/or your employer contribute and how much this grows.",
+    descriptionPrivate: "A pension scheme which builds up a pension pot to pay you a retirement income based on how much you contribute and how much this grows."},
     {type: "DB", text: "Defined Benefit pension", selected : "", description: "A pension scheme which pays a retirement income based on your salary and how long you have worked for your employer."},
     {type: "ST", text: "State Pension", selected : "", description : "A regular payment from government that you qualify for when you reach State Pension age. The amount you get depends on your National Insurance record."},
     {type: "AVC", text: "AVC pension", selected : ""},
@@ -400,9 +402,13 @@ router.get('/*-single-pension-details*', function (req, res) {
             for (i=0; i < penTypes.length; i++) {
                 if (req.app.locals.pensionDetails.pensionType == penTypes[i].type) {
                     console.log('req.app.locals.pensionDetails.pensionType ' + req.app.locals.pensionDetails.pensionType)
-                 req.app.locals.pensionDetails.pensionTypeName = penTypes[i].text
-                 req.app.locals.pensionDetails.pensionTypeDescription = penTypes[i].description
-
+                    req.app.locals.pensionDetails.pensionTypeName = penTypes[i].text
+                    if (req.app.locals.pensionDetails.pensionOrigin == "P") {
+                    req.app.locals.pensionDetails.pensionTypeDescription = penTypes[i].descriptionPrivate
+                    }
+                    else {
+                    req.app.locals.pensionDetails.pensionTypeDescription = penTypes[i].description
+                    }
                 }
             } 
         } finally {

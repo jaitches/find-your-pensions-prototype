@@ -104,7 +104,12 @@
                 What your pension pot could be worth at retirement
               </dt>
               <dd class="govuk-summary-list__value">
-                {{pensionDetails.ERIPotSterling}}
+                {{pensionDetails.ERIPotSterling}}              
+                {% if pensionDetails.pensionStatus == "A" %}
+                  <p class="govuk-body-s">
+                    If you continue saving at the same rate.
+                  </p>
+                {% endif %}
               </dd>
             </div>
           </dl>        
@@ -116,7 +121,7 @@
               <dd class="govuk-summary-list__value">
                 {{pensionDetails.ERIAnnualAmountSterling}}
                 <p class="govuk-body-s">
-                  We’re showing you what you might get if you turned your pension into an income for life – an annuity
+                  We’re showing you what you might get if you turned your pension into an income for life – an annuity.
                 </p>            
              </dd>
             </div>
