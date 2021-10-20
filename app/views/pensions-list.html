@@ -26,22 +26,6 @@
       <h1 class="govuk-heading-xl">
         Pension list
       </h1>
-      {% if testEnv %}  
-      <form action="/filter-pensions" method="post" class="form">
-        <h2 class="govuk-label-wrapper">
-          <label class="govuk-label govuk-label--m" for="ownerName">
-            Filter by pension owner
-          </label>
-        </h2>
-        <select class="govuk-select" id="ownerName" name="ownerName">
-          <option value="All">All</option>
-        {% for name in pensionOwners %}
-          <option value="{{name}}">{{name}}</option>
-        {% endfor %}
-        </select>
-        <button class="govuk-button govuk-button" data-module="govuk-button">Apply filter</button>
-      </form>
-      {% endif %}     
 
       <h2 class="govuk-heading-l">
         Pensions displayed on the prototype
