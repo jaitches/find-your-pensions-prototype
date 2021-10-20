@@ -510,12 +510,9 @@
                     ],
                     "minLength": 2,
                     "manLength": 3,
-                    "enum": ["EXC", "ERR","TRN", "MAN"]
-                    
-                    
-                }
-                
-         }
-    }
-}
+                    "enum": ["EXC", "ERR","TRN", "MAN"]                    
+                }             
+	        }
+	    }
+	}
 }

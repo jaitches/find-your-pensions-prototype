@@ -202,6 +202,7 @@ router.get('/*-display-pensions*', function (req, res) {
                     ERICalculationDateString = await formatDate(pensionDetailsAll[i].ERICalculationDate)
                 }
                 */
+
                 if (pensionDetailsAll[i].accruedCalculationDate.includes("-")) {
                     accruedCalculationDateString = await formatDate(pensionDetailsAll[i].accruedCalculationDate)
                 }
@@ -219,23 +220,48 @@ router.get('/*-display-pensions*', function (req, res) {
                 pensionDetailsAll[i].accruedCalculationDateString = accruedCalculationDateString
                 pensionDetailsAll[i].employmentStartDateString = employmentStartDateString
                 pensionDetailsAll[i].employmentEndDateString = employmentEndDateString
-            // convert the vlaues to sterling
-                let ERIAnnualAmountSterling = Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(pensionDetailsAll[i].ERIAnnualAmount)
-                let ERIPotSterling = Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(pensionDetailsAll[i].ERIPot)
-                let accruedAmountSterling = Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(pensionDetailsAll[i].accruedAmount)
+            // convert the values to sterling
+            // convert values to monthly for prototype 5
+                let ERIAnnualAmountSterling = ""
+                let accruedAmountSterling = ""
+                let ERIPotSterling = ""
+                let monthlyAccruedAmount = pensionDetailsAll[i].accruedAmount / 12
+                let monthlyERIAnnualAmount = pensionDetailsAll[i].ERIAnnualAmount / 12
+
+                if (ptypeNumber == 5) {
+                    ERIAnnualAmountSterling = Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(monthlyERIAnnualAmount)              
+                    if (pensionDetailsAll[i].pensionType == "DC") {                 
+                        accruedAmountSterling = Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(pensionDetailsAll[i].accruedAmount)
+                    }
+                    else {
+                        accruedAmountSterling = Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(monthlyAccruedAmount)
+                    } 
+                    console.log('ERIAnnualAmountSterling ' + ERIAnnualAmountSterling)
+                    console.log('accruedAmountSterling ' + accruedAmountSterling)
+                }                
+                else {
+                    ERIAnnualAmountSterling = Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(pensionDetailsAll[i].ERIAnnualAmount)
+                    accruedAmountSterling = Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(pensionDetailsAll[i].accruedAmount)
+                }
+            
+                ERIPotSterling = Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(pensionDetailsAll[i].ERIPot)
+            
+                console.log('ERIAnnualAmountSterling ' + ERIAnnualAmountSterling)
+           
+
             // copy the sterling values to the array to display on the prototype
-                 
+
+                pensionDetailsAll[i].ERIAnnualAmountSterling = ERIAnnualAmountSterling
+                pensionDetailsAll[i].ERIPotSterling = ERIPotSterling
+                pensionDetailsAll[i].accruedAmountSterling = accruedAmountSterling
+
+                // set the status to display the still saving status
                 if (pensionDetailsAll[i].pensionStatus == "I") {
                     pensionDetailsAll[i].pensionStatusYN = "No"
                 }
                 else {
                     pensionDetailsAll[i].pensionStatusYN = "Yes"
                 }
-
-                pensionDetailsAll[i].ERIAnnualAmountSterling = ERIAnnualAmountSterling
-                pensionDetailsAll[i].ERIPotSterling = ERIPotSterling
-                pensionDetailsAll[i].accruedAmountSterling = accruedAmountSterling
-
                 // find pension type text
                 for (j=0; j < penTypes.length; j++) {
                     if (pensionDetailsAll[i].pensionType == penTypes[j].type) {
@@ -350,6 +376,7 @@ router.get('/*-display-pensions*', function (req, res) {
 router.get('/*-single-pension-details*', function (req, res) {
 
     async function findPensionDetails() {
+        let ptypeNumber = req.query.ptype
 
         req.app.locals.pensionDetails = []
         req.app.locals.pensionProvider = []
@@ -363,6 +390,7 @@ router.get('/*-single-pension-details*', function (req, res) {
         let ERICalculationDateString = ""  
         let accruedCalculationDateString = ""
         let pensionRetirementDateString =""
+        req.app.locals.NINotPaidUP = false
 
 
         const client = new MongoClient(uri);
@@ -372,6 +400,10 @@ router.get('/*-single-pension-details*', function (req, res) {
             await client.connect();
             req.app.locals.pensionDetails = await getPensionById(client, pensionId)
             req.app.locals.pensionProvider = await getProviderById(client, providerId)
+            // if paid all NI set string to not display message in details page
+            if (req.app.locals.pensionDetails.accruedAmount !== req.app.locals.pensionDetails.ERIAnnualAmount) {
+                req.app.locals.NINotPaidUP = true
+            }
 //            console.log('req.app.locals.pensionProvider.administratorURL ' + req.app.locals.pensionProvider.administratorURL)
             if (req.app.locals.pensionProvider.administratorURL) {
                 req.app.locals.pensionProvider.administratorShortURL = req.app.locals.pensionProvider.administratorURL.replace(/^https?\:\/\//i, "")
@@ -414,9 +446,25 @@ router.get('/*-single-pension-details*', function (req, res) {
             req.app.locals.pensionDetails.ERICalculationDateString = ERICalculationDateString
             req.app.locals.pensionDetails.accruedCalculationDateString = accruedCalculationDateString
             req.app.locals.pensionDetails.pensionRetirementDateString = pensionRetirementDateString
-            req.app.locals.pensionDetails.ERIAnnualAmountSterling = Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(req.app.locals.pensionDetails.ERIAnnualAmount)
-            req.app.locals.pensionDetails.ERIPotSterling = Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(req.app.locals.pensionDetails.ERIPot)
-            req.app.locals.pensionDetails.accruedAmountSterling = Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(req.app.locals.pensionDetails.accruedAmount)
+
+            let monthlyAccruedAmount = req.app.locals.pensionDetails.accruedAmount / 12
+            let monthlyERIAnnualAmount = req.app.locals.pensionDetails.ERIAnnualAmount / 12
+
+            if (ptypeNumber == 5) {
+                req.app.locals.pensionDetails.ERIAnnualAmountSterling = Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(monthlyERIAnnualAmount)              
+                if (req.app.locals.pensionDetails.pensionType == "DC") {                 
+                    req.app.locals.pensionDetails.accruedAmountSterling = Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(req.app.locals.pensionDetails.accruedAmount)
+                }
+                else {
+                    req.app.locals.pensionDetails.accruedAmountSterling = Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(monthlyAccruedAmount)
+                } 
+            }                
+            else {
+                req.app.locals.pensionDetails.ERIAnnualAmountSterling = Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(req.app.locals.pensionDetails.ERIAnnualAmount)
+                req.app.locals.pensionDetails.accruedAmountSterling = Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(preq.app.locals.pensionDetails.accruedAmount)
+            }
+
+            req.app.locals.pensionDetails.ERIPotSterling = Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(req.app.locals.pensionDetails.ERIPot / 12)
 
             for (i=0; i < penTypes.length; i++) {
                 if (req.app.locals.pensionDetails.pensionType == penTypes[i].type) {
