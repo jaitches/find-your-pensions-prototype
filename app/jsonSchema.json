@@ -1,0 +1,521 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "http://example.com/example.json",
+    "type": "object",
+    "title": "The root schema",
+    "description": "The root schema comprises the entire JSON document.",
+    "required": [
+        "pensionArrangementDetails",
+        "pensionAdministratorDetails",
+        "estimatedRetirementIncomeDetails"
+       
+    ],
+    "properties": {
+        "pensionArrangementDetails": {
+            "$id": "#/properties/pensionArrangementDetails",
+            "type": "object",
+            "title": "The pension arrangement details",
+            "description": "Information about the pension arrangement within which the individual has a pension",
+            "required": [
+                "pensionReference",
+                "pensionName",
+                "pensionType",
+                "pensionOrigin",
+                "pensionStatus",
+                "pensionStartDate"        
+                
+            ],
+            "properties": {
+                "pensionReference": {
+                    "$id": "#/properties/pensionArrangementDetails/properties/pensionReference",
+                    "type": "string",
+                    "title": "Pension Reference",
+                    "description": "A unique reference number that connects the individual to the pension arrangement data. It could be their scheme/policy number, but it does not need to be, as it could be a one-time ‘quote this reference’ for an individual to use if they contact the provider.",
+                    "examples": [
+                        ""
+                    ],
+                    "minLength": 1,
+                    "maxLength": 35
+                },
+                "pensionName": {
+                    "$id": "#/properties/pensionArrangementDetails/properties/pensionName",
+                    "type": "string",
+                    "title": "Pension Name",
+                    "description": "Name of the pension arrangement that should resonate with the individual",
+                    "examples": [
+                        ""
+                    ],
+                    "minLength": 1,
+                    "maxLength": 100
+                },
+                "pensionType": {
+                    "$id": "#/properties/pensionArrangementDetails/properties/pensionType",
+                    "type": "string",
+                    "title": "Pension Type",
+                    "description": "Type of pension arrangement e.g. DC",
+                    "examples": [
+                        "DB", "DC", "AVC", "HYB"
+                    ],
+                    "minLength": 2,
+                    "maxLength": 3,
+                    "enum": ["DB", "DC","AVC","HYB"]
+                },
+                "pensionOrigin": {
+                    "$id": "#/properties/pensionArrangementDetails/properties/pensionOrigin",
+                    "type": "string",
+                    "title": "Pension Origin",
+                    "description": "Origin of the pension arrangement e.g. work",
+                    "examples": [
+                        "W", "P"
+                    ],
+                    "minLength": 1,
+                    "maxLength": 1,
+                    "enum": ["W", "P"]
+                },
+                "pensionStatus": {
+                    "$id": "#/properties/pensionArrangementDetails/properties/pensionStatus",
+                    "type": "string",
+                    "title": "Pension Status",
+                    "description": "A code identifying the status of the pension arrangement according to a set list of values, allows the individual to see if they are still actively building up the pension, through ongoing contributions and / or pensionable employment",
+                    "examples": [
+                        "A", "I"
+                    ],
+                    "minLength": 1,
+                    "maxLength": 1,
+                    "enum": ["A", "I"]
+                },
+                "pensionStartDate": {
+                    "$id": "#/properties/pensionArrangementDetails/properties/pensionStartDate",
+                    "type": "string",
+                    "title": "Pension Start Date",
+                    "description": "A date identifying the start date of the individual’s pension with the pension arrangement",
+                    "examples": [
+                        ""
+                    ],
+                    "minLength": 1,
+                    "maxLength": 10,
+                    "format": "date"
+                },
+                "pensionRetirementDate": {
+                    "$id": "#/properties/pensionArrangementDetails/properties/pensionRetirementDate",
+                    "type": "string",
+                    "title": "Pension Retirement Date",
+                    "description": "A date identifying when the pension arrangement is set to start paying a retirement income to the individual",
+                    "examples": [
+                        ""
+                    ],
+                    "minLength": 1,
+                    "maxLength": 10,
+                    "format": "date"
+                },
+                "pensionLink": {
+                    "$id": "#/properties/pensionArrangementDetails/properties/pensionLink",
+                    "type": "string",
+                    "title": "Pension Link",
+                    "description": "Identifier used to link pension arrangements together, e.g. AVC pot with main scheme pension",
+                    "examples": [
+                        ""
+                    ],
+                    "minLength": 1,
+                    "maxLength": 35
+                }
+            }
+        },
+        "pensionAdministratorDetails": {
+            "$id": "#/properties/pensionAdministratorDetails",
+            "type": "object",
+            "title": "Pension Administrator Details",
+            "description": "Information about the organisation which the individual should get in touch with, to find out more about their pension",
+            "required": [
+                "administratorReference",
+                "administratorName",
+                "adminContactPreference"
+                ],
+            "properties": {
+                "administratorReference": {
+                    "$id": "#/properties/pensionAdministratorDetails/properties/administratorReference",
+                    "type": "string",
+                    "title": "Administrator Reference",
+                    "description": "A unique reference number identifying the pension administrator – this could be their governance register number",
+                    "examples": [
+                        ""
+                    ],
+                    "minLength": 1,
+                    "maxLength": 35
+                },
+                "administratorName": {
+                    "$id": "#/properties/pensionAdministratorDetails/properties/administratorName",
+                    "type": "string",
+                    "title": "Administrator Name",
+                    "description": "Name of the organisation which administers the pension arrangement that should resonate with the individual",
+                    "examples": [
+                        ""
+                    ],
+                    "minLength": 1,
+                    "maxLength": 100
+                },
+                "adminContactPreference": {
+                    "$id": "#/properties/pensionAdministratorDetails/properties/adminContactPreference",
+                    "type": "string",
+                    "title": "Admin Contact Preference",
+                    "description": "Provide the administrator’s preferred method of being contacted",
+                    "examples": [
+                        "W", "E", "P","M"
+                    ],
+                    "minLength": 1,
+                    "maxLength": 1,
+                    "enum": ["W", "E", "P","M"]
+                },
+                "administratorURL ": {
+                    "$id": "#/properties/pensionAdministratorDetails/properties/administratorURL%20",
+                    "type": "string",
+                    "title": "Administrator URL",
+                    "description": "AURL of the pension administrator, which would allow an individual to get more information about their pension arrangement, and their pension within the pension arrangement",
+                    "examples": [
+                        ""
+                    ],
+                    "minLength": 5,
+                    "maxLength": 100
+                    
+                },
+                "administratorEmail": {
+                    "$id": "#/properties/pensionAdministratorDetails/properties/administratorEmail",
+                    "type": "string",
+                    "title": "Administrator Email",
+                    "description": "AEmail address that the pension administrator wishes to direct the individual to, for the individual to use to request further information/support outside of the dashboards ecosystem",
+                    "examples": [
+                        ""
+                    ],
+                    "minLength": 5,
+                    "maxLength": 100,
+                    "format": "email"
+                },
+                "administratorPhoneNumber": {
+                    "$id": "#/properties/pensionAdministratorDetails/properties/administratorPhoneNumber",
+                    "type": "string",
+                    "title": "Administrator Phone Number",
+                    "description": "Full telephone number that the pension administrator wishes to direct the individual to, for the individual to use to request further information/support outside of the dashboards ecosystem",
+                    "examples": [
+                        ""
+                    ],
+                    "minLength": 1,
+                    "maxLength": 12
+                },
+                "administratorPhoneNumberType": {
+                    "$id": "#/properties/pensionAdministratorDetails/properties/administratorPhoneNumberType",
+                    "type": "string",
+                    "title": "Administrator Phone Number Type",
+                    "description": "Type of telephone number provided e.g. Welsh speaking, or hearing impairment",
+                    "examples": [
+                        "M", "W", "S"
+                    ],
+                    "minLength": 1,
+                    "maxLength": 1,
+                    "enum": ["M", "W", "S"]
+                },
+                "administratorPostalName": {
+                    "$id": "#/properties/pensionAdministratorDetails/properties/administratorPostalName",
+                    "type": "string",
+                    "title": "Administrator Postal Name",
+                    "description": "Name of pension administrator/provider for postal contact",
+                    "examples": [
+                        
+                    ],
+                    "minLength": 1,
+                    "maxLength": 100
+                },
+                "administratorAddressLine1": {
+                    "$id": "#/properties/pensionAdministratorDetails/properties/administratorAddressLine1",
+                    "type": "string",
+                    "title": "Administrator Address Line 1",
+                    "description": "First line of postal address.",
+                    "examples": [
+                        ""
+                    ],
+                    "minLength": 1,
+                    "maxLength": 70
+                },
+                "administratorAddressLine2": {
+                    "$id": "#/properties/pensionAdministratorDetails/properties/administratorAddressLine2",
+                    "type": "string",
+                    "title": "Administrator Address Line 2",
+                    "description": "Second line of postal address",
+                    "examples": [
+                        ""
+                    ],
+                    "minLength": 1,
+                    "maxLength": 70
+                },
+                "administratorAddressLine3": {
+                    "$id": "#/properties/pensionAdministratorDetails/properties/administratorAddressLine3",
+                    "type": "string",
+                    "title": "Administrator Address Line 3",
+                    "description": "Third line of postal address",
+                    "examples": [
+                        ""
+                    ],
+                    "minLength": 1,
+                    "maxLength": 70
+                },
+                "administratorAddressLine4": {
+                    "$id": "#/properties/pensionAdministratorDetails/properties/administratorAddressLine4",
+                    "type": "string",
+                    "title": "Administrator Address Line 4",
+                    "description": "Fourth line of postal address",
+                    "examples": [
+                        ""
+                    ],
+                    "minLength": 1,
+                    "maxLength": 70
+                },
+                "administratorAddressLine5": {
+                    "$id": "#/properties/pensionAdministratorDetails/properties/administratorAddressLine5",
+                    "type": "string",
+                    "title": "Administrator Address Line 5",
+                    "description": "Fifth line of postal address",
+                    "examples": [
+                        ""
+                    ],
+                    "minLength": 1,
+                    "maxLength": 70
+                },
+                "administratorPostcode": {
+                    "$id": "#/properties/pensionAdministratorDetails/properties/administratorPostcode",
+                    "type": "string",
+                    "title": "Administrator Postcode",
+                    "description": "Postcode for address",
+                    "examples": [
+                        ""
+                    ],
+                    "minLength": 1,
+                    "maxLength": 16
+                }
+            }
+        },
+        "employerDetails": {
+            "$id": "#/properties/employerDetails",
+            "type": "object",
+            "title": "Employer Details",
+            "description": "Where applicable (ie for workplace pensions), information about the employment that gave rise to the pension",
+            "properties": {
+                "employerName": {
+                    "$id": "#/properties/employerDetails/properties/employerName",
+                    "type": "string",
+                    "title": "Employer Name",
+                    "description": "Name of the employer / employment which gave rise to the individual’s pension",
+                    "examples": [
+                        ""
+                    ],
+                    "minLength": 1,
+                    "maxLength": 100
+                },
+                "employmentStartDate": {
+                    "$id": "#/properties/employerDetails/properties/employmentStartDate",
+                    "type": "string",
+                    "title": "Employment Start Date",
+                    "description": "A date identifying the start of the individual’s employment which gave rise to their pension",
+                    "examples": [
+                        ""
+                    ],
+                    "format": "date"
+                },
+                "employmentEndDate": {
+                    "$id": "#/properties/employerDetails/properties/employmentEndDate",
+                    "type": "string",
+                    "title": "Wmployment End Date",
+                    "description": "A date identifying the end of the individual’s employment which gave rise to the pension",
+                    "examples": [
+                        ""
+                    ],
+                    "format": "date"
+                }
+            }
+        },
+        "estimatedRetirementIncomeDetails": {
+            "$id": "#/properties/estimatedRetirementIncomeDetails",
+            "type": "object",
+            "title": "Estimated Retirement Income Details",
+            "description": "The estimated retirement income details relating to the pension asset",
+             "required": [
+                "eriType",
+                "eriBasis",
+                "eriCalculationDate",
+                "eriPayableDate",
+                "eriAmount",
+                "eriSafeguardedBenefits"
+                
+            ],
+            "properties": {
+                "eriType": {
+                    "$id": "#/properties/estimatedRetirementIncomeDetails/properties/eriType",
+                    "type": "string",
+                    "title": "ERI Type",
+                    "description": "Type of pension generating the retirement income e.g. DC. To allow dashboards to signpost information to the dashboard user",
+                    "examples": [
+                        "DC", "DB"
+                    ],
+                    "minLength": 2,
+                    "maxLength": 3,
+                    "enum": ["DC", "DB", "DBL", "AVC", "CDI", "CDL","CBS"]
+                    
+                },
+                "eriBasis": {
+                    "$id": "#/properties/estimatedRetirementIncomeDetails/properties/eriBasis",
+                    "type": "string",
+                    "title": "ERI Basis",
+                    "description": "A code representing the basis of calculation for the ERI to enable the dashboard to explain the basis of calculation",
+                    "examples": [
+                        ""
+                    ],
+                    "minLength": 2,
+                    "maxLength": 4,
+                    "enum": ["SMPI","COBS","BS","BSF"]
+                },
+                "eriCalculationDate": {
+                    "$id": "#/properties/estimatedRetirementIncomeDetails/properties/eriCalculationDate",
+                    "type": "string",
+                    "title": "ERI Calculation Date",
+                    "description": "The date the ERI was calculated",
+                    "examples": [
+                        ""
+                    ],
+                    "format": "date"
+                },
+                "eriPayableDate": {
+                    "$id": "#/properties/estimatedRetirementIncomeDetails/properties/eriPayableDate",
+                    "type": "string",
+                    "title": "ERI Payable Date",
+                    "description": "The date the ERI is payable from",
+                    "examples": [
+                        ""
+                    ],
+                    "format": "date"
+                },
+                "eriAmount": {
+                    "$id": "#/properties/estimatedRetirementIncomeDetails/properties/eriAmount",
+                    "type": "number",
+                    "title": "ERI Amount",
+                    "description": "Estimated retirement income amount",
+                    "examples": [
+                        ""
+                    ]
+                },
+                "eriPot": {
+                    "$id": "#/properties/estimatedRetirementIncomeDetails/properties/eriPot",
+                    "type": "number",
+                    "title": "ERI Pot",
+                    "description": "Estimated retirement pot used to calculate the estimated retirement income",
+                    "examples": [
+                        ""
+                    ]
+                },
+                "eriSafeguardedBenefits": {
+                    "$id": "#/properties/estimatedRetirementIncomeDetails/properties/eriSafeguardedBenefits",
+                    "type": "boolean",
+                    "title": "ERI Safeguarded Benefits",
+                    "description": "The individual’s pension has safeguarded benefits",
+                    "examples": [
+                        "true", "false"
+                    ]
+                },
+                "eriUnavailable": {
+                    "$id": "#/properties/estimatedRetirementIncomeDetails/properties/eriUnavailable",
+                    "type": "string",
+                    "title": "ERI Unavailable",
+                    "description": "Provide a reason for an ERI not being available from a set list of reasons",
+                    "examples": [
+                        "ERR","TRN","MAN"
+                    ],
+                    "enum": ["ERR","TRN","MAN"]
+                }
+            }
+        },
+        "accruedPensionDetails": {
+            "$id": "#/properties/accruedPensionDetails",
+            "type": "object",
+            "title": "The Accrued Pension Details",
+            "description": "The Accrued Pension Details",
+            "properties": {
+                "accruedType": {
+                    "$id": "#/properties/accruedPensionDetails/properties/accruedType",
+                    "type": "string",
+                    "title": "Accrued Type",
+                    "description": "Type of accrued pension information, e.g. DC",
+                    "examples": [
+                        ""
+                    ],
+                    "minLength": 2,
+                    "maxLength": 3,
+                    "enum": ["DC", "DB", "DBL", "AVC", "CDI","CDL", "CBS"]
+                     
+                },
+                "accruedAmountType": {
+                    "$id": "#/properties/accruedPensionDetails/properties/accruedaAmountType",
+                    "type": "string",
+                    "title": "Accrued Amount Type",
+                    "description": "A code representing the basis of calculation for the accrued amount",
+                    "examples": [
+                        ""
+                    ],
+                    "minLength": 2,
+                    "maxLength": 3,
+                    "enum": ["POT", "INC", "LS"]
+                },
+                "accruedCalculationDate": {
+                    "$id": "#/properties/accruedPensionDetails/properties/accruedCalculationDate",
+                    "type": "string",
+                    "title": "Accrued Calculation Date",
+                    "description": "The effective date the amount is calculated to",
+                    "examples": [
+                        ""
+                    ],
+                    "format": "date"  
+                },
+                "accruedPayableDate": {
+                    "$id": "#/properties/accruedPensionDetails/properties/accruedPayableDate",
+                    "type": "string",
+                    "title": "Accrued Payable Date",
+                    "description": "The date the pension is payable from",
+                    "examples": [
+                        ""
+                    ],
+                    "format": "date" 
+                },
+                "accruedAmount": {
+                    "$id": "#/properties/accruedPensionDetails/properties/accruedAmount",
+                    "type": "number",
+                    "title": "Accrued Amount",
+                    "description": "Accrued pension as at the calculation date",
+                    "examples": [
+                        ""
+                    ]                    
+                },
+
+                "accruedSafeguardedBenefits": {
+                    "$id": "#/properties/accruedPensionDetails/properties/accruedSafeguardedBenefits",
+                    "type": "boolean",
+                    "title": "Accrued Safeguarded Benefits",
+                    "description": "The individual’s pension has safeguarded benefits",
+                    "examples": [
+                        "true", "false"
+                    ]
+                },
+                "accruedUnavailable": {
+                    "$id": "#/properties/accruedPensionDetails/properties/accruedUnavailable",
+                    "type": "string",
+                    "title": "Accrued Unavailable",
+                    "description": "Provide a reason for an accrued pension amount not being available from a set list of reasons",
+                    "examples": [
+                        ""
+                    ],
+                    "minLength": 2,
+                    "manLength": 3,
+                    "enum": ["EXC", "ERR","TRN", "MAN"]
+                    
+                    
+                }
+                
+         }
+    }
+}
+}

@@ -128,6 +128,7 @@ router.post('/enter-your-details*', function (req, res) {
 // the * is a wildcard for the prototype number in this get
 router.get('/*-display-pensions*', function (req, res) {
     async function findPensionsByOwner() {
+        let ptypeNumber = req.query.ptype
         let pensionOwnerName = ""
         if (req.query.owner) {
             pensionOwnerName = req.query.owner
@@ -146,6 +147,7 @@ router.get('/*-display-pensions*', function (req, res) {
         req.app.locals.stateFlag = false
 
         // initialise the arrays
+        req.app.locals.allPensionTypes = []
         req.app.locals.workplacePensionDetails = []
             req.app.locals.workplaceDBPensionDetails = []
             req.app.locals.workplaceDCPensionDetails = []
@@ -174,8 +176,11 @@ router.get('/*-display-pensions*', function (req, res) {
             }
             */
             if (participantNumber == 0) {
-                pensionDetailsAll = await getAllPensions(client, participantNumber)
+                pensionDetailsAll = await getAllPensions(client, participantNumber, ptypeNumber)
             }
+            else if (ptypeNumber == 5) {
+                pensionDetailsAll = await getAllPensions(client, participantNumber, ptypeNumber)
+            }            
             else {
                 pensionDetailsAll = await getPensionsByParticipant(client, participantNumber)
             }   
@@ -183,7 +188,6 @@ router.get('/*-display-pensions*', function (req, res) {
 
             for (i=0; i < pensionDetailsAll.length; i++) {
             // convert dates to string and display as dd mon yyyy
-
                 let employmentStartDateString = ""
                 let employmentEndDateString = ""
                 let accruedCalculationDateString = ""
@@ -220,13 +224,7 @@ router.get('/*-display-pensions*', function (req, res) {
                 let ERIPotSterling = Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(pensionDetailsAll[i].ERIPot)
                 let accruedAmountSterling = Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(pensionDetailsAll[i].accruedAmount)
             // copy the sterling values to the array to display on the prototype
-                // display "N/A" for estimated income for inactive DB pensions
-/*                if (pensionDetailsAll[i].pensionType === "DB" && pensionDetailsAll[i].pensionStatus == "I") {
-                    pensionDetailsAll[i].ERIAnnualAmountSterling = "N/A"
-                }
-                else{
-                }
-*/                 
+                 
                 if (pensionDetailsAll[i].pensionStatus == "I") {
                     pensionDetailsAll[i].pensionStatusYN = "No"
                 }
@@ -244,40 +242,49 @@ router.get('/*-display-pensions*', function (req, res) {
                         pensionDetailsAll[i].penTypeDescription = penTypes[j].text
                     }
                 } 
-                if (pensionDetailsAll[i].pensionOrigin == "W") {
-//                            console.log('pensionDetailsAll[i].pensionOrigin W ' + pensionDetailsAll[i].pensionReference)
-                    req.app.locals.workplaceFlag = true
-                    req.app.locals.workplacePensionDetails.push(pensionDetailsAll[i])
-                    if (pensionDetailsAll[i].pensionType == "DB") {
-                        req.app.locals.workplaceDBFlag = true
-                        req.app.locals.workplaceDBPensionDetails.push(pensionDetailsAll[i])
-                    }                    
-                    else if (pensionDetailsAll[i].pensionType == "DC") {
-                        req.app.locals.workplaceDCFlag = true
-                        req.app.locals.workplaceDCPensionDetails.push(pensionDetailsAll[i])
-                    }
-                    else {
-                        req.app.locals.workplaceOtherFlag = true
-                        req.app.locals.workplaceOtherPensionDetails.push(pensionDetailsAll[i])
-                    }
-                }
-                else if (pensionDetailsAll[i].pensionOrigin == "P") {
-                    req.app.locals.privateFlag = true
-                    req.app.locals.privatePensionDetails.push(pensionDetailsAll[i])
-                    if (pensionDetailsAll[i].pensionType == "DC") {
-                        req.app.locals.privateDCFlag = true
-                        req.app.locals.privateDCPensionDetails.push(pensionDetailsAll[i])
-                    }
-                    else {
-                        req.app.locals.workplaceOtherFlag = true
-                        req.app.locals.workplaceOtherPensionDetails.push(pensionDetailsAll[i])
-                    } 
+                // if prototype 5 put all pension types into one array and have a separate state pension array
+                console.log('ptypeNumber ' + ptypeNumber) 
+                if (ptypeNumber == 5 && pensionDetailsAll[i].pensionOrigin !== "S") {
+                    req.app.locals.pensionsFoundFlag = true
+                    req.app.locals.allPensionTypes.push(pensionDetailsAll[i])
                 }
                 else if (pensionDetailsAll[i].pensionOrigin == "S") {
                     req.app.locals.stateFlag = true
                     // there will only be one record for State Pension!
                     req.app.locals.statePensionDetails = pensionDetailsAll[i]
+                }                
+                else {
+                    if (pensionDetailsAll[i].pensionOrigin == "W") {
+    //                            console.log('pensionDetailsAll[i].pensionOrigin W ' + pensionDetailsAll[i].pensionReference)
+                        req.app.locals.workplaceFlag = true
+                        req.app.locals.workplacePensionDetails.push(pensionDetailsAll[i])
+                        if (pensionDetailsAll[i].pensionType == "DB") {
+                            req.app.locals.workplaceDBFlag = true
+                            req.app.locals.workplaceDBPensionDetails.push(pensionDetailsAll[i])
+                        }                    
+                        else if (pensionDetailsAll[i].pensionType == "DC") {
+                            req.app.locals.workplaceDCFlag = true
+                            req.app.locals.workplaceDCPensionDetails.push(pensionDetailsAll[i])
+                        }
+                        else {
+                            req.app.locals.workplaceOtherFlag = true
+                            req.app.locals.workplaceOtherPensionDetails.push(pensionDetailsAll[i])
+                        }
+                    }
+                    else if (pensionDetailsAll[i].pensionOrigin == "P") {
+                        req.app.locals.privateFlag = true
+                        req.app.locals.privatePensionDetails.push(pensionDetailsAll[i])
+                        if (pensionDetailsAll[i].pensionType == "DC") {
+                            req.app.locals.privateDCFlag = true
+                            req.app.locals.privateDCPensionDetails.push(pensionDetailsAll[i])
+                        }
+                        else {
+                            req.app.locals.workplaceOtherFlag = true
+                            req.app.locals.workplaceOtherPensionDetails.push(pensionDetailsAll[i])
+                        } 
+                    }
                 }
+
             }
         } 
         finally {
@@ -292,15 +299,27 @@ router.get('/*-display-pensions*', function (req, res) {
 
     findPensionsByOwner().catch(console.error)
    
-    async function getAllPensions(client) {
-        const results = await client.db(dataBaseName).collection("pensionDetails")
-        // find all documents
-        .find({pensionOwnerType: "M"})
-        // save them to an array
-        .sort({pensionOrigin: 1, pensionType: 1, pensionRetirementDate: -1, pensionName: 1})        
-        .toArray()
-//        console.log('results all pensions' + JSON.stringify(results))
-        return results
+    async function getAllPensions(client, pptNumber, prototype) {
+        if (prototype == 5) {
+            console.log('*** prototype 5 ***')
+            const results = await client.db(dataBaseName).collection("pensionDetails")
+            // find all documents
+            .find({pensionOwnerType: "M", pensionParticipant :  pptNumber})
+            // save them to an array and sort by newest first
+            .sort({pensionOrigin: 1, pensionType: 1, pensionRetirementDate: -1, pensionName: 1})        
+            .toArray()
+    //        console.log('results all pensions' + JSON.stringify(results))
+            return results        
+        }
+        else {
+            const results = await client.db(dataBaseName).collection("pensionDetails")
+            // find all documents
+            .find({pensionOwnerType: "M"})
+            // save them to an array
+            .sort({pensionStartDate: -1, pensionType: 1, pensionRetirementDate: -1, pensionName: 1})        
+            .toArray()
+            return results        
+        }
     }
 
     async function getPensionsByOwner(client, ownerName) {

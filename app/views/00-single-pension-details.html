@@ -28,7 +28,7 @@
             Pension type
           </dt>
           <dd class="govuk-summary-list__value">
-            {{pensionDetails.pensionTypeName}}<br>
+            {{pensionDetails.pensionTypeName}}<br><br>
             <p class="govuk-body-s">
               {{pensionDetails.pensionTypeDescription}}
             </p>
@@ -93,10 +93,11 @@
               Amount you have saved into your pension pot
             </dt>
             <dd class="govuk-summary-list__value">
-              {{pensionDetails.accruedAmountSterling}}<br>              
+              {{pensionDetails.accruedAmountSterling}}<br><br>              
               <p class="govuk-body-s">
                 calculated on {{pensionDetails.accruedCalculationDateString}}.
                 {% if pensionDetails.pensionOrigin == "W" %}
+                <br>
                 <br>
                 This is the amount that you and your employer have contributed, as well as tax relief from the government.
                 {% endif %}
