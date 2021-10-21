@@ -80,9 +80,9 @@
       {% for details in allPensionTypes %}
       <div class="pdp-pension-box-border" >
         <h2 class="govuk-heading-l pdp-heading-with-caption">
-          {{details.pensionName}}
+          {{details.pensionDescription}}
         </h2>
-        <p class="govuk-caption-m">{{details.pensionDescription}}</p>
+        <p class="govuk-caption-m">{{details.pensionReference}}</p>
         <div class="govuk-grid-row">
           <div class="govuk-grid-column-one-half">                          
           {% if details.employerName %}       
