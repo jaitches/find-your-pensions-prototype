@@ -7,17 +7,17 @@
 
 {% block content %}
 {% if ptypeNumber == "5" %}
-  {% set frequencyPaid = "monthly" %}
+  {% set frequencyPaid = "Monthly" %}
   {% set frequencyPer = "month" %}
 {% else %}
-  {% set frequencyPaid = "yearly" %}
+  {% set frequencyPaid = "Yearly" %}
   {% set frequencyPer = "year" %}
 {% endif %}
 
   <div class="govuk-breadcrumbs">
     <ol class="govuk-breadcrumbs__list">
       <li class="govuk-breadcrumbs__list-item">
-        <p>{{ptypeDisplayURL}} {{ptypeNumber}}</p>
+        <p>{{ptypeDisplayURL}}</p>
         <a class="govuk-breadcrumbs__link" href="{{ptypeDisplayUrl}}?ptype={{ptypeNumber}}&owner={{pensionOwnerName}}">Back to pension list</a>
       </li> 
     </ol>
@@ -150,6 +150,8 @@
         </div>
       </dl>
 
+
+
       {%if pensionDetails.employerName %} 
       <h2 class="govuk-heading-l">
         Employment details
@@ -187,7 +189,16 @@
       </dl>
       {% endif %}
       {% endif %}
-
+      <dl class="govuk-summary-list">
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            Date you started saving in to your pension
+          </dt>
+          <dd class="govuk-summary-list__value">
+            {{pensionDetails.pension}}
+          </dd>
+        </div>
+      </dl>
       <h3 class="govuk-heading-l">
         Pension provider details
       </h3>

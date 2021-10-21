@@ -22,11 +22,11 @@
           A regular payment from government that you qualify for when you reach State Pension age. The amount you get depends on your National Insurance record. 
         </p>
         <div class="govuk-grid-row">
-          <div class="govuk-grid-column-one-half">                         
+          <div class="govuk-grid-column-one-half">                      
             <dl class="govuk-summary-list govuk-summary-list--no-border">
               <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key pdp-width-50">
-                  Age your pension is payable
+                  Age payable
                 </dt>
                 <dd class="govuk-summary-list__value pdp-width-50">
                   {{statePensionDetails.pensionRetirementAge}}
@@ -45,9 +45,6 @@
             </dl>
           </div> <!-- half col -->
           <div class="govuk-grid-column-one-half pdp-box-border-left">
-            <h3 class="govuk-heading-m">
-              Estimated amounts
-            </h3>
             <dl class="govuk-summary-list">
               <div class="govuk-summary-list__row govuk-summary-list--no-border">
                 <dt class="govuk-summary-list__key pdp-width-50">
@@ -87,7 +84,7 @@
         </h2>
         <p class="govuk-caption-m">{{details.pensionReference}}</p>
         <div class="govuk-grid-row">
-          <div class="govuk-grid-column-one-half">                 
+          <div class="govuk-grid-column-one-half">                          
           {% if details.employerName %}       
             <dl class="govuk-summary-list">
               <div class="govuk-summary-list__row govuk-summary-list--no-border">
@@ -126,7 +123,7 @@
           <dl class="govuk-summary-list govuk-summary-list--no-border">
             <div class="govuk-summary-list__row">
               <dt class="govuk-summary-list__key pdp-width-50">
-                Age your pension is payable
+                Age payable
               </dt>
               <dd class="govuk-summary-list__value pdp-width-50">
                 {{details.pensionRetirementAge}}
@@ -155,9 +152,6 @@
           </dl>        
         </div> <!-- half col -->
         <div class="govuk-grid-column-one-half pdp-box-border-left">
-          <h3 class="govuk-heading-m">
-            Estimated amounts 
-          </h3>
           {% if details.pensionType == "DB" %}
           <dl class="govuk-summary-list">
             <div class="govuk-summary-list__row govuk-summary-list--no-border">
