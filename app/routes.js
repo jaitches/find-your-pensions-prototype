@@ -8,11 +8,16 @@ const dataBaseName = process.env.PENSIONS_DB
 const formatDate = require('./formatDate.js')
 const getPrototypeDetails = require('./getPrototypeDetails.js')
 // Use these arrays to store the options for the select element when updating the pensions
+
+
 const penTypes = [
     {type: "DC", text: "Defined Contribution pension", selected : "", 
-    description: "A pension scheme which builds up a pension pot to pay you a retirement income based on how much you and/or your employer contribute and how much this grows.",
-    descriptionPrivate: "A pension scheme which builds up a pension pot to pay you a retirement income based on how much you contribute and how much this grows."},
-    {type: "DB", text: "Defined Benefit pension", selected : "", description: "A pension scheme which pays a retirement income based on your salary and how long you have worked for your employer."},
+    moneyHelperURL : 'https://www.moneyhelper.org.uk/en/pensions-and-retirement/pensions-basics/defined-contribution-pension-schemes',
+    description: 'This is a type of pension where the amount you get when you retire depends on how much you and your employer put in and how much this money grows.' ,
+    descriptionPrivate: 'This is a type of pension where the amount you get when you retire depends on how much you put in and how much this money grows.'},
+    {type: "DB", text: "Defined Benefit pension", selected : "", description: "A defined benefit pension scheme is one where the amount you’re paid is based on how many years you’ve worked for your employer and the salary you’ve earned.",
+    moneyHelperURL : 'hhttps://www.moneyhelper.org.uk/en/pensions-and-retirement/pensions-basics/defined-benefit-or-final-salary-pensions-schemes-explained',
+    },
     {type: "ST", text: "State Pension", selected : "", description : "A regular payment from government that you qualify for when you reach State Pension age. The amount you get depends on your National Insurance record."},
     {type: "AVC", text: "AVC pension", selected : ""},
     {type: "HYB", text: "Hybrid pension", selected : ""}
@@ -392,7 +397,6 @@ router.get('/*-single-pension-details*', function (req, res) {
         let pensionRetirementDateString =""
         req.app.locals.NINotPaidUP = false
 
-
         const client = new MongoClient(uri);
 
         try {
@@ -471,10 +475,13 @@ router.get('/*-single-pension-details*', function (req, res) {
                     console.log('req.app.locals.pensionDetails.pensionType ' + req.app.locals.pensionDetails.pensionType)
                     req.app.locals.pensionDetails.pensionTypeName = penTypes[i].text
                     if (req.app.locals.pensionDetails.pensionOrigin == "P") {
-                    req.app.locals.pensionDetails.pensionTypeDescription = penTypes[i].descriptionPrivate
+                        req.app.locals.pensionDetails.pensionTypeDescription = penTypes[i].descriptionPrivate
+                        req.app.locals.pensionDetails.moneyHelperURL =  penTypes[i].moneyHelperURL
                     }
                     else {
-                    req.app.locals.pensionDetails.pensionTypeDescription = penTypes[i].description
+                        req.app.locals.pensionDetails.pensionTypeDescription = penTypes[i].description
+                        req.app.locals.pensionDetails.moneyHelperURL =  penTypes[i].moneyHelperURL
+
                     }
                 }
             } 
