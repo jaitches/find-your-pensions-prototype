@@ -45,6 +45,7 @@
             </dl>
           </div> <!-- half col -->
           <div class="govuk-grid-column-one-half pdp-box-border-left">
+            {% if NINotPaidUP %}
             <dl class="govuk-summary-list">
               <div class="govuk-summary-list__row govuk-summary-list--no-border">
                 <dt class="govuk-summary-list__key pdp-width-50">
@@ -54,7 +55,8 @@
                   {{statePensionDetails.accruedAmountSterling}}
                 </dd>
               </div>
-            </dl>         
+            </dl> 
+            {% endif %}        
             <dl class="govuk-summary-list">
               <div class="govuk-summary-list__row govuk-summary-list--no-border">
                 <dt class="govuk-summary-list__key pdp-width-50">
