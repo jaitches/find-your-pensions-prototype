@@ -468,7 +468,7 @@ router.get('/*-single-pension-details*', function (req, res) {
                 req.app.locals.pensionDetails.accruedAmountSterling = Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(preq.app.locals.pensionDetails.accruedAmount)
             }
 
-            req.app.locals.pensionDetails.ERIPotSterling = Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(req.app.locals.pensionDetails.ERIPot / 12)
+            req.app.locals.pensionDetails.ERIPotSterling = Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(req.app.locals.pensionDetails.ERIPot)
 
             for (i=0; i < penTypes.length; i++) {
                 if (req.app.locals.pensionDetails.pensionType == penTypes[i].type) {
