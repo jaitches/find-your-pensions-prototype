@@ -198,7 +198,11 @@ router.get('/*-display-pensions*', function (req, res) {
                 let accruedCalculationDateString = ""
                 let ERICalculationDateString = ""
                 let pensionRetirementDateString = ""
-                
+                req.app.locals.NINotPaidUP = false
+
+                if (pensionDetailsAll[i].accruedAmount !== pensionDetailsAll[i].ERIAnnualAmount) {
+                    req.app.locals.NINotPaidUP = true
+                }
                 if (pensionDetailsAll[i].pensionRetirementDate.includes("-")) {
                     pensionRetirementDateString = await formatDate(pensionDetailsAll[i].pensionRetirementDate)
                 }
@@ -1056,7 +1060,7 @@ router.post('/update-pension-details', function (req, res) {
     async function updatePensionDetails(client, pensionId, updatePension){
         const result = await client.db(dataBaseName).collection("pensionDetails")
             .updateOne({ _id : ObjectId(pensionId)}, {$set: updatePension});
-        console.log(`${result.modifiedCount} document was updated.`)
+        console.log(`${result.modifiedCount} document was updated. New Pension created with the following id: ${result.updatedId}`)
     }
 
 })
@@ -1289,7 +1293,7 @@ router.post('/add-provider-details', function (req, res) {
 
     async function createProvider(client, newPension){
         const result = await client.db(dataBaseName).collection("pensionProvider").insertOne(newPension);
-        console.log(`New Pension created with the following id: ${result.insertedId}`);
+        console.log(`New provider created with the following id: ${result.insertedId} New provider created with the following id: ${result.insertedId}`);
     } 
 
 })
@@ -1391,7 +1395,7 @@ router.post('/update-provider-details', function (req, res) {
     async function updateProviderDetails(client, providerId, updateProvider){
         const result = await client.db(dataBaseName).collection("pensionProvider")
             .updateOne({ _id : ObjectId(providerId)}, {$set: updateProvider})
-        console.log(`${result.modifiedCount} document was updated.`)
+        console.log(`${result.modifiedCount} document was updated. New Provider created with the following id: ${result.insertedId}`)
     }
 
 })

@@ -7,10 +7,12 @@
 
 {% block content %}
 {% if ptypeNumber == "5" %}
-  {% set frequencyPaid = "Monthly" %}
+  {% set frequencyPaidUpper = "Monthly" %}
+  {% set frequencyPaidLower = "monthly" %}
   {% set frequencyPer = "month" %}
 {% else %}
-  {% set frequencyPaid = "Yearly" %}
+  {% set frequencyPaidUpper = "Yearly" %}
+  {% set frequencyPaidLower = "yearly" %}
   {% set frequencyPer = "year" %}
 {% endif %}
 
@@ -87,7 +89,7 @@
         <dl class="govuk-summary-list">
           <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">
-              Amount you have saved into your pension pot
+              Pot value so far
             </dt>
             <dd class="govuk-summary-list__value">
               {{pensionDetails.accruedAmountSterling}}<br><br>              
@@ -106,7 +108,7 @@
           <dl class="govuk-summary-list">
             <div class="govuk-summary-list__row">
               <dt class="govuk-summary-list__key">
-                What your pension pot could be worth at retirement
+                What your pot value could be at {{pensionDetails.pensionRetirementAge}}
               </dt>
               <dd class="govuk-summary-list__value">
                 {{pensionDetails.ERIPotSterling}}              
@@ -122,7 +124,7 @@
           <dl class="govuk-summary-list">
             <div class="govuk-summary-list__row">
               <dt class="govuk-summary-list__key">
-                What your pension income could be worth at retirement each {{frequencyPer}}
+                What your {{frequencyPaidLower}} income could be {{pensionDetails.pensionRetirementAge}}
               </dt>
               <dd class="govuk-summary-list__value">
                 {{pensionDetails.ERIAnnualAmountSterling}}
