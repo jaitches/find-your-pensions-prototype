@@ -391,6 +391,7 @@ router.get('/*-single-pension-details*', function (req, res) {
         req.app.locals.ptypeNumber = req.query.ptype
 
         let employmentStartDateString = ""
+        let pensionStartDateString = ""
         let employmentEndDateString = ""
         let ERICalculationDateString = ""  
         let accruedCalculationDateString = ""
@@ -432,6 +433,10 @@ router.get('/*-single-pension-details*', function (req, res) {
             
             if (req.app.locals.pensionDetails.accruedCalculationDate.includes("-")) {
                 accruedCalculationDateString = await formatDate(req.app.locals.pensionDetails.accruedCalculationDate)
+            } 
+
+            if (req.app.locals.pensionDetails.pensionStartDate.includes("-")) {
+                pensionStartDateString = await formatDate(req.app.locals.pensionDetails.pensionStartDate)
             }            
 
             if (req.app.locals.pensionDetails.pensionRetirementDate.includes("-")) {
@@ -445,6 +450,7 @@ router.get('/*-single-pension-details*', function (req, res) {
                 employmentEndDateString = await formatDate(req.app.locals.pensionDetails.employmentEndDate)
             }
 
+            req.app.locals.pensionDetails.pensionStartDateString = pensionStartDateString
             req.app.locals.pensionDetails.employmentStartDateString = employmentStartDateString
             req.app.locals.pensionDetails.employmentEndDateString = employmentEndDateString
             req.app.locals.pensionDetails.ERICalculationDateString = ERICalculationDateString
