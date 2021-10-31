@@ -3,13 +3,13 @@ const router = express.Router()
 const fs = require('fs')
 const { MongoClient } = require('mongodb');
 const { ObjectId } = require('mongodb')
-const uri = 'mongodb+srv://' + process.env.MONGODB_URI + '?retryWrites=true&w=majority'
+const uri = 'mongodb+srv://' + process.env.MONGODB_URI + '?ssl=true&retryWrites=true&w=majority'
 const dataBaseName = process.env.PENSIONS_DB
 const formatDate = require('./formatDate.js')
 const getPrototypeDetails = require('./getPrototypeDetails.js')
+
 // Use these arrays to store the options for the select element when updating the pensions
-
-
+// also populates the session variables for descriptions
 const penTypes = [
     {type: "DC", text: "Defined Contribution pension", selected : "", 
     moneyHelperURL : 'https://www.moneyhelper.org.uk/en/pensions-and-retirement/pensions-basics/defined-contribution-pension-schemes',
@@ -67,13 +67,49 @@ const penAccrAmtType = [
 
 // start page
 router.get('/', function (req, res) {
-    if (process.env.PENSIONS_DB == "pdp-test") {
-        req.app.locals.testEnv = true
-    }
-    else {
-        req.app.locals.testEnv = false
+    switch (process.env.PENSIONS_DB) {
+        case "pdp-test":
+            req.app.locals.testEnv = true
+            req.app.locals.examples = false
+
+            break;
+        case "pensions":
+            req.app.locals.testEnv = false
+            req.app.locals.examples = false
+            break;
+        case "pdp-examples":
+            req.app.locals.testEnv = false
+            req.app.locals.examples = true
+            break;
     }
     res.render('index')
+
+})
+// if examples database selected choose which example details to show
+
+router.post('/examples-person-selection', function (req, res) {
+    const whoToSee = req.session.data['who-do-you-want-to-see']
+
+    switch (whoToSee) {
+        case "1":
+            req.app.locals.exampleParticipant = "1"
+            break        
+        case "2":
+            req.app.locals.exampleParticipant = "2"
+            break
+        case "3":
+            req.app.locals.exampleParticipant = "3"
+            break
+        case "4":
+            req.app.locals.exampleParticipant = "4"
+            break
+        case "5":
+            req.app.locals.exampleParticipant = "5"
+            break
+        default:
+            req.app.locals.exampleParticipant = "6"
+    }
+    res.redirect('select-prototype')
 
 })
 
@@ -124,7 +160,9 @@ router.post('/select-prototype', function (req, res) {
 // enter your details
 router.post('/enter-your-details*', function (req, res) {
     const pensionOwnerName = req.session.data['full-name']
-    let ptypeNumber = req.query.ptype
+    // changed this to the session data ptype number because the query string wasn't working
+    let ptypeNumber = req.app.locals.ptype.number
+
     // redirect to the correct display-pensions page for the prototype
     ptypeDetails = getPrototypeDetails(ptypeNumber)
     res.redirect(ptypeDetails.displayUrl + '?ptype=' + ptypeNumber + '&owner=' + pensionOwnerName)
@@ -138,7 +176,15 @@ router.get('/*-display-pensions*', function (req, res) {
         if (req.query.owner) {
             pensionOwnerName = req.query.owner
         }
-        let participantNumber = process.env.PARTICIPANT_NUMBER
+
+        let participantNumber = ""
+        if (req.app.locals.examples) {
+            participantNumber = req.app.locals.exampleParticipant
+        } 
+        else {
+            participantNumber = process.env.PARTICIPANT_NUMBER
+        }
+
         let pensionDetailsAll = []
         req.app.locals.pensionOwnerName = pensionOwnerName
         // set the local variables to false so that the elements are not displayed in the html unless they exist
@@ -180,12 +226,15 @@ router.get('/*-display-pensions*', function (req, res) {
                 pensionDetailsAll = await getPensionsByOwner(client, pensionOwnerName)
             }
             */
+            // show all
             if (participantNumber == 0) {
-                pensionDetailsAll = await getAllPensions(client, participantNumber, ptypeNumber)
+                pensionDetailsAll = await getAllPensions(client)
             }
-            else if (ptypeNumber == 5) {
+            // if show for the participant
+/*            else if (ptypeNumber == 5) {
                 pensionDetailsAll = await getAllPensions(client, participantNumber, ptypeNumber)
-            }            
+            } 
+            */           
             else {
                 pensionDetailsAll = await getPensionsByParticipant(client, participantNumber)
             }   
@@ -245,8 +294,8 @@ router.get('/*-display-pensions*', function (req, res) {
                     else {
                         accruedAmountSterling = Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(monthlyAccruedAmount)
                     } 
-                    console.log('ERIAnnualAmountSterling ' + ERIAnnualAmountSterling)
-                    console.log('accruedAmountSterling ' + accruedAmountSterling)
+//                    console.log('ERIAnnualAmountSterling ' + ERIAnnualAmountSterling)
+//                    console.log('accruedAmountSterling ' + accruedAmountSterling)
                 }                
                 else {
                     ERIAnnualAmountSterling = Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(pensionDetailsAll[i].ERIAnnualAmount)
@@ -255,7 +304,7 @@ router.get('/*-display-pensions*', function (req, res) {
             
                 ERIPotSterling = Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(pensionDetailsAll[i].ERIPot)
             
-                console.log('ERIAnnualAmountSterling ' + ERIAnnualAmountSterling)
+//                console.log('ERIAnnualAmountSterling ' + ERIAnnualAmountSterling)
            
 
             // copy the sterling values to the array to display on the prototype
@@ -334,27 +383,15 @@ router.get('/*-display-pensions*', function (req, res) {
 
     findPensionsByOwner().catch(console.error)
    
-    async function getAllPensions(client, pptNumber, prototype) {
-        if (prototype == 5) {
-            console.log('*** prototype 5 ***')
-            const results = await client.db(dataBaseName).collection("pensionDetails")
-            // find all documents
-            .find({pensionOwnerType: "M", pensionParticipant :  pptNumber})
-            // save them to an array and sort by newest first
-            .sort({pensionOrigin: 1, pensionType: 1, pensionRetirementDate: -1, pensionName: 1})        
-            .toArray()
-    //        console.log('results all pensions' + JSON.stringify(results))
-            return results        
-        }
-        else {
-            const results = await client.db(dataBaseName).collection("pensionDetails")
-            // find all documents
-            .find({pensionOwnerType: "M"})
-            // save them to an array
-            .sort({pensionStartDate: -1, pensionType: 1, pensionRetirementDate: -1, pensionName: 1})        
-            .toArray()
-            return results        
-        }
+    async function getAllPensions(client) {
+        const results = await client.db(dataBaseName).collection("pensionDetails")
+        // find all documents
+        .find({pensionOwnerType: "M"})
+        // save them to an array
+        .sort({pensionStartDate: -1, pensionType: 1, pensionRetirementDate: -1, pensionName: 1})        
+        .toArray()
+        return results        
+    
     }
 
     async function getPensionsByOwner(client, ownerName) {
@@ -367,6 +404,7 @@ router.get('/*-display-pensions*', function (req, res) {
 //        console.log('results ' + JSON.stringify(results))
         return results
     }
+
     async function getPensionsByParticipant(client, pptNumber) {
         const results = await client.db(dataBaseName).collection("pensionDetails")
         // find all documents
@@ -475,7 +513,7 @@ router.get('/*-single-pension-details*', function (req, res) {
             }                
             else {
                 req.app.locals.pensionDetails.ERIAnnualAmountSterling = Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(req.app.locals.pensionDetails.ERIAnnualAmount)
-                req.app.locals.pensionDetails.accruedAmountSterling = Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(preq.app.locals.pensionDetails.accruedAmount)
+                req.app.locals.pensionDetails.accruedAmountSterling = Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(req.app.locals.pensionDetails.accruedAmount)
             }
 
             req.app.locals.pensionDetails.ERIPotSterling = Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(req.app.locals.pensionDetails.ERIPot)
@@ -552,6 +590,7 @@ router.post('/manage-pensions', function (req, res) {
 // Display pensions
 router.get('/pensions-list*', function (req, res) {
     let pensionOwnerSelected = ""
+
     let participantNumber = process.env.PARTICIPANT_NUMBER
 
 // connect to MongoDB to add the doc (record) to the collection (table)
@@ -575,7 +614,7 @@ router.get('/pensions-list*', function (req, res) {
             // Connect to the MongoDB cluster
             await client.connect()
             // populate filter list
-            req.app.locals.pensionOwners = await getOwners(client)
+//            req.app.locals.pensionOwners = await getOwners(client)
 
             let allPensionDetails = await getAllPensions(client)
             let manualPensionDetails = []
@@ -591,7 +630,10 @@ router.get('/pensions-list*', function (req, res) {
                     }
                 }
                 */
-                if (allPensionDetails[i].pensionOwnerType == "M" && allPensionDetails[i].pensionParticipant == participantNumber) {
+                if (process.env.PENSIONS_DB == "pdp-examples" && allPensionDetails[i].pensionOwnerType == "M") {
+                    manualPensionDetails.push(allPensionDetails[i])
+                }
+                else if (allPensionDetails[i].pensionOwnerType == "M" && allPensionDetails[i].pensionParticipant == participantNumber) {
                     manualPensionDetails.push(allPensionDetails[i])
                 }
                 else if (allPensionDetails[i].pensionOwnerType == "E") {
@@ -891,8 +933,8 @@ router.get('/update-pension', function (req, res) {
                  req.app.locals.pensionDetails.pensionAccruedAmtTypeArr[i].selected = 'selected'   
                 }
             }
-            console.log('req.app.locals.pensionDetails.accruedCalculationDateString ' + req.app.locals.pensionDetails.accruedCalculationDateString )
-            console.log('req.app.locals.pensionDetails.accruedCalculationDate ' + req.app.locals.pensionDetails.accruedCalculationDate )
+//            console.log('req.app.locals.pensionDetails.accruedCalculationDateString ' + req.app.locals.pensionDetails.accruedCalculationDateString )
+//            console.log('req.app.locals.pensionDetails.accruedCalculationDate ' + req.app.locals.pensionDetails.accruedCalculationDate )
 
         } finally {
             // Close the connection to the MongoDB cluster
@@ -950,9 +992,9 @@ router.post('/update-pension-details', function (req, res) {
     // create an instance of the client
         const client = new MongoClient(uri);        
         let pensionId = req.app.locals.pensionId
-        let pension_Participant = process.env.PARTICIPANT_NUMBER
 
-       
+//        let pension_Participant = req.app.locals.pensionDetails.participantNumber
+  
         // format date
         let today_timestamp = new Date().toLocaleString()
 
@@ -978,8 +1020,9 @@ router.post('/update-pension-details', function (req, res) {
         pension_Retirement_Date = req.session.data['pensionRetirementDate']
         let pension_Retirement_Age = req.session.data['pensionRetirementAge']
  
-        let pension_Link = req.session.data['pensionLink']
+        // let pension_Link = req.session.data['pensionLink']
 
+        // administrator details include the name and the document id
         let administrator = req.session.data['administratorDetails']
         let administratorArray = administrator.split(":")
         let administrator_Reference = administratorArray [0]
@@ -989,30 +1032,30 @@ router.post('/update-pension-details', function (req, res) {
         employment_Start_Date = req.session.data['employmentStartDate']
         employment_End_Date = req.session.data['employmentEndDate']
 
-        let ERI_Type = req.session.data['ERIType']
-        let ERI_Basis = req.session.data['ERIBasis']
-        ERI_Calculation_Date = req.session.data['ERICalculationDate'] 
-        ERI_Payable_Date = pension_Retirement_Date
+        // let ERI_Type = req.session.data['ERIType']
+        // let ERI_Basis = req.session.data['ERIBasis']
+//        ERI_Calculation_Date = req.session.data['ERICalculationDate'] 
+//        ERI_Payable_Date = pension_Retirement_Date
         let ERI_Annual_Amount = req.session.data['ERIAnnualAmount']
         let ERI_Pot = req.session.data['ERIPot']
-        let ERI_Safeguarded_Benefits = 0
-        let ERI_Unavailable = null
+        // let ERI_Safeguarded_Benefits = 0
+        // let ERI_Unavailable = null
 
-        let accrued_Type = req.session.data['accruedType']
-        let accrued_Amount_Type = req.session.data['accruedAmountType']
+//        let accrued_Type = req.session.data['accruedType']
+//        let accrued_Amount_Type = req.session.data['accruedAmountType']
 
         accrued_Calculation_Date = req.session.data['accruedCalculationDate'] 
-        accrued_Payable_Date = pension_Retirement_Date
+//        accrued_Payable_Date = pension_Retirement_Date
         let accrued_Amount = req.session.data['accruedAmount']
-        let accrued_Safeguarded_Benefits = 0
-        let accrued_Unavailable = null
+        // let accrued_Safeguarded_Benefits = 0
+        // let accrued_Unavailable = null
 
         try {
             await client.connect();
 
             await updatePensionDetails(client, pensionId, {
 
-                pensionParticipant : pension_Participant,
+//                pensionParticipant : pension_Participant,
                 pensionOwner : pension_Owner,
                 pensionDescription: pension_Description,
                 pensionReference : pension_Reference,
@@ -1023,27 +1066,27 @@ router.post('/update-pension-details', function (req, res) {
                 pensionStartDate : pension_Start_Date,
                 pensionRetirementAge : pension_Retirement_Age,
                 pensionRetirementDate : pension_Retirement_Date,
-                pensionLink : pension_Link,
+//                pensionLink : pension_Link,
                 administratorReference : administrator_Reference,
                 administratorName : administrator_Name,
                 employerName : employer_Name,
                 employmentStartDate : employment_Start_Date,
                 employmentEndDate : employment_End_Date,
-                ERIType : ERI_Type,
-                ERIBasis : ERI_Basis,
-                ERICalculationDate : ERI_Calculation_Date,
-                ERIPayableDate : ERI_Payable_Date,
+//                ERIType : ERI_Type,
+//                ERIBasis : ERI_Basis,
+//                ERICalculationDate : ERI_Calculation_Date,
+//                ERIPayableDate : ERI_Payable_Date,
                 ERIAnnualAmount : ERI_Annual_Amount,
                 ERIPot : ERI_Pot,
-                ERISafeguardedBenefits : ERI_Safeguarded_Benefits,
-                ERIUnavailable : ERI_Unavailable,
-                accruedType : accrued_Type,
-                accruedAmountType : accrued_Amount_Type,
+//                ERISafeguardedBenefits : ERI_Safeguarded_Benefits,
+//                ERIUnavailable : ERI_Unavailable,
+//                accruedType : accrued_Type,
+//                accruedAmountType : accrued_Amount_Type,
                 accruedCalculationDate : accrued_Calculation_Date,
-                accruedPayableDate : accrued_Payable_Date,
+//                accruedPayableDate : accrued_Payable_Date,
                 accruedAmount : accrued_Amount,
-                accruedSafeguardedBenefits : accrued_Safeguarded_Benefits,
-                accruedUnavailable : accrued_Unavailable,
+//                accruedSafeguardedBenefits : accrued_Safeguarded_Benefits,
+//                accruedUnavailable : accrued_Unavailable,
                 timeStamp : today_timestamp
 
             })
@@ -1138,6 +1181,7 @@ router.post('/copy-pension/:id', function (req, res) {
 
                 pensionOwnerType : "M",
                 pensionOwner : examplePensionDetail.pensionOwner,
+                pensionDescription : examplePensionDetail.pensionDescription,
                 pensionReference : examplePensionDetail.pensionReference,
                 pensionName : examplePensionDetail.pensionName,
                 pensionType : examplePensionDetail.pensionType,
@@ -1175,7 +1219,7 @@ router.post('/copy-pension/:id', function (req, res) {
             // find the _id of the document just created
             let newPensionDocument = await client.db(dataBaseName).collection("pensionDetails").findOne({ timeStamp : today_timestamp});
             let newPensionId = newPensionDocument._id
-            console.log('newPensionDocument ' + JSON.stringify(newPensionDocument))
+//            console.log('newPensionDocument ' + JSON.stringify(newPensionDocument))
             // Close the connection to the MongoDB cluster
             await client.close()
             res.redirect ('/update-pension?pensionId=' + newPensionId)   

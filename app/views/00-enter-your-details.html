@@ -1,0 +1,93 @@
+
+{% extends "layout_unbranded.html" %}
+
+{% block pageTitle %}
+  {{serviceName}} - Enter your details
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-three-quarters">
+      <form action="/enter-your-details" method="post" class="form">
+        <div class="govuk-form-group">
+          <fieldset class="govuk-fieldset" aria-describedby="details-hint">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+              <h1 class="govuk-fieldset__heading">
+                Enter your details
+              </h1>
+            </legend>
+            <div id="details-hint" class="govuk-hint">
+              We will use your details to find your pensions         
+            </div>
+
+            {{ govukInput({
+              label: {
+                text: "Last name"
+              },
+              id: "last-name",
+              name: "last-name",
+              autocomplete: "name",
+              spellcheck: false
+            }) }}
+
+            {{ govukInput({
+              label: {
+                text: "National Insurance number"
+              },
+              hint: {
+                text: "It’s on your National Insurance card, benefit letter, payslip or P60. For example, ‘QQ 12 34 56 C’."
+              },
+              classes: "govuk-input--width-10",
+              id: "national-insurance-number",
+              name: "national-insurance-number",
+              spellcheck: false
+            }) }}
+
+            {{ govukDateInput({
+              id: "dob",
+              namePrefix: "dob",
+              fieldset: {
+                legend: {
+                  text: "What is your date of birth?",
+                  isPageHeading: true,
+                  classes: "govuk-fieldset__legend--l"
+                }
+              },
+              hint: {
+                text: "For example, 31 3 1970"
+              },
+              items: [
+                {
+                  name: "day",
+                  classes: "govuk-input--width-2",
+                  autocomplete: "bday-day"
+                },
+                {
+                  name: "month",
+                  classes: "govuk-input--width-2",
+                  autocomplete: "bday-month"
+                },
+                {
+                  name: "year",
+                  classes: "govuk-input--width-4",
+                  autocomplete: "bday-year"
+                }
+              ]
+            }) }}
+            <br>
+
+          </fieldset>
+        </div>
+
+        <div class="govuk-button-group">
+          <button class="govuk-button" data-module="govuk-button" data-prevent-double-click="true">
+            Continue
+          </button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+{% endblock %}

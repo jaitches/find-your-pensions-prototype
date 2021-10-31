@@ -43,11 +43,11 @@
         </div>
       </dl>      
 
-      {% if pensionDetails.pensionType == "ST" or pensionDetails.pensionType == "DB" and (ptypeNumber == 3 or ptypeNumber == 4 or ptypeNumber == 5 ) %}
+      {% if (pensionDetails.pensionType == "ST" or pensionDetails.pensionType == "DB") and (ptypeNumber == 3 or ptypeNumber == 4 or ptypeNumber == 5 ) %}
         <dl class="govuk-summary-list">
           <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">
-              {{frequencyPaid}} income built up so far
+              {{frequencyPaidUpper}} income built up so far
             </dt>
             <dd class="govuk-summary-list__value">
               {{pensionDetails.accruedAmountSterling}}<br><br>

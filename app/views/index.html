@@ -13,36 +13,97 @@
       <h1 class="govuk-heading-xl">
         {% if serviceName %} {{ serviceName }} {% endif %} (Prototype)
       </h1>
+      {% if examples %}
+      <form action="/examples-person-selection" method="post" novalidate>
+        {{ govukRadios({
+          idPrefix: "who-do-you-want-to-see",
+          name: "who-do-you-want-to-see",
+          fieldset: {
+            legend: {
+              text: "Who's pension figures do you want to see?",
+              isPageHeading: true,
+              classes: "govuk-fieldset__legend--l"
+            }
+          },
 
+          items: [
+            {
+              value: "1",
+              text: "Evie Gill",
+              hint: {
+                text: "26 years old, DC auto-enrolled"
+              }
+            },            
+            {
+              value: "2",
+              text: "Hayden Howarth",
+              hint: {
+                text: "34 years old, Public Service Pension Fund"
+              }
+            },            
+            {
+              value: "3",
+              text: "Alicia Phillips",
+              hint: {
+                text: "42 years old, DB same employer two separate arrangements"
+              }
+            },
+            {
+              value: "4",
+              text: "Ranjeet Salah ",
+              hint: {
+                text: "56 years old, DB and DC workplace pensions with same employer"
+              }
+            },            {
+              value: "5",
+              text: "Bradley Stevenson",
+              hint: {
+                text: "62 years old, "
+              }
+            }
+          ]
+        }) }}
+
+        {{ govukButton({
+          text: "Continue"
+        }) }}
+        
+        <h2 class="govuk-heading-m">Before you start</h2>
+        <p>
+          This version of the prototype uses the pension owner examples created for the <a href="https://www.pensionsdashboardsprogramme.org.uk/2020/12/15/data-standards-guide/">PDP data standards.</a>
+        </p>
+
+      </form>
+      {% else %}
       <form action="/display-or-manage-data" method="post" novalidate>
 
+          {{ govukRadios({
+            idPrefix: "what-do-you-want-to-do",
+            name: "what-do-you-want-to-do",
+            fieldset: {
+              legend: {
+                text: "What do you want to do?",
+                isPageHeading: true,
+                classes: "govuk-fieldset__legend--l"
+              }
+            },
 
-      {{ govukRadios({
-        idPrefix: "what-do-you-want-to-do",
-        name: "what-do-you-want-to-do",
-        fieldset: {
-          legend: {
-            text: "What do you want to do?",
-            isPageHeading: true,
-            classes: "govuk-fieldset__legend--l"
-          }
-        },
+            items: [
+              {
+                value: "prototype",
+                text: "View the prototypes"
+              },
+              {
+                value: "manage-data",
+                text: "Manage pension information to display on the prototype"
+              }
+            ]
+          }) }}
 
-        items: [
-          {
-            value: "prototype",
-            text: "View the prototypes"
-          },
-          {
-            value: "manage-data",
-            text: "Manage pension information to display on the prototype"
-          }
-        ]
-      }) }}
+          {{ govukButton({
+            text: "Continue"
+          }) }}
 
-      {{ govukButton({
-        text: "Continue"
-      }) }}
       </form>
 
 
@@ -66,15 +127,14 @@
       <p>
         You can manage the providers from the <a href="display-providers">list of pension providers</a>.
       </p>
+    {% endif%}
 
     </div>
 
     <div class="govuk-grid-column-one-third">
-
       <aside class="app-related-items" role="complementary">
         {% include "sidebar-nav.html" %}
       </aside>
-
     </div>
   </div>
 {% endblock %}
