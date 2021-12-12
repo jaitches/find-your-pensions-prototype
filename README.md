@@ -1,8 +1,7 @@
-# find-your-pensions-prototype
-This prototype was used to test the ERI (Estimated Retirement Income) values with users in Oct 2021. 
-# fyp-consents-prototype
+# Pensions Dashboards Programme - ERI prototype
 
-## Pensions Dashboards Programme - Prototype to test for estimate retirement income (ERI) values.
+This prototype was used to test the ERI (Estimated Retirement Income) values with users in Oct 2021. 
+
 ## MongoDB is used to hold pension details
 To use this prototype you will need to set up a MongoDB database. There are two collections pensionDetails and pensionProvider. This allows pension details to be added at the time of testing so that the user sees information that is relevant to them.
 ## Envionment variables
